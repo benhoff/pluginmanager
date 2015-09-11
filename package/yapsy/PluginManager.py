@@ -173,49 +173,16 @@ class PluginManager(object):
 	"""
 
 	def __init__(self,
-				 categories_filter=None,
-				 directories_list=None,
-				 plugin_info_ext=None,
-				 plugin_locator=None):
-		# as a good practice we don't use mutable objects as default
-		# values (these objects would become like static variables)
-		# for function/method arguments, but rather use None.
-		if categories_filter is None:
-			categories_filter = {"Default":IPlugin}
+                     categories_filter={'Default':IPlugin,
+		     directories_list=None,
+		     plugin_locator=PluginFileLocator()):
+
 		self.setCategoriesFilter(categories_filter)
 		plugin_locator = self._locatorDecide(plugin_info_ext, plugin_locator)
 		# plugin_locator could be either a dict defining strategies, or directly
 		# an IPluginLocator object
 		self.setPluginLocator(plugin_locator, directories_list)
 
-	def _locatorDecide(self, plugin_info_ext, plugin_locator):
-		"""
-		For backward compatibility, we kept the *plugin_info_ext* argument.
-		Thus we may use it if provided. Returns the (possibly modified)
-		*plugin_locator*.
-		"""
-		specific_info_ext = plugin_info_ext is not None
-		specific_locator = plugin_locator is not None
-		if not specific_info_ext and not specific_locator:
-			# use the default behavior
-			res = PluginFileLocator()
-		elif not specific_info_ext and specific_locator:
-			# plugin_info_ext not used
-			res = plugin_locator
-		elif not specific_locator and specific_info_ext:
-			# plugin_locator not used, and plugin_info_ext provided
-			# -> compatibility mode
-			res = PluginFileLocator()
-			res.setAnalyzers([PluginFileAnalyzerWithInfoFile("info_ext",plugin_info_ext)])
-		elif specific_info_ext and specific_locator:
-			# both provided... issue a warning that tells "plugin_info_ext"
-			# will be ignored
-			msg = ("Two incompatible arguments (%s) provided:",
-				   "'plugin_info_ext' and 'plugin_locator'). Ignoring",
-				   "'plugin_info_ext'.")
-			raise ValueError(" ".join(msg) % self.__class__.__name__)
-		return res
-	
 	def setCategoriesFilter(self, categories_filter):
 		"""
 		Set the categories of plugins to be looked for as well as the
@@ -239,25 +206,18 @@ class PluginManager(object):
 
 	def setPluginPlaces(self, directories_list):
 		"""
-		DEPRECATED(>1.9): directly configure the IPluginLocator instance instead !
-		
 		Convenience method (actually call the IPluginLocator method)
 		"""
 		self.getPluginLocator().setPluginPlaces(directories_list)
 
 	def updatePluginPlaces(self, directories_list):
 		"""
-		DEPRECATED(>1.9): directly configure the IPluginLocator instance instead !
-
 		Convenience method (actually call the IPluginLocator method)
 		"""
 		self.getPluginLocator().updatePluginPlaces(directories_list)
 
 	def setPluginInfoExtension(self, ext):
 		"""
-		DEPRECATED(>1.9): for backward compatibility. Directly configure the
-		IPluginLocator instance instead !
-		
 		.. warning:: This will only work if the strategy "info_ext" is
 		             active for locating plugins.
 		"""
@@ -655,9 +615,3 @@ class PluginManagerSingleton(object):
 			log.debug("PluginManagerSingleton initialised")
 		return self.__instance
 	get = classmethod(get)
-
-
-# For backward compatility import the most basic decorator (it changed
-# place as of v1.8)
-from yapsy.PluginManagerDecorator import PluginManagerDecorator
-
