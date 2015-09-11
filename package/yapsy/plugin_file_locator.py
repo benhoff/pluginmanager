@@ -85,8 +85,7 @@ class PluginFileAnalyzerWithInfoFile(object):
 		*extensions* the expected extensions for the plugin info file. May be a string or a tuple of strings if several extensions are expected.
 	"""
 	
-	def __init__(self, name, extensions="yapsy-plugin"):
-            self.name = name
+	def __init__(self, extensions="yapsy-plugin"):
             self.setPluginInfoExtension(extensions)
 
 	
@@ -284,12 +283,14 @@ class PluginFileLocator(object):
 	``disableRecursiveScan``.
 	"""
 	
-	def __init__(self, analyzers=None, plugin_info_cls=PluginInfo):
+	def __init__(self, analyzers=None, info_file_extension='yapsy-plugin', plugin_info_cls=PluginInfo):
 		self._discovered_plugins = {}
 		self.setPluginPlaces(None)
+		if analyzers is not None and info_file_extension != 'yapsy-plugin':
+			raise Exception('Setting both an analyzer and an info file extension. The info file extension will NOT track into the anaylzer.'
 		self._analyzers = analyzers      # analyzers used to locate plugins
 		if self._analyzers is None:
-			self._analyzers = [PluginFileAnalyzerWithInfoFile("info_ext")]
+			self._analyzers = [PluginFileAnalyzerWithInfoFile(info_file_extension)]
 		self._default_plugin_info_cls = PluginInfo
 		self._plugin_info_cls_map = {}
 		self._max_size = 1e3*1024 # in octets (by default 1 Mo)
