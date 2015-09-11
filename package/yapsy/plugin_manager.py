@@ -171,7 +171,7 @@ class PluginManager(object):
     """
 
     def __init__(self,
-                 categories_filter={'Default':IPlugin,
+                 categories_filter={'Default':IPlugin},
                  directories_list=None,
                  plugin_locator=PluginFileLocator()):
 
