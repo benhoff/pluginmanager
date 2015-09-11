@@ -56,7 +56,7 @@ API
 import os
 import re
 from yapsy import log
-from yapsy.compat import ConfigParser, is_py2, basestring
+from configparser import ConfigParser
 
 from yapsy.PluginInfo import PluginInfo
 from yapsy import PLUGIN_NAME_FORBIDEN_STRING
@@ -179,7 +179,7 @@ class PluginFileAnalyzerWithInfoFile(object):
 		          and decorators.
 		"""
 		# now we can consider the file as a serious candidate
-		if not isinstance(filename, basestring):
+		if not isinstance(filename, str):
 			# filename is a file object: use it
 			name, moduleName, config_parser = self.getPluginNameAndModuleFromStream(filename)
 		else:
