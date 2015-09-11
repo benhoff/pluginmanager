@@ -175,8 +175,7 @@ class PluginManager(object):
                  directories_list=None,
                  plugin_locator=PluginFileLocator(info_file_extension='yapsy-plugin')):
 
-    	self.setCategoriesFilter(categories_filter)
-        plugin_locator = self._locatorDecide(plugin_info_ext, plugin_locator)
+		self.setCategoriesFilter(categories_filter)
         # plugin_locator could be either a dict defining strategies, or directly
         # an IPluginLocator object
         self.setPluginLocator(plugin_locator, directories_list)
