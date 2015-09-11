@@ -61,40 +61,7 @@ from yapsy.compat import ConfigParser, is_py2, basestring
 from yapsy.PluginInfo import PluginInfo
 from yapsy import PLUGIN_NAME_FORBIDEN_STRING
 
-
-
-
-class IPluginFileAnalyzer(object):
-	"""
-	Define the methods expected by PluginFileLocator for its 'analyzer'.
-	"""
-
-	def __init__(self,name):
-		self.name = name
-	
-	def isValidPlugin(self, filename):
-		"""
-		Check if the resource found at filename is a valid plugin.
-		"""
-		raise NotImplementedError("'isValidPlugin' must be reimplemented by %s" % self)	
-
-
-	def getInfosDictFromPlugin(self, dirpath, filename):
-		"""
-		Returns the extracted plugin informations as a dictionary.
-		This function ensures that "name" and "path" are provided.
-
-		*dirpath* is the full path to the directory where the plugin file is
-
-		*filename* is the name (ie the basename) of the plugin file.
-		
-		If *callback* function has not been provided for this strategy,
-		we use the filename alone to extract minimal informations.
-		"""
-		raise NotImplementedError("'getInfosDictFromPlugin' must be reimplemented by %s" % self)
-
-
-class PluginFileAnalyzerWithInfoFile(IPluginFileAnalyzer):
+class PluginFileAnalyzerWithInfoFile(object):
 	"""
 	Consider plugins described by a textual description file.
 
@@ -122,8 +89,8 @@ class PluginFileAnalyzerWithInfoFile(IPluginFileAnalyzer):
 	"""
 	
 	def __init__(self, name, extensions="yapsy-plugin"):
-		IPluginFileAnalyzer.__init__(self,name)
-		self.setPluginInfoExtension(extensions)
+            self.name = name
+            self.setPluginInfoExtension(extensions)
 
 	
 	def setPluginInfoExtension(self,extensions):
@@ -179,10 +146,7 @@ class PluginFileAnalyzerWithInfoFile(IPluginFileAnalyzer):
 		# parse the information buffer to get info about the plugin
 		config_parser = ConfigParser()
 		try:
-			if is_py2:
-				config_parser.readfp(infoFileObject)
-			else:
-				config_parser.read_file(infoFileObject)
+                        config_parser.read_file(infoFileObject)
 		except Exception as e:
 			log.debug("Could not parse the plugin file '%s' (exception raised was '%s')" % (candidate_infofile,e))
 			return (None, None, None)
@@ -272,12 +236,11 @@ class PluginFileAnalyzerWithInfoFile(IPluginFileAnalyzer):
 		return infos, config_parser
 
 	
-class PluginFileAnalyzerMathingRegex(IPluginFileAnalyzer):
+class PluginFileAnalyzerMathingRegex(object):
 	"""
 	An analyzer that targets plugins decribed by files whose name match a given regex.
 	"""
-	def __init__(self, name, regexp):
-		IPluginFileAnalyzer.__init__(self,name)
+	def __init__(self, regexp):
 		self.regexp = regexp
 	
 	def isValidPlugin(self, filename):
