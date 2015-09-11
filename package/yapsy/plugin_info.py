@@ -50,7 +50,7 @@ class PluginInfo(object):
     """
     
     def __init__(self, plugin_name, plugin_path):
-        self.__details = ConfigParser()
+        self._details = ConfigParser()
         self.name = plugin_name
         self.path = plugin_path
         self._ensureDetailsDefaultsAreBackwardCompatible()
@@ -58,9 +58,13 @@ class PluginInfo(object):
         self.plugin_object = None
         self.categories    = []
         self.error = None
+   
+    @property
+    def details(self):
+        return self._details
 
-
-    def __setDetails(self,cfDetails):
+    @details.setter
+    def details(self, cfDetails):
         """
         Fill in all details by storing a ``ConfigParser`` instance.
 
@@ -72,36 +76,38 @@ class PluginInfo(object):
         """	
         bkp_name = self.name
         bkp_path = self.path
-        self.__details = cfDetails
+        self._details = cfDetails
         self.name = bkp_name
         self.path = bkp_path
         self._ensureDetailsDefaultsAreBackwardCompatible()
     
-    def __getDetails(self):
-        return self.__details
-            
-    def __getName(self):
+    @property
+    def name(self):
         return self.details.get("Core","Name")
     
-    def __setName(self, name):
+    @name.setter
+    def name(self, name):
         if not self.details.has_section("Core"):
             self.details.add_section("Core")
         self.details.set("Core","Name",name)
 
-    
-    def __getPath(self):
+    @property
+    def path(self):
         return self.details.get("Core","Module")
     
-    def __setPath(self,path):
+    @path.setter
+    def path(self, path):
         if not self.details.has_section("Core"):
             self.details.add_section("Core")
         self.details.set("Core","Module",path)
 
     
-    def __getVersion(self):
+    @property
+    def version(self):
         return StrictVersion(self.details.get("Documentation","Version"))
     
-    def setVersion(self, vstring):
+    @version.setter
+    def version(self, vstring):
         """
         Set the version of the plugin.
 
@@ -113,44 +119,49 @@ class PluginInfo(object):
         if not self.details.has_section("Documentation"):
             self.details.add_section("Documentation")
         self.details.set("Documentation","Version",vstring)
-
-    def __getAuthor(self):
+    
+    @property
+    def author(self):
         return self.details.get("Documentation","Author")
-            
-    def __setAuthor(self,author):
+        
+    @author.setter
+    def author(self, author):
         if not self.details.has_section("Documentation"):
             self.details.add_section("Documentation")
         self.details.set("Documentation","Author",author)
 
-
-    def __getCopyright(self):
+    @property
+    def copyright(self):
         return self.details.get("Documentation","Copyright")
-            
-    def __setCopyright(self,copyrightTxt):
+    
+    @copyright.setter
+    def copyright(self, copyrightTxt):
         if not self.details.has_section("Documentation"):
             self.details.add_section("Documentation")
         self.details.set("Documentation","Copyright",copyrightTxt)
 
-    
-    def __getWebsite(self):
+    @property 
+    def website(self):
         return self.details.get("Documentation","Website")
-            
-    def __setWebsite(self,website):
+    
+    @website.setter
+    def website(self, website):
         if not self.details.has_section("Documentation"):
             self.details.add_section("Documentation")
         self.details.set("Documentation","Website",website)
 
-    
-    def __getDescription(self):
+    @property 
+    def description(self):
         return self.details.get("Documentation","Description")
-    
-    def __setDescription(self,description):
+   
+    @description.setter
+    def description(self, description):
         if not self.details.has_section("Documentation"):
             self.details.add_section("Documentation")
         return self.details.set("Documentation","Description",description)
 
-
-    def __getCategory(self):
+    @property
+    def category(self):
         """
         DEPRECATED (>1.9): Mimic former behaviour when what is
         noz the first category was considered as the only one the
@@ -161,7 +172,8 @@ class PluginInfo(object):
         else:
             return "UnknownCategory"
     
-    def __setCategory(self,c):
+    @category.setter
+    def category(self, c):
         """
         DEPRECATED (>1.9): Mimic former behaviour by making so
         that if a category is set as it it was the only category to
@@ -170,26 +182,13 @@ class PluginInfo(object):
         """
         self.categories = [c] + self.categories
     
-    name = property(fget=__getName,fset=__setName)
-    path = property(fget=__getPath,fset=__setPath)
-    version = property(fget=__getVersion,fset=setVersion)
-    author = property(fget=__getAuthor,fset=__setAuthor)
-    copyright = property(fget=__getCopyright,fset=__setCopyright)
-    website = property(fget=__getWebsite,fset=__setWebsite)
-    description = property(fget=__getDescription,fset=__setDescription)
-    details = property(fget=__getDetails,fset=__setDetails)
-    # deprecated (>1.9): plugins are not longer associated to a
-    # single category !
-    category = property(fget=__getCategory,fset=__setCategory)
-    
-    def _getIsActivated(self):
+    @property
+    def is_activated(self):
         """
         Return the activated state of the plugin object.
         Makes it possible to define a property.
         """
         return self.plugin_object.is_activated
-    
-    is_activated = property(fget=_getIsActivated)
     
     def _ensureDetailsDefaultsAreBackwardCompatible(self):
         """
