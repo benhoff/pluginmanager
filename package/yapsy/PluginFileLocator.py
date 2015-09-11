@@ -60,7 +60,6 @@ from yapsy.compat import ConfigParser, is_py2, basestring
 
 from yapsy.PluginInfo import PluginInfo
 from yapsy import PLUGIN_NAME_FORBIDEN_STRING
-from yapsy.IPluginLocator import IPluginLocator
 
 
 
@@ -312,7 +311,7 @@ class PluginFileAnalyzerMathingRegex(IPluginFileAnalyzer):
 
 
 
-class PluginFileLocator(IPluginLocator):
+class PluginFileLocator(object):
 	"""
 	Locates plugins on the file system using a set of analyzers to
 	determine what files actually corresponds to plugins.
@@ -326,7 +325,6 @@ class PluginFileLocator(IPluginLocator):
 	"""
 	
 	def __init__(self, analyzers=None, plugin_info_cls=PluginInfo):
-		IPluginLocator.__init__(self)
 		self._discovered_plugins = {}
 		self.setPluginPlaces(None)
 		self._analyzers = analyzers      # analyzers used to locate plugins
@@ -526,9 +524,6 @@ class PluginFileLocator(IPluginLocator):
 
 	def setPluginInfoExtension(self, ext):
 		"""
-		DEPRECATED(>1.9): for backward compatibility. Directly configure the
-		IPluginLocator instance instead !
-
 		This will only work if the strategy "info_ext" is active
 		for locating plugins.
 		"""
