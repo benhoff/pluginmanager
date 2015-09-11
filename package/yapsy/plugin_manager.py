@@ -175,11 +175,11 @@ class PluginManager(object):
                  directories_list=None,
                  plugin_locator=PluginFileLocator()):
 
-            self.setCategoriesFilter(categories_filter)
-            plugin_locator = self._locatorDecide(plugin_info_ext, plugin_locator)
-            # plugin_locator could be either a dict defining strategies, or directly
-            # an IPluginLocator object
-            self.setPluginLocator(plugin_locator, directories_list)
+    	self.setCategoriesFilter(categories_filter)
+        plugin_locator = self._locatorDecide(plugin_info_ext, plugin_locator)
+        # plugin_locator could be either a dict defining strategies, or directly
+        # an IPluginLocator object
+        self.setPluginLocator(plugin_locator, directories_list)
 
     def setCategoriesFilter(self, categories_filter):
         """
@@ -198,8 +198,8 @@ class PluginManager(object):
         # twice the same plugin...)
         self._category_file_mapping = {}
         for categ in categories_filter:
-                self.category_mapping[categ] = []
-                self._category_file_mapping[categ] = []
+        	self.category_mapping[categ] = []
+        	self._category_file_mapping[categ] = []
                     
 
     def setPluginPlaces(self, directories_list):
@@ -220,9 +220,9 @@ class PluginManager(object):
                      active for locating plugins.
         """
         try:
-                self.getPluginLocator().setPluginInfoExtension(ext)
+            self.getPluginLocator().setPluginInfoExtension(ext)
         except KeyError:
-                log.error("Current plugin locator doesn't support setting the plugin info extension.")
+            log.error("Current plugin locator doesn't support setting the plugin info extension.")
 
     def setPluginInfoClass(self, picls, strategies=None):
         """
@@ -236,10 +236,10 @@ class PluginManager(object):
         "strategies"
         """
         if strategies:
-                for name in strategies:
-                        self.getPluginLocator().setPluginInfoClass(picls, name)
+        	for name in strategies:
+            	self.getPluginLocator().setPluginInfoClass(picls, name)
         else:
-                self.getPluginLocator().setPluginInfoClass(picls)
+        	self.getPluginLocator().setPluginInfoClass(picls)
 
     def getPluginInfoClass(self):
         """
@@ -256,10 +256,10 @@ class PluginManager(object):
 
         """
         self._plugin_locator = plugin_locator
-        if dir_list is not None:
-                self._plugin_locator.updatePluginPlaces(dir_list)
+    	if dir_list is not None:
+        	self._plugin_locator.updatePluginPlaces(dir_list)
         if picls is not None:
-                self.setPluginInfoClass(picls)
+            self.setPluginInfoClass(picls)
             
     def getPluginLocator(self):
         """
@@ -348,7 +348,7 @@ class PluginManager(object):
         """
         allPlugins = set()
         for pluginsOfOneCategory in self.category_mapping.values():
-                        allPlugins.update(pluginsOfOneCategory)
+        	allPlugins.update(pluginsOfOneCategory)
         return list(allPlugins)
 
     def getPluginCandidates(self):
@@ -361,7 +361,7 @@ class PluginManager(object):
         .. warning: locatePlugins must be called before !
         """
         if not hasattr(self, '_candidates'):
-                raise RuntimeError("locatePlugins must be called before getPluginCandidates")
+        	raise RuntimeError("locatePlugins must be called before getPluginCandidates")
         return self._candidates[:]
 
     def removePluginCandidate(self,candidateTuple):
@@ -374,7 +374,7 @@ class PluginManager(object):
         .. warning: locatePlugins must be called before !
         """
         if not hasattr(self, '_candidates'):
-                raise ValueError("locatePlugins must be called before removePluginCandidate")
+        	raise ValueError("locatePlugins must be called before removePluginCandidate")
         self._candidates.remove(candidateTuple)
 
     def appendPluginCandidate(self, candidateTuple):
@@ -387,7 +387,7 @@ class PluginManager(object):
         .. warning: locatePlugins must be called before !
         """
         if not hasattr(self, '_candidates'):
-                raise ValueError("locatePlugins must be called before removePluginCandidate")
+        	raise ValueError("locatePlugins must be called before removePluginCandidate")
         self._candidates.append(candidateTuple)
 
     def locatePlugins(self):
@@ -409,7 +409,7 @@ class PluginManager(object):
         """
 # 		print "%s.loadPlugins" % self.__class__
         if not hasattr(self, '_candidates'):
-                raise ValueError("locatePlugins must be called before loadPlugins")
+        	raise ValueError("locatePlugins must be called before loadPlugins")
 
         processed_plugins = []
         for candidate_infofile, candidate_filepath, plugin_info in self._candidates:
@@ -419,7 +419,7 @@ class PluginManager(object):
             for plugin_name_suffix in range(len(sys.modules)):
                 plugin_module_name =  plugin_module_name_template % plugin_name_suffix
                 if plugin_module_name not in sys.modules:
-                        break
+                	break
                 
                 # tolerance on the presence (or not) of the py extensions
                 if candidate_filepath.endswith(".py"):
@@ -441,7 +441,7 @@ class PluginManager(object):
                         with open(candidate_filepath+".py","r") as plugin_file:
                             candidate_module = imp.load_module(plugin_module_name,plugin_file,candidate_filepath+".py",("py","r",imp.PY_SOURCE))
                 except Exception:
-                    exc_info = sys.exc_info()
+                	exc_info = sys.exc_info()
                     log.error("Unable to import plugin: %s" % candidate_filepath, exc_info=exc_info)
                     plugin_info.error = exc_info
                     processed_plugins.append(plugin_info)
@@ -501,7 +501,7 @@ class PluginManager(object):
         if category in self.category_mapping:
                 for item in self.category_mapping[category]:
                         if item.name == name:
-                                return item
+                            	return item
         return None
 
     def activatePluginByName(self,name,category="Default"):
@@ -579,12 +579,12 @@ class PluginManagerSingleton(object):
             value is returned.
             """
             if self.__decoration_chain is None and self.__instance is None:
-                    log.debug("Setting up a specific behaviour for the PluginManagerSingleton")
-                    self.__decoration_chain = list_of_pmd
-                    return True
+                log.debug("Setting up a specific behaviour for the PluginManagerSingleton")
+                self.__decoration_chain = list_of_pmd
+                return True
             else:
-                    log.debug("Useless call to setBehaviour: the singleton is already instanciated of already has a behaviour.")
-                    return False
+                log.debug("Useless call to setBehaviour: the singleton is already instanciated of already has a behaviour.")
+                return False
     setBehaviour = classmethod(setBehaviour)
 
 
@@ -593,18 +593,18 @@ class PluginManagerSingleton(object):
             Actually create an instance
             """
             if self.__instance is None:
-                    if self.__decoration_chain is not None:
-                            # Get the object to be decorated
+                if self.__decoration_chain is not None:
+                    # Get the object to be decorated
 #				print self.__decoration_chain
-                            pm = self.__decoration_chain[0]()
-                            for cls_item in self.__decoration_chain[1:]:
+                    pm = self.__decoration_chain[0]()
+                    for cls_item in self.__decoration_chain[1:]:
 #					print cls_item
-                                    pm = cls_item(decorated_manager=pm)
-                            # Decorate the whole object
-                            self.__instance = pm
+                        pm = cls_item(decorated_manager=pm)
+                        # Decorate the whole object
+                        self.__instance = pm
                     else:
-                            # initialise the 'inner' PluginManagerDecorator
-                            self.__instance = PluginManager()			
-                    log.debug("PluginManagerSingleton initialised")
+                        # initialise the 'inner' PluginManagerDecorator
+                        self.__instance = PluginManager()			
+                log.debug("PluginManagerSingleton initialised")
             return self.__instance
     get = classmethod(get)
