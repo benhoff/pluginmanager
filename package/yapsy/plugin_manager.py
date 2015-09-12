@@ -131,17 +131,15 @@ import imp
 from yapsy import log
 from yapsy import NormalizePluginNameForModuleName
 
-from yapsy.IPlugin import IPlugin
-from yapsy.IPluginLocator import IPluginLocator
+from yapsy import IPlugin
 # The follozing two imports are used to implement the default behaviour
-from yapsy.PluginFileLocator import PluginFileAnalyzerWithInfoFile
-from yapsy.PluginFileLocator import PluginFileLocator
+from yapsy import PluginFileLocator
 # imported for backward compatibility (this variable was defined here
 # before 1.10)
 from yapsy import PLUGIN_NAME_FORBIDEN_STRING
 # imported for backward compatibility (this PluginInfo was imported
 # here before 1.10)
-from yapsy.PluginInfo import PluginInfo
+from yapsy import PluginInfo
 
 
 class PluginManager(object):
@@ -175,7 +173,7 @@ class PluginManager(object):
                  directories_list=None,
                  plugin_locator=PluginFileLocator(info_file_extension='yapsy-plugin')):
 
-		self.setCategoriesFilter(categories_filter)
+        self.setCategoriesFilter(categories_filter)
         # plugin_locator could be either a dict defining strategies, or directly
         # an IPluginLocator object
         self.setPluginLocator(plugin_locator, directories_list)
@@ -197,8 +195,8 @@ class PluginManager(object):
         # twice the same plugin...)
         self._category_file_mapping = {}
         for categ in categories_filter:
-        	self.category_mapping[categ] = []
-        	self._category_file_mapping[categ] = []
+            self.category_mapping[categ] = []
+            self._category_file_mapping[categ] = []
                     
 
     def setPluginPlaces(self, directories_list):
@@ -235,10 +233,10 @@ class PluginManager(object):
         "strategies"
         """
         if strategies:
-        	for name in strategies:
-            	self.getPluginLocator().setPluginInfoClass(picls, name)
+            for name in strategies:
+                self.getPluginLocator().setPluginInfoClass(picls, name)
         else:
-        	self.getPluginLocator().setPluginInfoClass(picls)
+            self.getPluginLocator().setPluginInfoClass(picls)
 
     def getPluginInfoClass(self):
         """
@@ -255,8 +253,8 @@ class PluginManager(object):
 
         """
         self._plugin_locator = plugin_locator
-    	if dir_list is not None:
-        	self._plugin_locator.updatePluginPlaces(dir_list)
+        if dir_list is not None:
+            self._plugin_locator.updatePluginPlaces(dir_list)
         if picls is not None:
             self.setPluginInfoClass(picls)
             
@@ -347,7 +345,7 @@ class PluginManager(object):
         """
         allPlugins = set()
         for pluginsOfOneCategory in self.category_mapping.values():
-        	allPlugins.update(pluginsOfOneCategory)
+            allPlugins.update(pluginsOfOneCategory)
         return list(allPlugins)
 
     def getPluginCandidates(self):
@@ -360,7 +358,7 @@ class PluginManager(object):
         .. warning: locatePlugins must be called before !
         """
         if not hasattr(self, '_candidates'):
-        	raise RuntimeError("locatePlugins must be called before getPluginCandidates")
+            raise RuntimeError("locatePlugins must be called before getPluginCandidates")
         return self._candidates[:]
 
     def removePluginCandidate(self,candidateTuple):
@@ -373,7 +371,7 @@ class PluginManager(object):
         .. warning: locatePlugins must be called before !
         """
         if not hasattr(self, '_candidates'):
-        	raise ValueError("locatePlugins must be called before removePluginCandidate")
+            raise ValueError("locatePlugins must be called before removePluginCandidate")
         self._candidates.remove(candidateTuple)
 
     def appendPluginCandidate(self, candidateTuple):
@@ -386,7 +384,7 @@ class PluginManager(object):
         .. warning: locatePlugins must be called before !
         """
         if not hasattr(self, '_candidates'):
-        	raise ValueError("locatePlugins must be called before removePluginCandidate")
+            raise ValueError("locatePlugins must be called before removePluginCandidate")
         self._candidates.append(candidateTuple)
 
     def locatePlugins(self):
@@ -408,7 +406,7 @@ class PluginManager(object):
         """
 # 		print "%s.loadPlugins" % self.__class__
         if not hasattr(self, '_candidates'):
-        	raise ValueError("locatePlugins must be called before loadPlugins")
+            raise ValueError("locatePlugins must be called before loadPlugins")
 
         processed_plugins = []
         for candidate_infofile, candidate_filepath, plugin_info in self._candidates:
@@ -418,7 +416,7 @@ class PluginManager(object):
             for plugin_name_suffix in range(len(sys.modules)):
                 plugin_module_name =  plugin_module_name_template % plugin_name_suffix
                 if plugin_module_name not in sys.modules:
-                	break
+                    break
                 
                 # tolerance on the presence (or not) of the py extensions
                 if candidate_filepath.endswith(".py"):
@@ -440,7 +438,7 @@ class PluginManager(object):
                         with open(candidate_filepath+".py","r") as plugin_file:
                             candidate_module = imp.load_module(plugin_module_name,plugin_file,candidate_filepath+".py",("py","r",imp.PY_SOURCE))
                 except Exception:
-                	exc_info = sys.exc_info()
+                    exc_info = sys.exc_info()
                     log.error("Unable to import plugin: %s" % candidate_filepath, exc_info=exc_info)
                     plugin_info.error = exc_info
                     processed_plugins.append(plugin_info)
@@ -462,13 +460,13 @@ class PluginManager(object):
                                     # we found a new plugin: initialise it and search for the next one
                                 if not plugin_info_reference:
                                     try:
-                                            plugin_info.plugin_object = self.instanciateElement(element)
-                                            plugin_info_reference = plugin_info
+                                        plugin_info.plugin_object = self.instanciateElement(element)
+                                        plugin_info_reference = plugin_info
                                     except Exception:
-                                            exc_info = sys.exc_info()
-                                            log.error("Unable to create plugin object: %s" % candidate_filepath, exc_info=exc_info)
-                                            plugin_info.error = exc_info
-                                            break # If it didn't work once it wont again
+                                        exc_info = sys.exc_info()
+                                        log.error("Unable to create plugin object: %s" % candidate_filepath, exc_info=exc_info)
+                                        plugin_info.error = exc_info
+                                        break # If it didn't work once it wont again
                                 plugin_info.categories.append(current_category)
                                 self.category_mapping[current_category].append(plugin_info_reference)
                                 self._category_file_mapping[current_category].append(candidate_infofile)
@@ -498,9 +496,9 @@ class PluginManager(object):
         Get the plugin correspoding to a given category and name
         """
         if category in self.category_mapping:
-                for item in self.category_mapping[category]:
-                        if item.name == name:
-                            	return item
+            for item in self.category_mapping[category]:
+                if item.name == name:
+                    return item
         return None
 
     def activatePluginByName(self,name,category="Default"):
@@ -509,11 +507,11 @@ class PluginManager(object):
         """
         pta_item = self.getPluginByName(name,category)
         if pta_item is not None:
-                plugin_to_activate = pta_item.plugin_object
-                if plugin_to_activate is not None:
-                        log.debug("Activating plugin: %s.%s"% (category,name))
-                        plugin_to_activate.activate()
-                        return plugin_to_activate			
+            plugin_to_activate = pta_item.plugin_object
+            if plugin_to_activate is not None:
+                log.debug("Activating plugin: %s.%s"% (category,name))
+                plugin_to_activate.activate()
+                return plugin_to_activate			
         return None
 
 
@@ -522,88 +520,13 @@ class PluginManager(object):
         Desactivate a plugin corresponding to a given category + name.
         """
         if category in self.category_mapping:
-                plugin_to_deactivate = None
-                for item in self.category_mapping[category]:
-                        if item.name == name:
-                                plugin_to_deactivate = item.plugin_object
-                                break
-                if plugin_to_deactivate is not None:
-                        log.debug("Deactivating plugin: %s.%s"% (category,name))
-                        plugin_to_deactivate.deactivate()
-                        return plugin_to_deactivate			
+            plugin_to_deactivate = None
+            for item in self.category_mapping[category]:
+                if item.name == name:
+                    plugin_to_deactivate = item.plugin_object
+                    break
+            if plugin_to_deactivate is not None:
+                log.debug("Deactivating plugin: %s.%s"% (category,name))
+                plugin_to_deactivate.deactivate()
+                return plugin_to_deactivate			
         return None
-
-
-class PluginManagerSingleton(object):
-    """
-    Singleton version of the most basic plugin manager.
-
-    Being a singleton, this class should not be initialised explicitly
-    and the ``get`` classmethod must be called instead.
-
-    To call one of this class's methods you have to use the ``get``
-    method in the following way:
-    ``PluginManagerSingleton.get().themethodname(theargs)``
-
-    To set up the various coonfigurables variables of the
-    PluginManager's behaviour please call explicitly the following
-    methods:
-
-      - ``setCategoriesFilter`` for ``categories_filter``
-      - ``setPluginPlaces`` for ``directories_list``
-      - ``setPluginInfoExtension`` for ``plugin_info_ext``
-    """
-    
-    __instance = None
-    
-    __decoration_chain = None
-
-    def __init__(self):
-            if self.__instance is not None:
-                    raise Exception("Singleton can't be created twice !")
-                            
-    def setBehaviour(self,list_of_pmd):
-            """
-            Set the functionalities handled by the plugin manager by
-            giving a list of ``PluginManager`` decorators.
-            
-            This function shouldn't be called several time in a same
-            process, but if it is only the first call will have an effect.
-
-            It also has an effect only if called before the initialisation
-            of the singleton.
-
-            In cases where the function is indeed going to change anything
-            the ``True`` value is return, in all other cases, the ``False``
-            value is returned.
-            """
-            if self.__decoration_chain is None and self.__instance is None:
-                log.debug("Setting up a specific behaviour for the PluginManagerSingleton")
-                self.__decoration_chain = list_of_pmd
-                return True
-            else:
-                log.debug("Useless call to setBehaviour: the singleton is already instanciated of already has a behaviour.")
-                return False
-    setBehaviour = classmethod(setBehaviour)
-
-
-    def get(self):
-            """
-            Actually create an instance
-            """
-            if self.__instance is None:
-                if self.__decoration_chain is not None:
-                    # Get the object to be decorated
-#				print self.__decoration_chain
-                    pm = self.__decoration_chain[0]()
-                    for cls_item in self.__decoration_chain[1:]:
-#					print cls_item
-                        pm = cls_item(decorated_manager=pm)
-                        # Decorate the whole object
-                        self.__instance = pm
-                    else:
-                        # initialise the 'inner' PluginManagerDecorator
-                        self.__instance = PluginManager()			
-                log.debug("PluginManagerSingleton initialised")
-            return self.__instance
-    get = classmethod(get)

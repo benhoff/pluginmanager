@@ -55,7 +55,7 @@ import re
 from yapsy import log
 from configparser import ConfigParser
 
-from yapsy.PluginInfo import PluginInfo
+from yapsy import PluginInfo
 from yapsy import PLUGIN_NAME_FORBIDEN_STRING
 
 class PluginFileAnalyzerWithInfoFile(object):
@@ -287,7 +287,7 @@ class PluginFileLocator(object):
 		self._discovered_plugins = {}
 		self.setPluginPlaces(None)
 		if analyzers is not None and info_file_extension != 'yapsy-plugin':
-			raise Exception('Setting both an analyzer and an info file extension. The info file extension will NOT track into the anaylzer.'
+			raise Exception('Setting both an analyzer and an info file extension. The info file extension will NOT track into the anaylzer.')
 		self._analyzers = analyzers      # analyzers used to locate plugins
 		if self._analyzers is None:
 			self._analyzers = [PluginFileAnalyzerWithInfoFile(info_file_extension)]

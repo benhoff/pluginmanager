@@ -67,10 +67,6 @@ PLUGIN_NAME_FORBIDEN_STRING=";;"
              for instance (see :doc:`ConfigurablePluginManager`)
 """
 
-import re
-
-RE_NON_ALPHANUM = re.compile("\W")
-
 def NormalizePluginNameForModuleName(pluginName):
     """
     Normalize a plugin name into a safer name for a module name.
@@ -84,3 +80,12 @@ def NormalizePluginNameForModuleName(pluginName):
         pluginName = "_" + pluginName
     ret = RE_NON_ALPHANUM.sub("_",pluginName)
     return ret
+
+import re
+from .base_plugin import IPlugin
+from .plugin_info import PluginInfo
+from .plugin_file_locator import PluginFileLocator
+from .plugin_manager import PluginManager
+
+RE_NON_ALPHANUM = re.compile("\W")
+
