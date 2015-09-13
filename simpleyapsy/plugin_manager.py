@@ -128,18 +128,18 @@ import sys
 import os
 import imp
 
-from yapsy import log
-from yapsy import NormalizePluginNameForModuleName
+from simpleyapsy import log
+from simpleyapsy import NormalizePluginNameForModuleName
 
-from yapsy import IPlugin
+from simpleyapsy import IPlugin
 # The follozing two imports are used to implement the default behaviour
-from yapsy import PluginFileLocator
+from simpleyapsy import PluginFileLocator
 # imported for backward compatibility (this variable was defined here
 # before 1.10)
-from yapsy import PLUGIN_NAME_FORBIDEN_STRING
+from simpleyapsy import PLUGIN_NAME_FORBIDEN_STRING
 # imported for backward compatibility (this PluginInfo was imported
 # here before 1.10)
-from yapsy import PluginInfo
+from simpleyapsy import PluginInfo
 
 
 class PluginManager(object):

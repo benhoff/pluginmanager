@@ -56,8 +56,8 @@ import logging
 log = logging.getLogger('yapsy')
 from configparser import ConfigParser
 
-from yapsy import PluginInfo
-from yapsy import PLUGIN_NAME_FORBIDEN_STRING
+from simpleyapsy import PluginInfo
+from simpleyapsy import PLUGIN_NAME_FORBIDEN_STRING
 
 class PluginFileAnalyzerWithInfoFile(object):
 	"""
