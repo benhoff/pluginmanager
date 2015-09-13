@@ -37,7 +37,7 @@ originalDir = os.getcwd()
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 try:
 	setup(
-		name = "Yapsy",
+		name = "yapsy",
 		version = __import__("yapsy").__version__,
 		packages = ['yapsy'],
 		package_dir = {'yapsy':'yapsy'},
