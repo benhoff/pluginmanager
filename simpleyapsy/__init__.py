@@ -25,4 +25,3 @@ from .plugin_file_locator import PluginFileLocator
 from .plugin_manager import PluginManager
 
 RE_NON_ALPHANUM = re.compile("\W")
-

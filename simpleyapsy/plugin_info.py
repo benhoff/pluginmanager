@@ -12,41 +12,6 @@ from configparser import ConfigParser
 from distutils.version import StrictVersion
 
 class PluginInfo(object):
-    """Representation of the most basic set of information related to a
-    given plugin such as its name, author, description...
-
-    Any additional information can be stored ad retrieved in a
-    PluginInfo, when this one is created with a
-    ``ConfigParser.ConfigParser`` instance.
-
-    This typically means that when metadata is read from a text file
-    (the original way for yapsy to describe plugins), all info that is
-    not part of the basic variables (name, path, version etc), can
-    still be accessed though the ``details`` member variables that
-    behaves like Python's ``ConfigParser.ConfigParser``.
-
-    Warning: the instance associated with the ``details`` member
-    variable is never copied and used to store all plugin infos. If
-    you set it to a custom instance, it will be modified as soon as
-    another member variale of the plugin info is
-    changed. Alternatively, if you change the instance "outside" the
-    plugin info, it will also change the plugin info.
-
-    Ctor Arguments:
-
-            *plugin_name* is  a simple string describing the name of
-     the plugin.
-
-            *plugin_path* describe the location where the plugin can be
-     found.
-            
-    .. warning:: The ``path`` attribute is the full path to the
-                 plugin if it is organised as a directory or the
-                 full path to a file without the ``.py`` extension
-                 if the plugin is defined by a simple file. In the
-                 later case, the actual plugin is reached via
-                 ``plugin_info.path+'.py'``.
-    """
     
     def __init__(self, plugin_name, plugin_path):
         self._details = ConfigParser()
