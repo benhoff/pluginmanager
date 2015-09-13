@@ -39,7 +39,7 @@ try:
 	setup(
 		name = "simpleyapsy",
 		version = '0.0.1',
-                packages=find_packages(),
+                packages=['simpleyapsy'],
 		package_dir = {'yapsy':'yapsy'},
 		
 		# the unit tests
