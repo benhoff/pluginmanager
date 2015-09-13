@@ -1,63 +1,11 @@
-"""
-Role
-====
-
-The ``PluginFileLocator`` locates plugins when they are accessible via the filesystem.
-
-It's default behaviour is to look for text files with the
-'.yapsy-plugin' extensions and to read the plugin's decription in
-them.
-
-
-Customization
--------------
-
-The behaviour of a ``PluginFileLocator`` can be customized by instanciating it with a specific 'analyzer'.
-
-Two analyzers are already implemented and provided here:
-
-    ``PluginFileAnalyzerWithInfoFile``
-
-        the default 'analyzer' that looks for plugin 'info files' as
-        text file with a predefined extension. This implements the way
-        yapsy looks for plugin since version 1.
-
-    ``PluginFileAnalyzerMathingRegex``
-
-        look for files matching a regex and considers them as being
-        the plugin itself.
-
-All analyzers must enforce the 
-
-It enforces the ``plugin locator`` policy as defined by ``IPluginLocator`` and used by ``PluginManager``.
-
-    ``info_ext``
-
-        expects a plugin to be discovered through its *plugin info file*.
-        User just needs to provide an extension (without '.') to look
-        for *plugin_info_file*.
-
-    ``regexp``
-
-        looks for file matching the given regular pattern expression.
-        User just needs to provide the regular pattern expression.
-
-All analyzers must enforce the policy represented by the ``IPluginFileAnalyzer`` interface.
-
-
-API
-===
-
-"""
-
 import os
 import re
 import logging
-log = logging.getLogger('yapsy')
 from configparser import ConfigParser
 
 from simpleyapsy import PluginInfo
 from simpleyapsy import PLUGIN_NAME_FORBIDEN_STRING
+from simpleyapsy import log
 
 class PluginFileAnalyzerWithInfoFile(object):
 	"""
@@ -88,7 +36,6 @@ class PluginFileAnalyzerWithInfoFile(object):
 	
 	def __init__(self, extensions="yapsy-plugin"):
             self.setPluginInfoExtension(extensions)
-
 	
 	def setPluginInfoExtension(self,extensions):
 		"""
@@ -348,7 +295,7 @@ class PluginFileLocator(object):
 		plugin_info_dict,config_parser = analyzer.getInfosDictFromPlugin(dirpath, filename)
 		if plugin_info_dict is None:
 			return None
-		plugin_info_cls = self._plugin_info_cls_map.get(analyzer.name,self._default_plugin_info_cls)
+		plugin_info_cls = self._plugin_info_cls_map.get(analyzer, self._default_plugin_info_cls)
 		plugin_info = plugin_info_cls(plugin_info_dict["name"],plugin_info_dict["path"])
 		plugin_info.details = config_parser
 		return plugin_info
@@ -383,17 +330,17 @@ class PluginFileLocator(object):
 						# print("... with analyzer %s" % analyzer.name)
 						# eliminate the obvious non plugin files
 						if not analyzer.isValidPlugin(filename):
-							log.debug("%s is not a valid plugin for strategy %s" % (filename, analyzer.name))
+							log.debug("%s is not a valid plugin for strategy %s" % (filename, analyzer))
 							continue
 						candidate_infofile = os.path.join(dirpath, filename)
 						if candidate_infofile in _discovered:
-							log.debug("%s (with strategy %s) rejected because already discovered" % (candidate_infofile, analyzer.name))
+							log.debug("%s (with strategy %s) rejected because already discovered" % (candidate_infofile, analyzer))
 							continue
 						log.debug("%s found a candidate:\n    %s" % (self.__class__.__name__, candidate_infofile))
 #						print candidate_infofile
 						plugin_info = self._getInfoForPluginFromAnalyzer(analyzer, dirpath, filename)
 						if plugin_info is None:
-							log.warning("Plugin candidate '%s'  rejected by strategy '%s'" % (candidate_infofile, analyzer.name))
+							log.warning("Plugin candidate '%s'  rejected by strategy '%s'" % (candidate_infofile, analyzer))
 							break # we consider this was the good strategy to use for: it failed -> not a plugin -> don't try another strategy
 						# now determine the path of the file to execute,
 						# depending on wether the path indicated is a
