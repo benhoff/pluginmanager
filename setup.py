@@ -37,9 +37,9 @@ originalDir = os.getcwd()
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 try:
 	setup(
-		name = "yapsy",
-		version = __import__("yapsy").__version__,
-		packages = ['yapsy'],
+		name = "simpleyapsy",
+		version = '0.0.1'
+		packages = ['simpleyapsy'],
 		package_dir = {'yapsy':'yapsy'},
 		
 		# the unit tests
