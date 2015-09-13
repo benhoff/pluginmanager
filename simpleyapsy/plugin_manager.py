@@ -1,129 +1,3 @@
-"""
-Role
-====
-
-The ``PluginManager`` loads plugins that enforce the `Plugin
-Description Policy`_, and offers the most simple methods to activate
-and deactivate the plugins once they are loaded.
-
-.. note:: It may also classify the plugins in various categories, but
-          this behaviour is optional and if not specified elseway all
-          plugins are stored in the same default category.
-
-.. note:: It is often more useful to have the plugin manager behave
-          like singleton, this functionality is provided by
-          ``PluginManagerSingleton``
-
-
-Plugin Description Policy
-=========================
-
-When creating a ``PluginManager`` instance, one should provide it with
-a list of directories where plugins may be found. In each directory,
-a plugin should contain the following elements:
-
-For a  *Standard* plugin:
-
-  ``myplugin.yapsy-plugin`` 
- 
-      A *plugin info file* identical to the one previously described.
- 
-  ``myplugin``
- 
-      A directory ontaining an actual Python plugin (ie with a
-      ``__init__.py`` file that makes it importable). The upper
-      namespace of the plugin should present a class inheriting the
-      ``IPlugin`` interface (the same remarks apply here as in the
-      previous case).
-
-
-For a *Single file* plugin:
-
-  ``myplugin.yapsy-plugin`` 
-       
-      A *plugin info file* which is identified thanks to its extension,
-      see the `Plugin Info File Format`_ to see what should be in this
-      file.
-   
-      The extension is customisable at the ``PluginManager``'s
-      instanciation, since one may usually prefer the extension to bear
-      the application name.
-  
-  ``myplugin.py``
-  
-      The source of the plugin. This file should at least define a class
-      inheriting the ``IPlugin`` interface. This class will be
-      instanciated at plugin loading and it will be notified the
-      activation/deactivation events.
-
-
-Plugin Info File Format
------------------------
-
-The plugin info file is a text file *encoded in ASCII or UTF-8* and
-gathering, as its name suggests, some basic information about the
-plugin.
-
-- it gives crucial information needed to be able to load the plugin
-
-- it provides some documentation like information like the plugin
-  author's name and a short description fo the plugin functionality.
-
-Here is an example of what such a file should contain::
-
-      [Core]
-      Name = My plugin Name
-      Module = the_name_of_the_pluginto_load_with_no_py_ending
-         
-      [Documentation]
-      Description = What my plugin broadly does
-      Author = My very own name
-      Version = the_version_number_of_the_plugin
-      Website = My very own website
-      
-      
- 
-.. note:: From such plugin descriptions, the ``PluginManager`` will
-          built its own representations of the plugins as instances of
-          the :doc:`PluginInfo` class.
-
-Changing the default behaviour
-==============================
-
-The default behaviour for locating and loading plugins can be changed
-using the various options exposed on the interface via getters.
-
-The plugin detection, in particular, can be fully customized by
-settting a custom plugin locator. See ``IPluginLocator`` for more
-details on this.
-
-
-Extensibility
-=============
-
-Several mechanisms have been put up to help extending the basic
-functionalities of the proivided classes.
-
-A few *hints* to help you extend those classes:
-
-If the new functionalities do not overlap the ones already
-implemented, then they should be implemented as a Decorator class of the
-base plugin. This should be done by inheriting the
-``PluginManagerDecorator``.
-
-If this previous way is not possible, then the functionalities should
-be added as a subclass of ``PluginManager``.
-
-.. note:: The first method is highly prefered since it makes it
-          possible to have a more flexible design where one can pick
-          several functionalities and litterally *add* them to get an
-          object corresponding to one's precise needs.
-
-API
-===
- 
-"""
-
 import sys
 import os
 import imp
@@ -132,41 +6,12 @@ from simpleyapsy import log
 from simpleyapsy import NormalizePluginNameForModuleName
 
 from simpleyapsy import IPlugin
-# The follozing two imports are used to implement the default behaviour
 from simpleyapsy import PluginFileLocator
-# imported for backward compatibility (this variable was defined here
-# before 1.10)
 from simpleyapsy import PLUGIN_NAME_FORBIDEN_STRING
-# imported for backward compatibility (this PluginInfo was imported
-# here before 1.10)
 from simpleyapsy import PluginInfo
 
 
 class PluginManager(object):
-    """
-    Manage several plugins by ordering them in categories.
-    
-    The mechanism for searching and loading the plugins is already
-    implemented in this class so that it can be used directly (hence
-    it can be considered as a bit more than a mere interface)
-    
-    The file describing a plugin must be written in the syntax
-    compatible with Python's ConfigParser module as in the
-    `Plugin Info File Format`_
-
-    About the __init__:
-
-    Initialize the mapping of the categories and set the list of
-    directories where plugins may be. This can also be set by
-    direct call the methods: 
-            
-    - ``setCategoriesFilter`` for ``categories_filter``
-    - ``setPluginPlaces`` for ``directories_list``
-    - ``setPluginInfoExtension`` for ``plugin_info_ext``
-
-    You may look at these function's documentation for the meaning
-    of each corresponding arguments.
-    """
 
     def __init__(self,
                  categories_filter={'Default':IPlugin},
@@ -174,8 +19,6 @@ class PluginManager(object):
                  plugin_locator=PluginFileLocator(info_file_extension='yapsy-plugin')):
 
         self.setCategoriesFilter(categories_filter)
-        # plugin_locator could be either a dict defining strategies, or directly
-        # an IPluginLocator object
         self.setPluginLocator(plugin_locator, directories_list)
 
     def setCategoriesFilter(self, categories_filter):

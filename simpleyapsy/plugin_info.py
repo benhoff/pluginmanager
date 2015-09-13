@@ -11,7 +11,6 @@ API
 from configparser import ConfigParser
 from distutils.version import StrictVersion
 
-
 class PluginInfo(object):
     """Representation of the most basic set of information related to a
     given plugin such as its name, author, description...

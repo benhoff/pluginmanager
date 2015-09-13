@@ -8,32 +8,7 @@ from simpleyapsy import PLUGIN_NAME_FORBIDEN_STRING
 from simpleyapsy import log
 
 class PluginFileAnalyzerWithInfoFile(object):
-	"""
-	Consider plugins described by a textual description file.
 
-	A plugin is expected to be described by a text file ('ini' format) with a specific extension (.yapsy-plugin by default).
-
-	This file must contain at least the following information::
-	
-	    [Core]
-	    Name = name of the module
-	    Module = relative_path/to/python_file_or_directory
-
-	Optionnally the description file may also contain the following section (in addition to the above one)::
-
-	    [Documentation]
-	    Author = Author Name
-	    Version = Major.minor
-	    Website = url_for_plugin
-	    Description = A simple one-sentence description
-
-	Ctor Arguments:
-		
-		*name* name of the analyzer.
-
-		*extensions* the expected extensions for the plugin info file. May be a string or a tuple of strings if several extensions are expected.
-	"""
-	
 	def __init__(self, extensions="yapsy-plugin"):
             self.setPluginInfoExtension(extensions)
 	
