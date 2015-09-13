@@ -30,6 +30,7 @@ Automagical stuff:
 """
 
 import os
+from setuptools import find_packages
 from setuptools import setup
 
 # just in case setup.py is launched from elsewhere that the containing directory
@@ -39,8 +40,7 @@ try:
 	setup(
 		name = "simpleyapsy",
 		version = '0.0.1',
-                packages=['simpleyapsy'],
-		package_dir = {'yapsy':'yapsy'},
+                packages= find_packages(exclude=['artwork', 'doc', 'test']),
 		
 		# the unit tests
 		test_suite = "test.test_All.MainTestSuite",
