@@ -38,8 +38,8 @@ os.chdir(os.path.dirname(os.path.abspath(__file__)))
 try:
 	setup(
 		name = "simpleyapsy",
-		version = '0.0.1'
-		packages = ['simpleyapsy'],
+		version = '0.0.1',
+                packages=find_packages(),
 		package_dir = {'yapsy':'yapsy'},
 		
 		# the unit tests
