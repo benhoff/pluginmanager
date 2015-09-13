@@ -52,7 +52,8 @@ API
 
 import os
 import re
-from yapsy import log
+import logging
+log = logging.getLogger('yapsy')
 from configparser import ConfigParser
 
 from yapsy import PluginInfo
