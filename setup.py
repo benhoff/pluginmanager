@@ -53,7 +53,6 @@ try:
 		keywords = "plugin manager",
 		url = "http://yapsy.sourceforge.net",
 		# more details
-		long_description = open("README.txt").read(),
 		classifiers=['Development Status :: 5 - Production/Stable',
 					 'Intended Audience :: Developers',
 					 'License :: OSI Approved :: BSD License',
