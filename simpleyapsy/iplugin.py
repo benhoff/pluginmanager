@@ -1,6 +1,6 @@
 class IPlugin(object):
     """
-    The most simple interface to be inherited when creating a plugin.
+    Simple interface to be inherited when creating a plugin.
     """
 
     def __init__(self):

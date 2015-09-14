@@ -22,35 +22,32 @@ class PluginFileLocator(object):
     """
     
     def __init__(self, 
-                 analyzers=None, 
-                 info_file_extension='yapsy-plugin', 
+                 analyzers=[InfoFileAnalyzer('yapsy-plugin'),],
+                 directory_list=None,
                  plugin_info_cls=PluginInfo,
                  recursive=True):
-        self._discovered_plugins = {}
-        self.setPluginPlaces(None)
-        if analyzers is not None and info_file_extension != 'yapsy-plugin':
-            raise Exception('Setting both an analyzer and an info file extension. The info file extension will NOT track into the anaylzer.')
-        if analyzers is None:
-            analyzers = [InfoFileAnalyzer(info_file_extension)]
+
+        if directory_list is None:
+            directory_list = [os.path.dirname(__file__)]
+
+        self.directory_list = directory_list
         self.analyzers = analyzers      # analyzers used to locate plugins
         self._default_plugin_info_cls = PluginInfo
+        self.recursive = recursive 
+        self._discovered_plugins = {}
         self._plugin_info_cls_map = {}
         self._max_size = 1e3*1024 # in octets (by default 1 Mo)
-        self.recursive = recursive 
             
-    def remove_analyzers(self, name):
+    def remove_analyzer_by_param(self, class_name=None, instance_attr=None):
         # FIXME !!
         """
         Removes analyzers of a given name.
         """
-        analyzersListCopy = self.analyzers[:]
         foundAndRemoved = False
-        for obj in analyzersListCopy:
+        for analyzer in enumerate(self.analyzers):
             if obj.name == name:
-                self._analyzers.remove(obj)
+                self.analyzers.remove(obj)
                 foundAndRemoved = True
-        if not foundAndRemoved:
-            log.debug("'%s' is not a known strategy name: can't remove it." % name)
 
     def _getInfoForPluginFromAnalyzer(self,analyzer,dirpath, filename):
         """

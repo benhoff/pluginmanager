@@ -12,12 +12,10 @@ from configparser import ConfigParser
 from distutils.version import StrictVersion
 
 class PluginInfo(object):
-    
     def __init__(self, plugin_name, plugin_path):
         self._details = ConfigParser()
         self.name = plugin_name
         self.path = plugin_path
-        self._ensureDetailsDefaultsAreBackwardCompatible()
         # Storage for stuff created during the plugin lifetime
         self.plugin_object = None
         self.categories    = []
@@ -153,18 +151,3 @@ class PluginInfo(object):
         Makes it possible to define a property.
         """
         return self.plugin_object.is_activated
-    
-    def _ensureDetailsDefaultsAreBackwardCompatible(self):
-        """
-        Internal helper function.
-        """
-        if not self.details.has_option("Documentation","Author"):
-                self.author		= "Unknown"
-        if not self.details.has_option("Documentation","Version"):
-                self.version	= "0.0"
-        if not self.details.has_option("Documentation","Website"):
-                self.website	= "None"
-        if not self.details.has_option("Documentation","Copyright"):
-                self.copyright	= "Unknown"
-        if not self.details.has_option("Documentation","Description"):
-                self.description = ""
