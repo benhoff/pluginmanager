@@ -19,9 +19,9 @@ def NormalizePluginNameForModuleName(pluginName):
     return ret
 
 import re
-from .base_plugin import IPlugin
+from .iplugin import IPlugin
 from .plugin_info import PluginInfo
-from .plugin_file_locator import PluginFileLocator
+from .plugin_locator import PluginLocator
 from .plugin_manager import PluginManager
 
 RE_NON_ALPHANUM = re.compile("\W")
