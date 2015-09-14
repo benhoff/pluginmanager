@@ -10,158 +10,28 @@ from simpleyapsy import PluginFileLocator
 from simpleyapsy import PLUGIN_NAME_FORBIDEN_STRING
 from simpleyapsy import PluginInfo
 
-
 class PluginManager(object):
-
     def __init__(self,
-                 categories_filter={'Default':IPlugin},
-                 directories_list=None,
-                 plugin_locator=PluginFileLocator(info_file_extension='yapsy-plugin')):
+                 plugin_types={'default':IPlugin},
+                 file_manager=None):
+
+        self.plugin_types = plugin_types
+        self.file_manager = file_manager
+
+        # Duck type the list on for ease of access
+        self.plugin_directories = self.file_manager.plugin_directories
 
         self.setCategoriesFilter(categories_filter)
         self.setPluginLocator(plugin_locator, directories_list)
 
-    def setCategoriesFilter(self, categories_filter):
-        """
-        Set the categories of plugins to be looked for as well as the
-        way to recognise them.
-        
-        The ``categories_filter`` first defines the various categories
-        in which the plugins will be stored via its keys and it also
-        defines the interface tha has to be inherited by the actual
-        plugin class belonging to each category.
-        """
-        self.categories_interfaces = categories_filter.copy()
-        # prepare the mapping from categories to plugin lists
-        self.category_mapping = {}
-        # also maps the plugin info files (useful to avoid loading
-        # twice the same plugin...)
-        self._category_file_mapping = {}
-        for categ in categories_filter:
-            self.category_mapping[categ] = []
-            self._category_file_mapping[categ] = []
-                    
+    def get_plugins(self, type=None):
+        pass
 
-    def setPluginPlaces(self, directories_list):
-        """
-        Convenience method (actually call the IPluginLocator method)
-        """
-        self.getPluginLocator().setPluginPlaces(directories_list)
-
-    def updatePluginPlaces(self, directories_list):
-        """
-        Convenience method (actually call the IPluginLocator method)
-        """
-        self.getPluginLocator().updatePluginPlaces(directories_list)
-
-    def setPluginInfoExtension(self, ext):
-        """
-        .. warning:: This will only work if the strategy "info_ext" is
-                     active for locating plugins.
-        """
-        try:
-            self.getPluginLocator().setPluginInfoExtension(ext)
-        except KeyError:
-            log.error("Current plugin locator doesn't support setting the plugin info extension.")
-
-    def setPluginInfoClass(self, picls, strategies=None):
-        """
-        DEPRECATED(>1.9): directly configure the IPluginLocator instance instead !
-        
-        Convenience method (actually call self.getPluginLocator().setPluginInfoClass)
-        
-        When using a ``PluginFileLocator`` you may restrict the
-        strategies to which the change of PluginInfo class will occur
-        by just giving the list of strategy names in the argument
-        "strategies"
-        """
-        if strategies:
-            for name in strategies:
-                self.getPluginLocator().setPluginInfoClass(picls, name)
-        else:
-            self.getPluginLocator().setPluginInfoClass(picls)
-
-    def getPluginInfoClass(self):
-        """
-        DEPRECATED(>1.9): directly control that with the IPluginLocator
-        instance instead !
-        
-        Get the class that holds PluginInfo.
-        """
-        return self.getPluginLocator().getPluginInfoClass()
-
-    def setPluginLocator(self, plugin_locator, dir_list=None, picls=None):
-        """
-        Sets the strategy used to locate the basic information.
-
-        """
-        self._plugin_locator = plugin_locator
-        if dir_list is not None:
-            self._plugin_locator.updatePluginPlaces(dir_list)
-        if picls is not None:
-            self.setPluginInfoClass(picls)
-            
-    def getPluginLocator(self):
-        """
-        Grant direct access to the plugin locator.
-        """
-        return self._plugin_locator
-    
-    def _gatherCorePluginInfo(self, directory, plugin_info_filename):
-        """
-        DEPRECATED(>1.9): please use a specific plugin
-        locator if you need such information.
-
-        Gather the core information (name, and module to be loaded)
-        about a plugin described by it's info file (found at
-        'directory/filename').
-        
-        Return an instance of ``PluginInfo`` and the
-        config_parser used to gather the core data *in a tuple*, if the
-        required info could be localised, else return ``(None,None)``.
-
-        .. note:: This is supposed to be used internally by subclasses
-        and decorators.
-
-        """
-        return self.getPluginLocator().gatherCorePluginInfo(directory,plugin_info_filename)
-
-    def _getPluginNameAndModuleFromStream(self,infoFileObject,candidate_infofile="<buffered info>"):
-        """
-        DEPRECATED(>1.9): please use a specific plugin
-        locator if you need such information.
-        
-        Extract the name and module of a plugin from the
-        content of the info file that describes it and which
-        is stored in infoFileObject.
-        
-        .. note:: Prefer using ``_gatherCorePluginInfo``
-        instead, whenever possible...
-        
-        .. warning:: ``infoFileObject`` must be a file-like
-        object: either an opened file for instance or a string
-        buffer wrapped in a StringIO instance as another
-        example.
-
-        .. note:: ``candidate_infofile`` must be provided
-        whenever possible to get better error messages.
-                
-        Return a 3-uple with the name of the plugin, its
-        module and the config_parser used to gather the core
-        data *in a tuple*, if the required info could be
-        localised, else return ``(None,None,None)``.
-
-        .. note:: This is supposed to be used internally by subclasses
-        and decorators.
-        """
-        return self.getPluginLocator().getPluginNameAndModuleFromStream(infoFileObject, candidate_infofile)
-    
-    
-    def getCategories(self):
+    def get_types(self):
         """
         Return the list of all categories.
         """
-        return list(self.category_mapping.keys())
+        return list(self.plugin_types.keys())
 
     def removePluginFromCategory(self, plugin,category_name):
         """
@@ -175,21 +45,6 @@ class PluginManager(object):
         Append a new plugin to the given category.
         """
         self.category_mapping[category_name].append(plugin)
-
-    def getPluginsOfCategory(self, category_name):
-        """
-        Return the list of all plugins belonging to a category.
-        """
-        return self.category_mapping[category_name][:]
-
-    def getAllPlugins(self):
-        """
-        Return the list of all plugins (belonging to all categories).
-        """
-        allPlugins = set()
-        for pluginsOfOneCategory in self.category_mapping.values():
-            allPlugins.update(pluginsOfOneCategory)
-        return list(allPlugins)
 
     def getPluginCandidates(self):
         """
@@ -216,19 +71,6 @@ class PluginManager(object):
         if not hasattr(self, '_candidates'):
             raise ValueError("locatePlugins must be called before removePluginCandidate")
         self._candidates.remove(candidateTuple)
-
-    def appendPluginCandidate(self, candidateTuple):
-        """
-        Append a new candidate to the list of plugins that should be loaded.
-
-        The candidate must be represented by the same tuple described
-        in ``getPluginCandidates``.
-
-        .. warning: locatePlugins must be called before !
-        """
-        if not hasattr(self, '_candidates'):
-            raise ValueError("locatePlugins must be called before removePluginCandidate")
-        self._candidates.append(candidateTuple)
 
     def locatePlugins(self):
         """
@@ -318,12 +160,6 @@ class PluginManager(object):
         delattr(self, '_candidates')
         return processed_plugins
 
-    def instanciateElement(self, element):
-        """
-        Override this method to customize how plugins are instanciated
-        """
-        return element()
-
     def collectPlugins(self):
         """
         Walk through the plugins' places and look for plugins.  Then
@@ -332,7 +168,6 @@ class PluginManager(object):
         """
         self.locatePlugins()
         self.loadPlugins()
-
 
     def getPluginByName(self,name,category="Default"):
         """
@@ -356,7 +191,6 @@ class PluginManager(object):
                 plugin_to_activate.activate()
                 return plugin_to_activate			
         return None
-
 
     def deactivatePluginByName(self,name,category="Default"):
         """

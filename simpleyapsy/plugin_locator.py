@@ -6,9 +6,9 @@ from configparser import ConfigParser
 from simpleyapsy import PluginInfo
 from simpleyapsy import PLUGIN_NAME_FORBIDEN_STRING
 from simpleyapsy import log
-from simpleyapsy.file_analyzer import InfoFileAnalyzer
+from simpleyapsy.file_getters import WithInfoFileExt 
 
-class PluginFileLocator(object):
+class PluginLocator(object):
     """
     Locates plugins on the file system using a set of analyzers to
     determine what files actually corresponds to plugins.
@@ -22,17 +22,15 @@ class PluginFileLocator(object):
     """
     
     def __init__(self, 
-                 analyzers=[InfoFileAnalyzer('yapsy-plugin'),],
-                 directory_list=None,
-                 plugin_info_cls=PluginInfo,
+                 file_getters=[WithInfoFileExt('yapsy-plugin')],
+                 directory_list=[],
                  recursive=True):
 
-        if directory_list is None:
+        if directory_list == []:
             directory_list = [os.path.dirname(__file__)]
 
         self.directory_list = directory_list
-        self.analyzers = analyzers      # analyzers used to locate plugins
-        self._default_plugin_info_cls = PluginInfo
+        self.file_getters = file_getters
         self.recursive = recursive 
         self._discovered_plugins = {}
         self._plugin_info_cls_map = {}
@@ -164,26 +162,3 @@ class PluginFileLocator(object):
             self._plugin_info_cls_map = {}
         else:
             self._plugin_info_cls_map[name] = picls
-                    
-    def setPluginPlaces(self, directories_list):
-        """
-        Set the list of directories where to look for plugin places.
-        """
-        if directories_list is None:
-            directories_list = [os.path.dirname(__file__)]
-        self.plugins_places = directories_list
-
-    def updatePluginPlaces(self, directories_list):
-        """
-        Updates the list of directories where to look for plugin places.
-        """
-        self.plugins_places = list(set.union(set(directories_list), set(self.plugins_places)))
-
-    def setPluginInfoExtension(self, ext):
-        """
-        This will only work if the strategy "info_ext" is active
-        for locating plugins.
-        """
-        for analyzer in self._analyzers:
-            if analyzer.name == "info_ext":
-                analyzer.setPluginInfoExtension(ext)

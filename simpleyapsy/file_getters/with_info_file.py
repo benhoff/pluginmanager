@@ -3,7 +3,7 @@ from configparser import ConfigParser
 
 class InfoFileAnalzyer(object):
 
-    def __init__(self, extensions="yapsy-plugin"):
+    def __init__(self, extension="yapsy-plugin"):
         self.setPluginInfoExtension(extensions)
     
     def setPluginInfoExtension(self,extensions):
