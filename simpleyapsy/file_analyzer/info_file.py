@@ -1,3 +1,5 @@
+import os
+from configparser import ConfigParser
 
 class InfoFileAnalzyer(object):
 
@@ -12,10 +14,9 @@ class InfoFileAnalzyer(object):
         """
         # Make sure extension is a tuple
         if not isinstance(extensions, tuple):
-                extensions = (extensions, )
+            extensions = (extensions, )
         self.expectedExtensions = extensions
             
-    
     def isValidPlugin(self, filename):
         """
         Check if it is a valid plugin based on the given plugin info file extension(s).
@@ -24,12 +25,15 @@ class InfoFileAnalzyer(object):
         """
         res = False
         for ext in self.expectedExtensions:
-                if filename.endswith(".%s" % ext):
-                        res = True
-                        break
+            if filename.endswith(".%s" % ext):
+                res = True
+                break
         return res
     
-    def getPluginNameAndModuleFromStream(self, infoFileObject, candidate_infofile=None):
+    def getPluginNameAndModuleFromStream(self, 
+                                         infoFileObject, 
+                                         candidate_infofile=None):
+
         """
         Extract the name and module of a plugin from the
         content of the info file that describes it and which
@@ -91,15 +95,15 @@ class InfoFileAnalzyer(object):
         """
         # now we can consider the file as a serious candidate
         if not isinstance(filename, str):
-                # filename is a file object: use it
-                name, moduleName, config_parser = self.getPluginNameAndModuleFromStream(filename)
+            # filename is a file object: use it
+            name, moduleName, config_parser = self.getPluginNameAndModuleFromStream(filename)
         else:
-                candidate_infofile_path = os.path.join(directory, filename)
-                # parse the information file to get info about the plugin
-                with open(candidate_infofile_path) as candidate_infofile:
-                        name, moduleName, config_parser = self.getPluginNameAndModuleFromStream(candidate_infofile,candidate_infofile_path)
+            candidate_infofile_path = os.path.join(directory, filename)
+            # parse the information file to get info about the plugin
+            with open(candidate_infofile_path) as candidate_infofile:
+                name, moduleName, config_parser = self.getPluginNameAndModuleFromStream(candidate_infofile,candidate_infofile_path)
         if (name, moduleName, config_parser) == (None, None, None):
-                return (None,None)
+            return (None,None)
         infos = {"name":name, "path":os.path.join(directory, moduleName)}
         return infos, config_parser
     
