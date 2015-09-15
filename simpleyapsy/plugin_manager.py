@@ -24,75 +24,65 @@ class PluginManager(object):
         self.setCategoriesFilter(categories_filter)
         self.setPluginLocator(plugin_locator, directories_list)
 
-    def get_plugins(self, type=None):
+    def get_plugin(self, name, type_=None):
         pass
 
-    def get_types(self):
+    def get_plugins(self, type_=None):
+        pass
+
+    def add_plugin(self, plugin, type_='default'):
+        pass
+
+    def get_plugin_info(self, name, type_=None):
+        pass
+
+    def get_plugins_infos(self, type_=None):
+        pass
+
+    def deactivate_plugin(self, name, type_=None):
+        plugin = self.get_plugin(name, type_)
+        plugin.deactivate()
+
+    def reload_plugin(self, name, type_=None):
+        pass
+
+    def get_active_plugins(self, type_=None):
+        plugins = self.get_plugins(type_)
+        active_plugins = []
+        for plugin in plugins:
+            if plugin.active:
+                active_plugins.append(plugin)
+        return active_plugins
+
+
+    def get_active_plugin_names(self, type_=None):
+        pass
+
+    def deactivate_all_plugins(self):
+        plugins = self.get_plugins()
+        for plugin in plugins:
+            plugin.deactivate()
+
+    def blacklist_plugin(self, name, type_=None):
+        if not 'blacklisted' in self.plugin_types:
+            self.plugin_types['blacklisted'] = []
+
+        plugin = self.get_plugin(name, type_)
+        self.plugin_types['blacklisted'].append(plugin)
+
+    def unblacklist_plugin(self, name, type_=None):
+        pass
+
+    def get_plugin_types(self):
         """
         Return the list of all categories.
         """
         return list(self.plugin_types.keys())
 
-    def removePluginFromCategory(self, plugin,category_name):
-        """
-        Remove a plugin from the category where it's assumed to belong.
-        """
-        self.category_mapping[category_name].remove(plugin)
-
-
-    def appendPluginToCategory(self, plugin, category_name):
-        """
-        Append a new plugin to the given category.
-        """
-        self.category_mapping[category_name].append(plugin)
-
-    def getPluginCandidates(self):
-        """
-        Return the list of possible plugins.
-
-        Each possible plugin (ie a candidate) is described by a 3-uple:
-        (info file path, python file path, plugin info instance)
-
-        .. warning: locatePlugins must be called before !
-        """
-        if not hasattr(self, '_candidates'):
-            raise RuntimeError("locatePlugins must be called before getPluginCandidates")
-        return self._candidates[:]
-
-    def removePluginCandidate(self,candidateTuple):
-        """
-        Remove a given candidate from the list of plugins that should be loaded.
-
-        The candidate must be represented by the same tuple described
-        in ``getPluginCandidates``.
-
-        .. warning: locatePlugins must be called before !
-        """
-        if not hasattr(self, '_candidates'):
-            raise ValueError("locatePlugins must be called before removePluginCandidate")
-        self._candidates.remove(candidateTuple)
-
     def locatePlugins(self):
-        """
-        Convenience method (actually call the IPluginLocator method)
-        """
         self._candidates, npc = self.getPluginLocator().locatePlugins()
     
     def loadPlugins(self, callback=None):
-        """
-        Load the candidate plugins that have been identified through a
-        previous call to locatePlugins.  For each plugin candidate
-        look for its category, load it and store it in the appropriate
-        slot of the ``category_mapping``.
-
-        If a callback function is specified, call it before every load
-        attempt.  The ``plugin_info`` instance is passed as an argument to
-        the callback.
-        """
-# 		print "%s.loadPlugins" % self.__class__
-        if not hasattr(self, '_candidates'):
-            raise ValueError("locatePlugins must be called before loadPlugins")
-
         processed_plugins = []
         for candidate_infofile, candidate_filepath, plugin_info in self._candidates:
             # make sure to attribute a unique module name to the one
@@ -168,42 +158,3 @@ class PluginManager(object):
         """
         self.locatePlugins()
         self.loadPlugins()
-
-    def getPluginByName(self,name,category="Default"):
-        """
-        Get the plugin correspoding to a given category and name
-        """
-        if category in self.category_mapping:
-            for item in self.category_mapping[category]:
-                if item.name == name:
-                    return item
-        return None
-
-    def activatePluginByName(self,name,category="Default"):
-        """
-        Activate a plugin corresponding to a given category + name.
-        """
-        pta_item = self.getPluginByName(name,category)
-        if pta_item is not None:
-            plugin_to_activate = pta_item.plugin_object
-            if plugin_to_activate is not None:
-                log.debug("Activating plugin: %s.%s"% (category,name))
-                plugin_to_activate.activate()
-                return plugin_to_activate			
-        return None
-
-    def deactivatePluginByName(self,name,category="Default"):
-        """
-        Desactivate a plugin corresponding to a given category + name.
-        """
-        if category in self.category_mapping:
-            plugin_to_deactivate = None
-            for item in self.category_mapping[category]:
-                if item.name == name:
-                    plugin_to_deactivate = item.plugin_object
-                    break
-            if plugin_to_deactivate is not None:
-                log.debug("Deactivating plugin: %s.%s"% (category,name))
-                plugin_to_deactivate.deactivate()
-                return plugin_to_deactivate			
-        return None
