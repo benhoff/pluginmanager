@@ -1,6 +1,7 @@
 import sys
 import os
 import imp
+import itertools
 
 from simpleyapsy import log
 from simpleyapsy import NormalizePluginNameForModuleName
@@ -12,26 +13,51 @@ from simpleyapsy import PluginInfo
 
 class PluginManager(object):
     def __init__(self,
-                 plugin_types={'default':IPlugin},
-                 file_manager=None):
+                 plugin_classes={'default': IPlugin},
+                 plugin_locator=None):
 
-        self.plugin_types = plugin_types
-        self.file_manager = file_manager
+        self.plugin_classes = plugin_classes
+        self.plugin_locator = plugin_locator
+        self.plugin_names_by_type = {}
 
-        # Duck type the list on for ease of access
-        self.plugin_directories = self.file_manager.plugin_directories
+        for type_ in self.plugin_classes.keys():
+            self.plugin_names_by_type[type_] = {}
 
-        self.setCategoriesFilter(categories_filter)
-        self.setPluginLocator(plugin_locator, directories_list)
+    def _plugin_names_by_type_helper(self, type_):
+        if type_ is None:
+            plugin_names = {}
+            for value in self.plugin_names_by_type.values():
+                plugin_names.update(value)
+        elif not isinstance(type_, str):
+            # try to find the right string
+            key_found = False
+            for type_key, klass in self.plugin_classes.items():
+                if type_ == klass:
+                    break
+            else:
+                raise
+            plugin_names = self.plugin_names_by_type[type_key]
+        else:
+            plugin_names = self.plugin_names_by_type[type_]
+        return plugin_names 
 
     def get_plugin(self, name, type_=None):
-        pass
+        plugin_names = self._plugin_names_by_type_helper(type_)
+        plugin = plugin_names[name]
+        return plugin
 
     def get_plugins(self, type_=None):
-        pass
+        if type_:
+            plugin_names = self.plugin_names_by_type[type_]
+            plugins = plugin_names.values()
+        else:
+            # Flattens the list of list returned by self.plugin_names_by_type.values()
+            plugins = itertools.chain.from_iterable(self.plugin_names_by_type.values())
+        return plugins
 
-    def add_plugin(self, plugin, type_='default'):
-        pass
+    def add_plugin(self, plugin, type_, plugin_info=PluginInfo()):
+        dict_ = self.plugin_names_by_type[type_]
+        dict_[plugin_info.name] = plugin
 
     def get_plugin_info(self, name, type_=None):
         pass
@@ -64,11 +90,7 @@ class PluginManager(object):
             plugin.deactivate()
 
     def blacklist_plugin(self, name, type_=None):
-        if not 'blacklisted' in self.plugin_types:
-            self.plugin_types['blacklisted'] = []
-
-        plugin = self.get_plugin(name, type_)
-        self.plugin_types['blacklisted'].append(plugin)
+        pass
 
     def unblacklist_plugin(self, name, type_=None):
         pass
@@ -77,12 +99,15 @@ class PluginManager(object):
         """
         Return the list of all categories.
         """
-        return list(self.plugin_types.keys())
+        return list(self.plugin_classes.keys())
 
     def locatePlugins(self):
         self._candidates, npc = self.getPluginLocator().locatePlugins()
     
-    def loadPlugins(self, callback=None):
+    def unload_plugin(self, name, type_=None):
+        pass
+
+    def load_plugins(self, callback=None):
         processed_plugins = []
         for candidate_infofile, candidate_filepath, plugin_info in self._candidates:
             # make sure to attribute a unique module name to the one
