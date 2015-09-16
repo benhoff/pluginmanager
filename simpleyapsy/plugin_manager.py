@@ -89,12 +89,6 @@ class PluginManager(object):
         for plugin in plugins:
             plugin.deactivate()
 
-    def blacklist_plugin(self, name, type_=None):
-        pass
-
-    def unblacklist_plugin(self, name, type_=None):
-        pass
-
     def get_plugin_types(self):
         """
         Return the list of all categories.
