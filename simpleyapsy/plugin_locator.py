@@ -56,6 +56,11 @@ class PluginLocator(object):
         else:
             walk_iter = [(directory, [], os.listdir(directory))]
         return walk_iter
+
+    def _analyze_file_helper(self, filenames, dir_path):
+        for analyzer in self.analyzers:
+            candidate_files = analyzer.analyze_files(filenames, dir_path)
+            self._register_info_file(candidate_files)
     
     def locate(self):
         """
@@ -63,12 +68,15 @@ class PluginLocator(object):
 
         Return the candidates and number of plugins found.
         """
-        for directory in map(os.path.abspath, self.plugins_places):
+        for place in map(os.path.abspath, self.plugins_places):
             # check to see if dir
-            if os.path.isdir(directory):
-                walk_iter = self._get_dir_iterator(directory)
+            if os.path.isdir(place):
+                walk_iter = self._get_dir_iterator(place)
                 # create appropriate walk iterator
-                for dirpath, _, filenames in walk_iter:
-                    for analyzer in self.analyzers:
-                        candidate_files = analyzer.analyze_files(filenames)
-                        self._register_info_file(candidate_files)
+                for dir_path, _, filenames in walk_iter:
+                    self._analyze_file_helper(filenames, dir_path)
+            # FIXME
+            else:
+                # maybe it is a plugin path
+                plugin_path = directory
+                self._analyze_file_helper(place)
