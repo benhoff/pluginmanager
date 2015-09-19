@@ -35,6 +35,12 @@ class PluginLocator(object):
         self._discovered_plugins = {}
         self._plugin_info_cls_map = {}
         self._max_size = 1e3*1024 # in octets (by default 1 Mo)
+
+    def add_locations(self, paths):
+        self.directory_list.extend(paths)
+
+    def set_locations(self, paths):
+        self.directory_list = paths
             
     def remove_analyzer_by_param(self, class_name=None, instance_attr=None):
         # FIXME !!
