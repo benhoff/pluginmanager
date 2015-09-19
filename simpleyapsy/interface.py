@@ -1,5 +1,11 @@
+from .plugin_locator import PluginLocator
+from .plugin_manager import PluginManager
+from .plugin_loader import load_plugin
+
 class Interface(object):
-    def __init__(self):
+    def __init__(self, auto_manage_state=True):
+        self.managing_state = auto_manage_state
+        # plugin locator is a container for file analyzers
         self.plugin_locator = None
         self._locator_changed = False
 
@@ -20,27 +26,89 @@ class Interface(object):
     def get_plugin_locations(self):
         return self.plugin_locator.get_locations()
 
-    def locate_plugins(self, names=None, klasses=None, categories=None, vesion=None):
-        return self.plugin_locator.locate_plugin(namees, klasses, categories, version)
+    def locate_plugins(self, 
+                       names=None, 
+                       klasses=None, 
+                       categories=None, 
+                       version=None):
 
-    def get_plugins(self, names=None, klasses=None, categories=None, version=None):
-        return self.plugin_manager.get_plugins(names, klasses, categories, version)
+        located_plugins = self.plugin_locator.locate_plugin(names, 
+                                                            klasses, 
+                                                            categories, 
+                                                            version)
 
-    def load_plugins(self, names=None, klasses=None, categories=None, version=None):
-        self._loader_changed = True
-        return self.plugin_loader.load_plugins(names, klasses, categories, version)
+        return located_plugins
 
-    def get_plugin_infos(self, names=None, klasses=None, categories=None, version=None):
+    def get_plugins(self, 
+                    names=None, 
+                    klasses=None, 
+                    categories=None, 
+                    version=None):
+
+        plugins = self.plugin_manager.get_plugins(names, 
+                klasses, 
+                categories, 
+                version)
+
+        return plugins
+
+    def load_plugins(self, 
+                     names=None, 
+                     klasses=None, 
+                     categories=None, 
+                     version=None):
+
+        loaded_plugins = self.plugin_loader.load_plugins(names, 
+                                                         klasses, 
+                                                         categories, 
+                                                         version)
+
+        return loaded_plugins
+
+    def get_plugin_infos(self, 
+                         names=None, 
+                         klasses=None, 
+                         categories=None, 
+                         version=None):
+
         pass
 
-    def get_active_plugins(self, names=None, klasses=None, categories=None, version=None):
-        pass
+    def get_active_plugins(self, 
+                           names=None, 
+                           klasses=None, 
+                           categories=None, 
+                           version=None):
 
-    def get_active_plugin_names(self, names=None, klasses=None, categories=None, version=None):
-        pass
+        active_plugins = self.plugin_manager.get_active_plugins(names, 
+                                                                klasses, 
+                                                                categories, 
+                                                                version)
 
-    def activate_plugins(self, names=None, klasses=None, categories=None, version=None):
-        pass
+        return active_plugins
+
+    def get_active_plugin_names(self, 
+                                names=None, 
+                                klasses=None, 
+                                categories=None, 
+                                version=None):
+
+        active_plugin_names = self.plugin_manager.get_active_plugin_names(
+                names,
+                klasses,
+                categories, 
+                version)
+
+        return active_plugin_names
+
+    def activate_plugins(self, 
+                         names=None, 
+                         klasses=None, 
+                         categories=None, 
+                         version=None):
+        self.plugin_manager.activate_plugins(names, 
+                klasses, 
+                categories, 
+                version)
 
     def add_plugins(self, plugin):
         pass
