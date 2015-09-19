@@ -3,23 +3,27 @@ from .plugin_manager import PluginManager
 from .plugin_loader import load_plugin
 
 class Interface(object):
-    def __init__(self, auto_manage_state=True):
+    def __init__(self, 
+                 plugin_locator=PluginLocator(),
+                 plugin_manager=PluginManager(),
+                 auto_manage_state=True):
+
         self.managing_state = auto_manage_state
-        # plugin locator is a container for file analyzers
-        self.plugin_locator = None
-        self.plugin_loader = None
-        self.plugin_manager = None
+        self.plugin_locator = plugin_locator
+        self.plugin_manager = plugin_manager 
 
     def add_plugin_locations(self, paths):
         self.plugin_locator.add_locations(paths)
-        if self.managing_state:
-            self.get_plugins()
 
     def set_plugin_locations(self, paths):
         # TODO: think about unloading plugins here?
         self.plugin_locator.set_locations(paths)
-        if self.managing_state:
-            self.get_plugins()
+
+    def set_file_getters(self, file_getters):
+        pass
+
+    def add_file_getters(self, file_getters):
+        pass
 
     def get_plugin_locations(self):
         return self.plugin_locator.get_locations()
@@ -44,8 +48,11 @@ class Interface(object):
                     version=None):
 
         if self.managing_state:
-            # TODO: don't load plugins if no state has changed?
-            loaded_plugins = self.load_plugins(names, klasses, categories, version)
+            loaded_plugins = self.load_plugins(names, 
+                                               klasses, 
+                                               categories, 
+                                               version)
+
             self.plugin_manager.set_plugins(loaded_plugins)
 
         plugins = self.plugin_manager.get_plugins(names, 
@@ -56,24 +63,23 @@ class Interface(object):
         return plugins
 
     def load_plugins(self, 
-                     locations=None,
                      names=None, 
                      klasses=None, 
                      categories=None, 
                      version=None):
 
         if self.managing_state:
-            state_locations = self.plugin_locator.locate_plugins(names, 
-                                            klasses, 
-                                            categories, 
-                                            version)
+            self.locate_plugins(names, 
+                                klasses, 
+                                categories, 
+                                version)
 
-            if locations is not None:
-                locations.extend(state_locations)
-            else:
-                locations = state_locations
+        plugin_locations = self.plugin_locator(names,
+                                               klasses, 
+                                               categories, 
+                                               version)
             
-        loaded_plugins = load_plugins(locations,
+        loaded_plugins = load_plugins(plugin_locations,
                                       names,
                                       klasses,
                                       categories, 
