@@ -16,23 +16,19 @@ class Interface(object):
         self.plugin_locator.add_locations(paths)
 
     def set_plugin_locations(self, paths):
-        # TODO: think about unloading plugins here?
         self.plugin_locator.set_locations(paths)
 
     def set_file_getters(self, file_getters):
-        pass
+        self.plugin_locator.set_file_getters(file_getters)
 
     def add_file_getters(self, file_getters):
-        pass
+        self.plugin_locator.add_file_getters(file_getters)
 
-    def get_plugin_locations(self):
-        return self.plugin_locator.get_locations()
-
-    def locate_plugins(self, 
-                       names=None, 
-                       klasses=None, 
-                       categories=None, 
-                       version=None):
+    def get_plugin_locations(self, 
+                             names=None, 
+                             klasses=None, 
+                             categories=None, 
+                             version=None):
 
         located_plugins = self.plugin_locator.locate_plugin(names, 
                                                             klasses, 
@@ -67,12 +63,6 @@ class Interface(object):
                      klasses=None, 
                      categories=None, 
                      version=None):
-
-        if self.managing_state:
-            self.locate_plugins(names, 
-                                klasses, 
-                                categories, 
-                                version)
 
         plugin_locations = self.plugin_locator(names,
                                                klasses, 

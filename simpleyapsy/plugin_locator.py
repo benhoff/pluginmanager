@@ -34,13 +34,26 @@ class PluginLocator(object):
         self.recursive = recursive 
         self._discovered_plugins = {}
         self._plugin_info_cls_map = {}
-        self._max_size = 1e3*1024 # in octets (by default 1 Mo)
 
     def add_locations(self, paths):
-        self.directory_list.extend(paths)
+        try:
+            self.directory_list.extend(paths)
+        except TypeError:
+            paths = list(paths)
+            self.directory_list.extend(paths)
 
     def set_locations(self, paths):
         self.directory_list = paths
+
+    def set_file_getters(self, file_getters):
+        self.file_getters = file_getters
+
+    def add_file_getters(self, file_getters):
+        try:
+            self.file_getters.extend(file_getters)
+        except TypeError:
+            file_getters = list(file_getters)
+            self.file_getters.extend(file_getters)
             
     def remove_analyzer_by_param(self, class_name=None, instance_attr=None):
         # FIXME !!
