@@ -11,9 +11,9 @@ class PluginLocator(object):
     Locates plugins on the file system using a set of analyzers to
     determine what files actually corresponds to plugins.
     """
-    def __init__(self, 
+    def __init__(self,
                  file_getters=[WithInfoFileExt('yapsy-plugin')],
-                 plugin_directories=[]
+                 plugin_directories=[],
                  recursive=True):
 
         if plugin_directories == []:
@@ -21,9 +21,8 @@ class PluginLocator(object):
 
         self.plugin_directories = plugin_directories 
         self.file_getters = file_getters
-        self.recursive = recursive 
+        self.recursive = recursive
         self._discovered_plugins = {}
-        self._plugin_info_cls_map = {}
 
     def add_locations(self, paths):
         try:
@@ -45,16 +44,16 @@ class PluginLocator(object):
             file_getters = list(file_getters)
             self.file_getters.extend(file_getters)
             
-    def remove_analyzer_by_param(self, class_name=None, instance_attr=None):
-        # FIXME !!
+    def remove_analyzer_by_param(self, class_name=None):
         """
         Removes analyzers of a given name.
         """
-        foundAndRemoved = False
+        removed = False
         for analyzer in enumerate(self.analyzers):
-            if obj.name == name:
+            if analyzer.name == name:
                 self.analyzers.remove(obj)
-                foundAndRemoved = True
+                removed = True
+        return removed
 
     def _register_info_file(self, *args):
         pass

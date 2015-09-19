@@ -19,19 +19,24 @@ class WithInfoFileGetter(object):
             extensions = list(extensions)
             self.extensions.extend(extensions)
             
-    def validiate_plugin(self, filename):
-        plugin_validated = False
-        for extension in self.extensions:
-            if filename.endswith(".{}".format(extension)):
-                plugin_validated = True
-                break
+    def valid_plugin(self, filename):
+        plugin_validatation = False
+        try:
+            for extension in self.extensions:
+                if filename.endswith(".{}".format(extension)):
+                    plugin_validatation = True
+                    break
+        except TypeError:
+            # try to make extensions a list and recurse
+            self.extensions = list(self.extensions)
+            plugin_validation = self.valid_plugin(filename)
 
-        return plugin_validated
+        return plugin_validation
     
     def get_name(self, 
                  infoFileObject, 
                  candidate_infofile=None):
-        # parse the information buffer to get info about the plugin
+
         config_parser = ConfigParser()
         try:
             config_parser.read_file(infoFileObject)
@@ -51,5 +56,13 @@ class WithInfoFileGetter(object):
             return (None, None, None)
         return (name, config_parser.get("Core", "Module"), config_parser)
 
-    def get_files(self, filenames, dir_paths):
-        pass
+    def _get_file(self, filename, dir_path):
+        if self.valid_plugin(filename):
+
+    def get_files(self, filenames, dir_path):
+        files = []
+        try:
+            for filename in filenames:
+                self._get_file(filename, dir_path)
+        except TypeError: 
+            self._get_file(filename, dir_path)
