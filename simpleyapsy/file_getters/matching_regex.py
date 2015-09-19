@@ -1,5 +1,5 @@
 # NOTE: UNTESTED!
-class PluginFileAnalyzerMathingRegex(object):
+class MatchingRegexFileGetter(object):
 	"""
 	An analyzer that targets plugins decribed by files whose name match a given regex.
 	"""

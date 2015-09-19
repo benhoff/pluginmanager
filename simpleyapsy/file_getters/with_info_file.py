@@ -3,8 +3,8 @@ from configparser import ConfigParser
 
 class WithInfoFileGetter(object):
     """
-    Only gets files that have configuration files ending with specific extensions
-    (nominally 'yapsy-plugin')
+    Only gets files that have configuration files ending with specific extensions,
+    nominally 'yapsy-plugin'
     """
     def __init__(self, extensions=["yapsy-plugin"]):
         self.extensions = extensions

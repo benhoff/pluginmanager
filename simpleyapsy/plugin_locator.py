@@ -13,13 +13,13 @@ class PluginLocator(object):
     """
     def __init__(self, 
                  file_getters=[WithInfoFileExt('yapsy-plugin')],
-                 directory_list=[],
+                 plugin_directories=[]
                  recursive=True):
 
-        if directory_list == []:
-            directory_list = [os.path.dirname(__file__)]
+        if plugin_directories == []:
+            plugin_directories = [os.path.dirname(__file__)]
 
-        self.directory_list = directory_list
+        self.plugin_directories = plugin_directories 
         self.file_getters = file_getters
         self.recursive = recursive 
         self._discovered_plugins = {}
@@ -27,13 +27,13 @@ class PluginLocator(object):
 
     def add_locations(self, paths):
         try:
-            self.directory_list.extend(paths)
+            self.plugin_directories.extend(paths)
         except TypeError:
             paths = list(paths)
-            self.directory_list.extend(paths)
+            self.plugin_directories.extend(paths)
 
     def set_locations(self, paths):
-        self.directory_list = paths
+        self.plugin_directories = paths
 
     def set_file_getters(self, file_getters):
         self.file_getters = file_getters
@@ -67,6 +67,9 @@ class PluginLocator(object):
         return walk_iter
 
     def _file_getter_helper(self, filenames, dir_path):
+        """
+        helps parse through all the file getters
+        """
         files = []
         for getter in self.file_getters:
             candidate_files = getter.get_files(filenames, dir_path)
@@ -84,13 +87,13 @@ class PluginLocator(object):
 
         Return the candidates and number of plugins found.
         """
-        for place in map(os.path.abspath, self.plugins_places):
+        for place in map(os.path.abspath, self.plugin_directories):
             # check to see if dir
             if os.path.isdir(place):
                 walk_iter = self._get_dir_iterator(place)
                 # create appropriate walk iterator
                 for dir_path, _, filenames in walk_iter:
-                    self._analyze_file_helper(filenames, dir_path)
+                    files = self._file_getter_helper(filenames, dir_path)
             # FIXME
             else:
                 # maybe it is a plugin path

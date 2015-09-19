@@ -1,2 +1,2 @@
-from .info_file import InfoFileAnalyzer
-from .matching_regex import MatchingRegexAnalyzer
+from .with_info_file import WithInfoFileGetter
+from .matching_regex import MatchingRegexFileGetter
