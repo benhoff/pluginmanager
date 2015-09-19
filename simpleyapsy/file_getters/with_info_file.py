@@ -19,7 +19,7 @@ class WithInfoFileGetter(object):
             extensions = list(extensions)
             self.extensions.extend(extensions)
             
-    def valid_plugin(self, filename):
+    def valid_plugin(self, filepath):
         plugin_validatation = False
         try:
             for extension in self.extensions:
@@ -32,11 +32,13 @@ class WithInfoFileGetter(object):
             plugin_validation = self.valid_plugin(filename)
 
         return plugin_validation
-    
-    def get_name(self, 
-                 infoFileObject, 
-                 candidate_infofile=None):
 
+    def get_info_and_filepaths(self, dir_path):
+        infos = self.get_plugin_infos(dir_path)
+        filepaths = self.get_plugin_filepaths(dir_path, infos)
+        return infos, filepaths
+    
+    def get_plugin_infos(self, dir_path)
         config_parser = ConfigParser()
         try:
             config_parser.read_file(infoFileObject)
@@ -56,13 +58,26 @@ class WithInfoFileGetter(object):
             return (None, None, None)
         return (name, config_parser.get("Core", "Module"), config_parser)
 
-    def _get_file(self, filename, dir_path):
-        if self.valid_plugin(filename):
+    def _get_filepath_and_info(self, path):
+        if self.valid_plugin(path):
+            info = self.get_info(path)
+            plugin_filepath = info['path']
+            return plugin_filepath, info
+            
+    def get_plugin_filepaths(self, dir_path, infos=None):
+        # want all filepaths to be unique
+        filepaths = set()
+        # if we've already got the infos list, parse those directly
+        # else parse through the dir_path
+        if infos is not None:
+            for info in infos:
+                filepaths.update(info.filepath)
+        else:
+            infos = []
+            for filename in os.listdir(dir_path):
+                filepath, info = self._get_filepath_and_info(os.path.join(dir_path, filename))
+                if filepath is not None and info is not None:
+                    filepaths.update(filepath)
+                    infos.append(info)
 
-    def get_files(self, filenames, dir_path):
-        files = []
-        try:
-            for filename in filenames:
-                self._get_file(filename, dir_path)
-        except TypeError: 
-            self._get_file(filename, dir_path)
+        return filepaths

@@ -8,8 +8,8 @@ from simpleyapsy.file_getters import WithInfoFileExt
 
 class PluginLocator(object):
     """
-    Locates plugins on the file system using a set of analyzers to
-    determine what files actually corresponds to plugins.
+    Holds onto and locates the filepaths of plugins using a set of getters
+    to determine what files actually corresponds to plugins.
     """
     def __init__(self,
                  file_getters=[WithInfoFileExt('yapsy-plugin')],
@@ -22,7 +22,7 @@ class PluginLocator(object):
         self.plugin_directories = plugin_directories 
         self.file_getters = file_getters
         self.recursive = recursive
-        self._discovered_plugins = {}
+        self.plugin_filepaths = set()
 
     def add_locations(self, paths):
         try:
@@ -44,57 +44,56 @@ class PluginLocator(object):
             file_getters = list(file_getters)
             self.file_getters.extend(file_getters)
             
-    def remove_analyzer_by_param(self, class_name=None):
+    def remove_analyzer_by_param(self, name, value):
         """
         Removes analyzers of a given name.
         """
         removed = False
-        for analyzer in enumerate(self.analyzers):
-            if analyzer.name == name:
-                self.analyzers.remove(obj)
+        for getter in self.file_getters:
+            if hasattr(getter, name) and getattr(getter, name) == value:
+                self.file_getters.remove(getter)
                 removed = True
         return removed
 
-    def _register_info_file(self, *args):
-        pass
-
     def _get_dir_iterator(self, directory):
+        """
+        Handles recursion state
+        """
         if self.recursive:
             walk_iter = os.walk(directory, followlinks=True)
         else:
             walk_iter = [(directory, [], os.listdir(directory))]
         return walk_iter
 
-    def _file_getter_helper(self, filenames, dir_path):
+    def _file_getter_helper(self, path):
         """
         helps parse through all the file getters
         """
-        files = []
+        filepaths = []
         for getter in self.file_getters:
-            candidate_files = getter.get_files(filenames, dir_path)
-            files.extend(candidate_files)
-        return files
+            found_filepaths = getter.get_plugin_filepaths(path)
+            filepaths.extend(found_filepaths)
+        return filepaths 
     
-    def locate_plugins(self, 
-                       names=None, 
-                       klasses=None, 
-                       categories=None, 
-                       version=None):
-
+    def locate_plugins(self):
         """
         Walk through the plugins' places and look for plugins.
 
         Return the candidates and number of plugins found.
         """
-        for place in map(os.path.abspath, self.plugin_directories):
+        for plugin_directory in map(os.path.abspath, self.plugin_directories):
             # check to see if dir
-            if os.path.isdir(place):
-                walk_iter = self._get_dir_iterator(place)
+            # else assume it's directly a plugin path
+            if os.path.isdir(plugin_directory):
+                dir_iter = self._get_dir_iterator(plugin_directory)
                 # create appropriate walk iterator
-                for dir_path, _, filenames in walk_iter:
-                    files = self._file_getter_helper(filenames, dir_path)
-            # FIXME
+                for dir_path, _, _ in dir_iter:
+                    plugin_filepaths = self._file_getter_helper(dir_path)
+                    self.plugin_filepaths.update(plugin_filepaths)
             else:
-                # maybe it is a plugin path
-                plugin_path = directory
-                self._analyze_file_helper(place)
+                # alias out the path
+                plugin_path = plugin_directory 
+                plugin_filepath = self._file_getter_helper(plugin_path)
+                self.plugin_filepaths.update(plugin_filepath)
+
+        return self.plugin_filepaths
