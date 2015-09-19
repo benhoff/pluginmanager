@@ -1,9 +1,7 @@
 import os
 import re
 import logging
-from configparser import ConfigParser
 
-from simpleyapsy import PluginInfo
 from simpleyapsy import PLUGIN_NAME_FORBIDEN_STRING
 from simpleyapsy import log
 from simpleyapsy.file_getters import WithInfoFileExt 
@@ -12,15 +10,7 @@ class PluginLocator(object):
     """
     Locates plugins on the file system using a set of analyzers to
     determine what files actually corresponds to plugins.
-    
-    If more than one analyzer is being used, the first that will discover a
-    new plugin will avoid other strategies to find it too.
-
-    By default each directory set as a "plugin place" is scanned
-    recursively. You can change that by a call to
-    ``disableRecursiveScan``.
     """
-    
     def __init__(self, 
                  file_getters=[WithInfoFileExt('yapsy-plugin')],
                  directory_list=[],
@@ -76,12 +66,19 @@ class PluginLocator(object):
             walk_iter = [(directory, [], os.listdir(directory))]
         return walk_iter
 
-    def _analyze_file_helper(self, filenames, dir_path):
-        for analyzer in self.analyzers:
-            candidate_files = analyzer.analyze_files(filenames, dir_path)
-            self._register_info_file(candidate_files)
+    def _file_getter_helper(self, filenames, dir_path):
+        files = []
+        for getter in self.file_getters:
+            candidate_files = getter.get_files(filenames, dir_path)
+            files.extend(candidate_files)
+        return files
     
-    def locate(self):
+    def locate_plugins(self, 
+                       names=None, 
+                       klasses=None, 
+                       categories=None, 
+                       version=None):
+
         """
         Walk through the plugins' places and look for plugins.
 

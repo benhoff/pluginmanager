@@ -17,4 +17,3 @@ class IPlugin(object):
         Called when the plugin is disabled.
         """
         self.active = False
-
