@@ -65,19 +65,17 @@ class WithInfoFileGetter(object):
             return plugin_filepath, info
             
     def get_plugin_filepaths(self, dir_path, infos=None):
-        # want all filepaths to be unique
-        filepaths = set()
-        # if we've already got the infos list, parse those directly
+        # Enforce uniqueness of filepaths in `PluginLocator`
+        filepaths = []
+        # if we've already got the infos list, get plugin filepath from those
         # else parse through the dir_path
         if infos is not None:
             for info in infos:
-                filepaths.update(info.filepath)
+                filepaths.append(info.filepath)
         else:
-            infos = []
             for filename in os.listdir(dir_path):
                 filepath, info = self._get_filepath_and_info(os.path.join(dir_path, filename))
                 if filepath is not None and info is not None:
-                    filepaths.update(filepath)
-                    infos.append(info)
+                    filepaths.append(filepath)
 
         return filepaths

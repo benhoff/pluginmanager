@@ -44,13 +44,13 @@ class PluginLocator(object):
             file_getters = list(file_getters)
             self.file_getters.extend(file_getters)
             
-    def remove_analyzer_by_param(self, name, value):
+    def remove_analyzer_by_param(self, param_name, param_value):
         """
         Removes analyzers of a given name.
         """
         removed = False
         for getter in self.file_getters:
-            if hasattr(getter, name) and getattr(getter, name) == value:
+            if hasattr(getter, param_name) and getattr(getter, param_name) == param_value:
                 self.file_getters.remove(getter)
                 removed = True
         return removed
@@ -65,15 +65,20 @@ class PluginLocator(object):
             walk_iter = [(directory, [], os.listdir(directory))]
         return walk_iter
 
-    def _file_getter_helper(self, path):
+    def _file_getter_iterator_helper(self, path):
         """
-        helps parse through all the file getters
+        helps iterate through all the file getters
         """
         filepaths = []
+        info_objects = []
         for getter in self.file_getters:
-            plugin_infos, plugin_paths = getter.get_info_and_filepaths(path)
-            filepaths.extend(found_filepaths)
-        return filepaths 
+            plugin_info, plugin_path = getter.get_info_and_filepaths(path)
+            # check to see if plugin path is unique, and record if it is
+            if not plugin_path in filepaths:
+                filepaths.extend(plugin_paths)
+                info_objects.extend(plugin_infos)
+
+        return filepaths, info_objects
     
     def locate_plugins(self):
         """
@@ -82,18 +87,21 @@ class PluginLocator(object):
         Return the candidates and number of plugins found.
         """
         for plugin_directory in map(os.path.abspath, self.plugin_directories):
-            # check to see if dir
-            # else assume it's directly a plugin path
+            # check to see if plugin_directory is a dir
+            # otherwise assume it's a plugin path
             if os.path.isdir(plugin_directory):
+                # handle whether we're recursively looking through directories
                 dir_iter = self._get_dir_iterator(plugin_directory)
-                # create appropriate walk iterator
+                # iterate through the directories
                 for dir_path, _, _ in dir_iter:
-                    plugin_filepaths = self._file_getter_helper(dir_path)
+                    plugin_filepaths, plugin_information = self._file_getter_iterator_helper(dir_path)
                     self.plugin_filepaths.update(plugin_filepaths)
+
+            # otherwise assume it's a plugin path
             else:
                 # alias out the path
-                plugin_path = plugin_directory 
-                plugin_filepath = self._file_getter_helper(plugin_path)
+                plugin_path = plugin_directory
+                plugin_filepath, plugin_information = self._file_getter_iterator_helper(plugin_path)
                 self.plugin_filepaths.update(plugin_filepath)
 
         return self.plugin_filepaths
