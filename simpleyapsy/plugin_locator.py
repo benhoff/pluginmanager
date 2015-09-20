@@ -71,7 +71,7 @@ class PluginLocator(object):
         """
         filepaths = []
         for getter in self.file_getters:
-            found_filepaths = getter.get_plugin_filepaths(path)
+            plugin_infos, plugin_paths = getter.get_info_and_filepaths(path)
             filepaths.extend(found_filepaths)
         return filepaths 
     
