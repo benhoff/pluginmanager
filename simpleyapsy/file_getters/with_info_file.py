@@ -13,32 +13,32 @@ class WithInfoFileGetter(object):
         self.extensions = extensions
 
     def add_file_extensions(self, extensions):
-        try:
-            self.extensions.extend(extensions)
-        except TypeError:
+        if not isinstance(extensions, list):
             extensions = list(extensions)
-            self.extensions.extend(extensions)
+
+        self.extensions.extend(extensions)
             
     def valid_plugin(self, filepath):
+        """
+        checks to see if plugin ends with one of the
+        approved extensions
+        """
         plugin_validatation = False
-        try:
-            for extension in self.extensions:
-                if filename.endswith(".{}".format(extension)):
-                    plugin_validatation = True
-                    break
-        except TypeError:
-            # try to make extensions a list and recurse
-            self.extensions = list(self.extensions)
-            plugin_validation = self.valid_plugin(filename)
+        for extension in self.extensions:
+            if filename.endswith(".{}".format(extension)):
+                plugin_validatation = True
+                break
 
         return plugin_validation
 
     def get_info_and_filepaths(self, dir_path):
-        infos = self.get_plugin_infos(dir_path)
-        filepaths = self.get_plugin_filepaths(dir_path, infos)
-        return infos, filepaths
+        plugin_information = self.get_plugin_infos(dir_path)
+        plugin_filepaths = self.get_plugin_filepaths(dir_path, infos)
+        return plugin_information, plugin_filepaths 
     
     def get_plugin_infos(self, dir_path)
+        for filename in os.listdir(dir_path):
+            filepath, info = self._get_filepath_and_info(os.path.join(dir_path, filename))
         config_parser = ConfigParser()
         try:
             config_parser.read_file(infoFileObject)

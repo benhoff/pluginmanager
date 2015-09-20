@@ -35,11 +35,10 @@ class PluginLocator(object):
         self.file_getters = file_getters
 
     def add_file_getters(self, file_getters):
-        try:
-            self.file_getters.extend(file_getters)
-        except TypeError:
+        if not isinstance(file_getters, list):
             file_getters = list(file_getters)
-            self.file_getters.extend(file_getters)
+
+        self.file_getters.extend(file_getters)
             
     def remove_getter_by_param(self, param_name, param_value):
         """
@@ -52,9 +51,6 @@ class PluginLocator(object):
                 removed = True
                 break
         return removed
-    
-    def _plugin_dirs_to_absolute_paths(self):
-        self.plugin_directories = [os.path.abspath(x) for x in self.plugin_directories]
 
     def locate_plugins(self):
         """
@@ -69,16 +65,16 @@ class PluginLocator(object):
 
         for plugin_directory in self.plugin_directories:
             # handle whether we're recursively looking through directories
-            dir_iter = self._get_dir_iterator(plugin_directory)
+            dir_paths = self._get_dir_iterator(plugin_directory)
 
-            for dir_path in dir_iter:
+            for dir_path in dir_paths:
                 filepaths, information = self._file_getter_iterator_helper(dir_path)
 
                 located_plugin_filepaths.extend(filepaths)
                 located_plugin_information.extend(information)
 
-        path_info_tuple = zip(located_plugin_filepaths, located_plugin_information)
-        for plugin_path, plugin_info in path_info_tuple:
+        plugin_path_info_tuple = zip(located_plugin_filepaths, located_plugin_information)
+        for plugin_path, plugin_info in plugin_path_info_tuple:
             self.plugin_locations[plugin_path] = plugin_info
 
         return self.plugin_locations
@@ -109,3 +105,6 @@ class PluginLocator(object):
         else:
             walk_iter = [directory]
         return walk_iter
+
+    def _plugin_dirs_to_absolute_paths(self):
+        self.plugin_directories = [os.path.abspath(x) for x in self.plugin_directories]
