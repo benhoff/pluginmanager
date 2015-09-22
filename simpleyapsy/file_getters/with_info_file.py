@@ -18,18 +18,18 @@ class WithInfoFileGetter(object):
 
         self.extensions.extend(extensions)
             
-    def valid_plugin(self, filepath):
+    def plugin_valid(self, filepath):
         """
         checks to see if plugin ends with one of the
         approved extensions
         """
-        plugin_validatation = False
+        plugin_valid = False
         for extension in self.extensions:
             if filename.endswith(".{}".format(extension)):
-                plugin_validatation = True
+                plugin_valid = True
                 break
 
-        return plugin_validation
+        return plugin_valid
 
     def get_info_and_filepaths(self, dir_path):
         plugin_information = self.get_plugin_infos(dir_path)
