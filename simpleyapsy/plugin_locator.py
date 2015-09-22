@@ -2,7 +2,6 @@ import os
 import re
 import logging
 
-from simpleyapsy import PLUGIN_NAME_FORBIDEN_STRING
 from simpleyapsy import log
 from simpleyapsy.file_getters import WithInfoFileExt 
 
