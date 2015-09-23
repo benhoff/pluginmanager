@@ -24,16 +24,14 @@ class Interface(object):
     def add_file_getters(self, file_getters):
         self.plugin_locator.add_file_getters(file_getters)
 
+    def remove_file_getter_by_param(self, param_name, param_value):
+        self.plugin_locator.remove_getter_by_param(param_name, param_value)
+
     def get_plugin_locations(self):
         located_plugins = self.plugin_locator.locate_plugin()
         return located_plugins
 
-    def load_plugins(self, 
-                     names=None, 
-                     klasses=None, 
-                     categories=None, 
-                     version=None):
-
+    def load_plugins(self):
         plugin_locations = self.plugin_locator(names,
                                                klasses, 
                                                categories, 
@@ -42,7 +40,7 @@ class Interface(object):
         loaded_plugins = load_plugins(plugin_locations,
                                       names,
                                       klasses,
-                                      categories, 
+                                      categories,
                                       version)
 
         return loaded_plugins
