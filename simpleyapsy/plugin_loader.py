@@ -19,21 +19,21 @@ class PluginLoader(object):
                  module_parser=plugin_validators.IsSubclass()):
         self.loaded_plugins = []
         self.processed_filepaths = []
-        self.blacklisted_plugin_filepaths = []
+        self.blacklisted_filepaths = []
         self.module_parser = module_parser
 
     def blacklist_plugin(self, filepath):
-        self.blacklisted_plugin_filepaths.append(filepath)
+        self.blacklisted_filepaths.append(filepath)
 
-    def get_blacklisted_plugin_filepaths(self):
-        return self.blacklisted_plugin_filepaths
+    def get_blacklisted_filepaths(self):
+        return self.blacklisted_filepaths
 
     def load_plugin(self, plugin_locations, plugin_infos=None):
         """
         returns a list of loaded plugins
         """
         for plugin_filepath in plugin_filepaths:
-            if plugin_filepath in self.blacklisted_plugin_filepaths or plugin_filepath in self.processed_filepaths:
+            if plugin_filepath in self.blacklisted_filepaths or plugin_filepath in self.processed_filepaths:
                 break
 
             # Take off `.py` ending if there
