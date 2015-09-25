@@ -2,36 +2,24 @@ import sys
 import os
 import itertools
 
-from simpleyapsy import log
+from simpleyapsy import log, plugin_getters, IPlugin
 
 class PluginManager(object):
-    def __init__(self,
-                 plugin_locator=None):
+    def __init__(self, 
+                 plugin_getters=[plugin_getters.SubclassGetter(klass=IPlugin)]):
+        self.plugin_getters = plugin_getters
 
-        self.plugin_names_by_type = {}
+    def set_plugin_getters(self, plugin_getters):
+        if not isinstance(plugin_getters, list):
+            plugin_getters = list(plugin_getters)
 
-    def _plugin_names_by_type_helper(self, type_):
-        if type_ is None:
-            plugin_names = {}
-            for value in self.plugin_names_by_type.values():
-                plugin_names.update(value)
-        elif not isinstance(type_, str):
-            # try to find the right string
-            key_found = False
-            for type_key, klass in self.plugin_classes.items():
-                if type_ == klass:
-                    break
-            else:
-                raise
-            plugin_names = self.plugin_names_by_type[type_key]
-        else:
-            plugin_names = self.plugin_names_by_type[type_]
-        return plugin_names 
+        self.plugin_getters = plugin_getters
 
-    def get_plugin(self, name, type_=None):
-        plugin_names = self._plugin_names_by_type_helper(type_)
-        plugin = plugin_names[name]
-        return plugin
+    def add_plugin_getters(self, plugin_getters):
+        if not isinstance(plugin_getters, list):
+            plugin_getters = list(plugin_getters)
+
+        self.plugin_getters.extend(plugin_getters)
 
     def get_plugins(self, type_=None):
         if type_:
@@ -63,6 +51,12 @@ class PluginManager(object):
             if plugin.active:
                 active_plugins.append(plugin)
         return active_plugins
+
+    def add_modules(self, modules):
+        if not isinstance(modules, list):
+            modules = list(modules)
+
+        for plugin_getter in self.plugin_getters:
 
 
     def get_active_plugin_names(self, type_=None):

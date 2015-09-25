@@ -7,3 +7,5 @@ python plugin management, simplified.
     plugin_manager.set_plugin_locations('my/fancy/plugin/path')
     plugins = plugin_manager.get_plugins()
     # Work with plugins here
+
+Library currently under heavy development
