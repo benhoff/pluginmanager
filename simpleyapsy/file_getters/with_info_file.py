@@ -85,9 +85,9 @@ class WithInfoFileGetter(object):
     def _get_filepaths_from_dir(self, dir_path):
         filepaths = []
         for filename in os.listdir(dir_path):
-            filepath = os.path.join(dir_path, filename):
-                if os.path.isfile(filepath):
-                    filepaths.append(filepath)
+            filepath = os.path.join(dir_path, filename)
+            if os.path.isfile(filepath):
+                filepaths.append(filepath)
         return filepaths
     
     def _valid_config(self, config):

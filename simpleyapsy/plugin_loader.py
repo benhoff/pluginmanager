@@ -1,6 +1,6 @@
 import os
 import sys
-from importlib.machinery import SourceFileLoader
+from importlib import util
 from simpleyapsy import plugin_getters
 
 def _get_unique_module_name(plugin_info):
@@ -17,8 +17,7 @@ def _get_unique_module_name(plugin_info):
 
 class PluginLoader(object):
     def __init__(self):
-
-        self.loaded_plugins = []
+        self.loaded_modules = []
         self.processed_filepaths = []
         self.blacklisted_filepaths = []
 
@@ -39,32 +38,45 @@ class PluginLoader(object):
         return valid
 
     def load_filepath(self, filepath):
-        pass
+        self._update_module_state()
+
+    def reload_plugins(self):
+        self._update_module_state()
 
     def load_plugin(self, plugin_locations, plugin_infos=None):
         """
         returns a list of loaded plugins
         """
+        self._update_module_state()
         for plugin_filepath in plugin_filepaths:
 
             if not self._valid_filepath(plugin_filepath):
                 continue
 
-            if plugin_filepath.endswith('.py'):
-                plugin_filepath = plugin_filepath[:-3]
+            if os.path.isdir(plugin_filepath) and os.path.isfile(os.path.join(plugin_filepath, '__init__.py')):
+                plugin_filepath = os.path.join(plugin_filepath, '__init__.py')
 
-            if '__init__' in os.path.basename(plugin_filepath)
-                plugin_filepath = os.path.dirname(plugin_filepath)
+            if not plugin_filepath.endswith('.py'):
+                plugin_filepath += '.py'
 
             # NOTE: not sure if req'd or not
             plugin_module_name = _get_unique_module_name(plugin_info)
             try:
-                module = SourceFileLoader(plugin_module_name, plugin_filepath)
-                module = module.exec_module()
-                plugins = self._plugin_validator_iter_helper(module)
-                self.loaded_plugins.extend(plugins)
+                file_spec = util.spec_from_file_location(plugin_module_name, plugin_filepath)
+                loader = file_spec.loader
+                module = loader.load_module()
+                self.loaded_modules.append(module.__name__)
 
             except Exception:
                 pass
 
         return self.loaded_plugins
+
+    def _update_module_state(self):
+        system_modules = sys.modules.values()
+        for loaded_module in self.loaded_modules:
+            if not loaded_module in system_modules:
+                path = loaded_module.__path__
+                if path in self.processed_filepaths:
+                    self.processed_filepaths.remove(path)
+                self.loaded_modules.remove(loaded_module)

@@ -2,11 +2,13 @@ import sys
 import os
 import itertools
 
-from simpleyapsy import log, plugin_getters, IPlugin
+from simpleyapsy import log, IPlugin
+from simpleyapsy.plugin_getters import SubclassGetter 
+
 
 class PluginManager(object):
     def __init__(self, 
-                 plugin_getters=[plugin_getters.SubclassGetter(klass=IPlugin)]):
+                 plugin_getters=[SubclassGetter(klass=IPlugin)]):
         self.plugin_getters = plugin_getters
 
     def set_plugin_getters(self, plugin_getters):
@@ -30,9 +32,8 @@ class PluginManager(object):
             plugins = itertools.chain.from_iterable(self.plugin_names_by_type.values())
         return plugins
 
-    def add_plugin(self, plugin, type_, plugin_info=PluginInfo()):
-        dict_ = self.plugin_names_by_type[type_]
-        dict_[plugin_info.name] = plugin
+    def add_plugin(self, plugin):
+        pass
 
     def get_plugin_info(self, name, type_=None):
         pass
@@ -57,6 +58,7 @@ class PluginManager(object):
             modules = list(modules)
 
         for plugin_getter in self.plugin_getters:
+            pass
 
 
     def get_active_plugin_names(self, type_=None):

@@ -20,7 +20,6 @@ def NormalizePluginNameForModuleName(pluginName):
 
 import re
 from .iplugin import IPlugin
-from .plugin_info import PluginInfo
 from .plugin_locator import PluginLocator
 from .plugin_manager import PluginManager
 

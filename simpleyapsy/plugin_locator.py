@@ -3,7 +3,7 @@ import re
 import logging
 
 from simpleyapsy import log
-from simpleyapsy.file_getters import WithInfoFileExt 
+from simpleyapsy.file_getters import WithInfoFileGetter
 
 class PluginLocator(object):
     """
@@ -11,7 +11,7 @@ class PluginLocator(object):
     to determine what files actually corresponds to plugins.
     """
     def __init__(self,
-                 file_getters=[WithInfoFileExt('yapsy-plugin')],
+                 file_getters=[WithInfoFileGetter('yapsy-plugin')],
                  plugin_directories=[],
                  recursive=True):
         
