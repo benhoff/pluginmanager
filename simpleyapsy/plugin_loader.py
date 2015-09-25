@@ -1,6 +1,5 @@
 import os
 import sys
-import inspect
 from importlib.machinery import SourceFileLoader
 from simpleyapsy import plugin_validators
 
@@ -60,17 +59,20 @@ class PluginLoader(object):
                     # TODO: Implement
                     pass
                 
-                # NOTE: looks like `load_module` is deprecated `exec_module`
+                # NOTE: looks like `load_module` is deprecated in favor of `exec_module`
                 module = module.exec_module()
                 self.processed_filepaths.append(plugin_filepath)
-
-                for attribute in dir(module):
-                    attribute = getattr(module, attribute)
-                    for parser in self.module_parser:
-                        if parser.is_valid(attribute):
-                            self.loaded_plugins.append(attribute)
+                plugins = self._plugin_validator_iter_helper(module)
+                self.loaded_plugins.extend(plugins)
 
             except Exception:
                 pass
 
     return self.loaded_plugins
+    
+    def _plugin_validator_iter_helper(self, module):
+        for parser in self.module_parser:
+            found_plugins = parser.find_plugins(module)
+            if found_plugins:
+                break
+        return found_plugins
