@@ -78,6 +78,11 @@ class PluginLocator(object):
 
         return self.plugin_locations
 
+    def get_plugin_filepaths(self):
+        if not self.plugin_locations:
+            self.locate_plugins()
+        return self.plugin_locations.keys()
+
     def _file_getter_iterator_helper(self, path):
         """
         helps iterate through all the file getters

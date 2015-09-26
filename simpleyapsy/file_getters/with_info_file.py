@@ -32,6 +32,9 @@ class WithInfoFileGetter(object):
         if plugin_infos is None:
             plugin_infos = self.get_plugin_infos(dir_path)
 
+        for plugin_info in plugin_infos:
+            path = plugin_info['path']
+
         return plugin_filepaths 
 
     def plugin_valid(self, filepath):
@@ -76,7 +79,16 @@ class WithInfoFileGetter(object):
 
         # change and store the relative path in Module to absolute
         relative_path = core_config.pop('Module')
-        config_dict['path'] = os.path.join(dir_path, relative_path)
+        path = os.path.join(dir_path, relative_path)
+
+        if os.path.isfile(path + '.py'):
+            path += '.py'
+        elif os.path.isdir(path) and os.path.isfile(os.path.join(path, '__init__.py')):
+            path = os.path.join(path, '__init__.py')
+        else:
+            raise FileNotFoundError()
+
+        config_dict['path'] = path
 
         # grab and store the name, strip whitespace
         config_dict['name'] = core_config["Name"].strip()

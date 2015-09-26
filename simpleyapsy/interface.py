@@ -1,15 +1,17 @@
 from .plugin_locator import PluginLocator
 from .plugin_manager import PluginManager
-from .plugin_loader import load_plugin
+from .module_loader import ModuleLoader
 
 class Interface(object):
     def __init__(self, 
                  plugin_locator=PluginLocator(),
+                 module_loader=ModuleLoader(),
                  plugin_manager=PluginManager(),
                  auto_manage_state=True):
 
         self.managing_state = auto_manage_state
         self.plugin_locator = plugin_locator
+        self.module_loader = module_loader
         self.plugin_manager = plugin_manager 
 
     def add_plugin_directories(self, paths):
@@ -31,19 +33,26 @@ class Interface(object):
         located_plugins = self.plugin_locator.locate_plugin()
         return located_plugins
 
-    def load_plugins(self):
-        plugin_locations = self.plugin_locator(names,
-                                               klasses, 
-                                               categories, 
-                                               version)
-            
-        loaded_plugins = load_plugins(plugin_locations,
-                                      names,
-                                      klasses,
-                                      categories,
-                                      version)
+    def blacklist_filepaths(self, filepaths):
+        self.module_loader.blacklist_filepaths(filepaths)
 
-        return loaded_plugins
+    def set_blacklisted_filepaths(self, filepaths):
+        self.module_loader.set_blacklisted_filepaths(filepaths)
+
+    def get_blacklisted_filepaths(self):
+        return self.module_loader.blacklisted_filepaths
+
+    def load_modules(self, filepaths=None):
+        if filepaths is None:
+            filepaths = self.plugin_locator.get_plugin_filepaths()
+
+        self.module_loader.load_modules(filepaths)
+        if self.managing_state:
+            modules = self.module_loader.get_loaded_modules()
+            self.plugin_manager.add_modules(modules)
+
+    def reload_modules(self, module_or_module_name):
+        self.module_loader.reload_module(module_or_module_name)
 
     def get_plugins(self, 
                     names=None, 
