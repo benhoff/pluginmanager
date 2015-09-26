@@ -5,11 +5,12 @@ import itertools
 from simpleyapsy import log, IPlugin
 from simpleyapsy.plugin_getters import SubclassGetter 
 
-
 class PluginManager(object):
     def __init__(self, 
                  plugin_getters=[SubclassGetter(klass=IPlugin)]):
+
         self.plugin_getters = plugin_getters
+        self.plugins = []
 
     def set_plugin_getters(self, plugin_getters):
         if not isinstance(plugin_getters, list):
@@ -32,8 +33,15 @@ class PluginManager(object):
             plugins = itertools.chain.from_iterable(self.plugin_names_by_type.values())
         return plugins
 
-    def add_plugin(self, plugin):
-        pass
+    def add_plugins(self, plugins):
+        if not isinstance(plugins, list):
+            plugins = list(plugins)
+        self.plugins.extend(plugins)
+
+    def set_plugins(self, plugins):
+        if not isnstance(plugins, list):
+            plugins = list(plugins)
+        self.plugins = plugins
 
     def get_plugin_info(self, name, type_=None):
         pass

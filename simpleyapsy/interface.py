@@ -30,7 +30,7 @@ class Interface(object):
         self.plugin_locator.remove_getter_by_param(param_name, param_value)
 
     def get_plugin_locations(self):
-        located_plugins = self.plugin_locator.locate_plugin()
+        located_plugins = self.plugin_locator.locate_plugins()
         return located_plugins
 
     def blacklist_filepaths(self, filepaths):
@@ -74,7 +74,6 @@ class Interface(object):
                 version)
 
         return plugins
-
 
     def get_plugin_infos(self, 
                          names=None, 
