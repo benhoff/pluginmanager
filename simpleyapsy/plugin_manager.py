@@ -24,13 +24,7 @@ class PluginManager(object):
 
         self.plugin_getters.extend(plugin_getters)
 
-    def get_plugins(self, type_=None):
-        if type_:
-            plugin_names = self.plugin_names_by_type[type_]
-            plugins = plugin_names.values()
-        else:
-            # Flattens the list of list returned by self.plugin_names_by_type.values()
-            plugins = itertools.chain.from_iterable(self.plugin_names_by_type.values())
+    def get_plugins(self):
         return plugins
 
     def add_plugins(self, plugins):

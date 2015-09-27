@@ -1,6 +1,8 @@
 import os
 import sys
+import types
 import importlib
+from importlib import machinery
 from importlib import util
 from simpleyapsy import plugin_getters
 
@@ -35,52 +37,54 @@ class ModuleLoader(object):
         return loaded_modules
 
     def load_modules(self, filepaths):
-        """
-        returns a list of loaded modules
-        """
-        if not isinstance(pluign_filepaths, list):
-            plugin_filepaths = list(plugin_filepaths)
-
+        # removes filepaths from processed if they are not in sys.modules
         self._update_internal_state()
-        for plugin_filepath in plugin_filepaths:
-            if not self._valid_filepath(plugin_filepath):
+        if isinstance(filepaths, dict):
+            filepaths = filepaths.keys()
+            plugin_infos = filepaths.values()
+        # handle case of single filepath passed in
+        if not isinstance(filepaths, list) and not isinstance(filepaths, types.GeneratorType):
+            filepaths = list(filepaths)
+
+        for index, filepath in enumerate(filepaths):
+            filepath = self._process_filepath(filepath)
+            # check to see if blacklisted or already processed
+            if not self._valid_filepath(filepath):
                 continue
-
-            if os.path.isdir(plugin_filepath) and os.path.isfile(os.path.join(plugin_filepath, '__init__.py')):
-                plugin_filepath = os.path.join(plugin_filepath, '__init__.py')
-
-            if not plugin_filepath.endswith('.py'):
-                plugin_filepath += '.py'
-            
-            # FIXME
-            plugin_module_name = _create_unique_module_name(plugin_info)
             try:
-                module = self._load_module(plugin_filepath)
-                self.loaded_modules[module.__name__] = module.__path__
+                plugin_info = plugin_infos[index]
+                plugin_module_name = _create_unique_module_name(plugin_info)
+            except NameError:
+                # no plugin_info object, so let's make one
+                name = _get_module_name(filepath)
+                plugin_info = {'path':filepath, 'name':name}
+                plugin_module_name = _create_unique_module_name(name)
 
-            except Exception:
+            spec = importlib.util.spec_from_file_location(plugin_module_name, filepath)
+            try:
+                module = spec.loader.load_module()
+                self.loaded_modules[module.__name__] = plugin_info
+            except ImportError:
                 pass
 
-        return self.loaded_plugins
+            self.processed_filepaths.append(filepath)
+
+        return self.loaded_modules
+
+    def _process_filepath(self, filepath):
+        if os.path.isdir(filepath) and os.path.isfile(os.path.join(filepath, '__init__.py')):
+            filepath = os.path.join(filepath, '__init__.py')
+
+        if not filepath.endswith('.py'):
+            filepath += '.py'
+        return filepath
 
     def _valid_filepath(self, filepath):
         valid = True 
-        if filepath in self.blacklisted_filepaths:
-            valid = False
-
-        if filepath in self.processed_filepaths:
+        if filepath in self.blacklisted_filepaths or filepath in self.processed_filepaths:
             valid = False
 
         return valid
-
-    def _load_module(self, filepath):
-        """
-        To be used for compatability
-        """
-        file_spec = util.spec_from_file_location(plugin_module_name, plugin_filepath)
-        loader = file_spec.loader
-        module = loader.load_module()
-        return module
 
     def _update_internal_state(self):
         system_modules = sys.modules.keys()
@@ -89,9 +93,22 @@ class ModuleLoader(object):
                 self.processed_filepaths.remove(filepath)
                 self.loaded_modules.pop(module)
 
-# TODO: move me
-def _create_unique_module_name(plugin_info):
-    module_template= 'yapsy_plugin_{name}'.format(plugin_info['name'])
+def _get_module_name(filepath):
+    if plugin_info_or_filepath.endswith('__init__.py'):
+        name = os.path.dirname(plugin_info_or_filepath)
+    else:
+        name = os.path.splitext(os.path.basename(plugin_info_or_filepath))[0]
+    return name
+
+def _create_unique_module_name(plugin_info_or_name):
+    # get name
+    # check to see if dict, else assume filepath
+    if isinstance(plugin_info_or_filepath, dict):
+        name = plugin_info_or_filepath['name']
+    else:
+        name = plugin_info_or_name
+
+    module_template= 'yapsy_plugin_{name}'.format(name)
     module_template += '_{number}'
     number = 0
     while True:

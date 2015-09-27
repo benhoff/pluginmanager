@@ -67,6 +67,7 @@ class PluginLocator(object):
             dir_paths = self._get_dir_iterator(plugin_directory)
 
             for dir_path in dir_paths:
+                # Can have more than one file getter
                 filepaths, information = self._file_getter_iterator_helper(dir_path)
 
                 located_plugin_filepaths.extend(filepaths)
