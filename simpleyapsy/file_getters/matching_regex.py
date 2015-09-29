@@ -1,21 +1,44 @@
-# NOTE: UNTESTED!
+import re
+
+from simpleyapsy import util
+
 class MatchingRegexFileGetter(object):
 	"""
 	An analyzer that targets plugins decribed by files whose name match a given regex.
 	"""
 	def __init__(self, regexp):
-		self.regexp = regexp
+		self.regex_expressions = regexp
 	
-	def isValidPlugin(self, filename):
+	def set_regex_expressions(self, regex_expressions):
+	    self.regex_expressions = regex_expressions
+	    
+	def add_regex_expressions(self, regex_expressions):
+	    if not isinstance(regex_expressions, list):
+	        regex_expressions = list(regex_expressions)
+	    self.regex_expressions.extend(regex_expressions)
+	
+	def plugin_valid(self, filename):
 		"""
 		Checks if the given filename is a valid plugin for this Strategy
 		"""
+		plugin_valid = False
 		reg = re.compile(self.regexp)
-		if reg.match(filename) is not None:
-			return True
-		return False
+		if reg.match(filename):
+			plugin_valid = True
+		return plugin_valid
+		
+	def get_info_and_filepaths(self, dir_path):
+	    pass
 	
-	def getInfosDictFromPlugin(self, dirpath, filename):
+	def get_plugin_filepaths(self, dir_path):
+	    plugin_filepaths = []
+	    filepaths = util.get_filepaths_from_dir(dir_path)
+	    for filepath in filepaths:
+	        if self.plugin_valid(filepath):
+	            plugin_filepath.append(filepath)
+	    return plugin_filepaths
+	
+	def get_plugin_infos(self, dir_path):
 		"""
 		Returns the extracted plugin informations as a dictionary.
 		This function ensures that "name" and "path" are provided.
@@ -29,8 +52,4 @@ class MatchingRegexFileGetter(object):
 			plugin_filename = dirpath
 		infos["name"] = "%s" % module_name
 		infos["path"] = plugin_filename
-		cf_parser = ConfigParser()
-		cf_parser.add_section("Core")
-		cf_parser.set("Core","Name",infos["name"])
-		cf_parser.set("Core","Module",infos["path"])
-		return infos,cf_parser
+		return infos
