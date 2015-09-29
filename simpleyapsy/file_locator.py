@@ -5,7 +5,7 @@ import logging
 from simpleyapsy import log
 from simpleyapsy.file_getters import WithInfoFileGetter
 
-class PluginLocator(object):
+class FileLocator(object):
     """
     Holds onto and locates the filepaths of plugins using a set of getters
     to determine what files actually corresponds to plugins.
@@ -18,10 +18,10 @@ class PluginLocator(object):
         if plugin_directories == []:
             plugin_directories = [os.path.dirname(__file__)]
 
-        self.plugin_directories = plugin_directories 
+        self.plugin_directories = plugin_directories
         self.file_getters = file_getters
         self.recursive = recursive
-        self.plugin_locations = {}
+        self.plugin_files = {}
 
     def add_plugin_directories(self, paths):
         unique_paths = set.union(set(paths), set(self.plugin_directories))
@@ -51,7 +51,7 @@ class PluginLocator(object):
                 break
         return removed
 
-    def locate_plugins(self):
+    def locate_files(self):
         """
         Walk through the plugins' places and look for plugins.
 
@@ -75,14 +75,14 @@ class PluginLocator(object):
 
         plugin_path_info_tuple = zip(located_plugin_filepaths, located_plugin_information)
         for plugin_path, plugin_info in plugin_path_info_tuple:
-            self.plugin_locations[plugin_path] = plugin_info
+            self.plugin_files[plugin_path] = plugin_info
 
-        return self.plugin_locations
+        return self.plugin_files
 
     def get_plugin_filepaths(self):
-        if not self.plugin_locations:
+        if not self.plugin_files:
             self.locate_plugins()
-        return self.plugin_locations.keys()
+        return self.plugin_files.keys()
 
     def _file_getter_iterator_helper(self, path):
         """
@@ -94,7 +94,7 @@ class PluginLocator(object):
             plugin_info, plugin_path = file_getter.get_info_and_filepaths(path)
 
             # check to see if plugin path is unique, and record if it is
-            if not plugin_path in filepaths and not plugin_path in self.plugin_locations:
+            if not plugin_path in filepaths and not plugin_path in self.plugin_files:
                 filepaths.extend(plugin_paths)
                 info_objects.extend(plugin_infos)
 

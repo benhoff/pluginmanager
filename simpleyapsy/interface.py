@@ -1,36 +1,36 @@
-from .plugin_locator import PluginLocator
+from .file_locator import FileLocator 
 from .plugin_manager import PluginManager
 from .module_loader import ModuleLoader
 
 class Interface(object):
     def __init__(self, 
-                 plugin_locator=PluginLocator(),
+                 file_locator=FileLocator(),
                  module_loader=ModuleLoader(),
                  plugin_manager=PluginManager(),
                  auto_manage_state=True):
 
         self.managing_state = auto_manage_state
-        self.plugin_locator = plugin_locator
+        self.file_locator = file_locator 
         self.module_loader = module_loader
         self.plugin_manager = plugin_manager 
 
     def add_plugin_directories(self, paths):
-        self.plugin_locator.add_plugin_directories(paths)
+        self.file_locator.add_plugin_directories(paths)
 
     def set_plugin_locations(self, paths):
-        self.plugin_locator.set_plugin_directories(paths)
+        self.file_locator.set_plugin_directories(paths)
 
     def set_file_getters(self, file_getters):
-        self.plugin_locator.set_file_getters(file_getters)
+        self.file_locator.set_file_getters(file_getters)
 
     def add_file_getters(self, file_getters):
-        self.plugin_locator.add_file_getters(file_getters)
+        self.file_locator.add_file_getters(file_getters)
 
     def remove_file_getter_by_param(self, param_name, param_value):
-        self.plugin_locator.remove_getter_by_param(param_name, param_value)
+        self.file_locator.remove_getter_by_param(param_name, param_value)
 
     def get_plugin_locations(self):
-        located_plugins = self.plugin_locator.locate_plugins()
+        located_plugins = self.file_locator.locate_plugins()
         return located_plugins
 
     def blacklist_filepaths(self, filepaths):
@@ -44,7 +44,7 @@ class Interface(object):
 
     def load_modules(self, filepaths=None):
         if filepaths is None:
-            filepaths = self.plugin_locator.get_plugin_filepaths()
+            filepaths = self.file_locator.get_plugin_filepaths()
 
         self.module_loader.load_modules(filepaths)
         if self.managing_state:
