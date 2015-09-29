@@ -9,27 +9,39 @@ from simpleyapsy.module_parsers import SubclassParser
 from simpleyapsy import util
 
 class ModuleLoader(object):
-    def __init__(self, module_parsers=[SubclassParser()]):
-        self.module_parsers = module_parsers
+    def __init__(self, 
+                 module_parsers=[SubclassParser()],
+                 blacklist_filepaths=[]):
+
         self.loaded_modules = {}
         self.processed_filepaths = []
-        self.blacklisted_filepaths = []
+        self.module_parsers = module_parsers
+        self.blacklisted_filepaths = blacklist_filepaths
+
+    def set_module_parsers(self, module_parsers):
+        if not isinstance(module_parsers, list):
+            module_parsers = list(module_parsers)
+        self.module_parsers = module_parsers
+
+    def add_module_parsers(self, module_parsers):
+        if not isinstance(module_parsers, list):
+            module_parsers = list(module_parsers)
+        self.module_parsers.extend(module_parsers)
 
     def blacklist_filepaths(self, filepaths):
         if not isinstance(filepaths, list):
             filepaths = list(filepaths)
         self.blacklisted_filepaths.extend(filepaths)
 
-    def get_blacklisted_filepaths(self):
-        return self.blacklisted_filepaths
-
     def set_blacklisted_filepaths(self, filepaths):
         if not isinstance(filepaths, list):
             filepaths = list(filepaths)
         self.blacklisted_filepaths = filepaths
 
+    def get_blacklisted_filepaths(self):
+        return self.blacklisted_filepaths
+
     def reload_module(self, name):
-        self._update_internal_state()
         module = sys.modules[name]
         importlib.reload(module)
 
@@ -39,12 +51,21 @@ class ModuleLoader(object):
             loaded_modules.append(sys.modules[name])
         return loaded_modules
 
+    def get_plugins_from_modules(self):
+        plugins = []
+        loaded_modules = self.get_loaded_modules()
+        for module in loaded_modules:
+            for plugin_parser in self.module_parsers:
+                plugins.extend(plugin_parser.get_plugins(module))
+        return plugins
+
     def load_modules(self, filepaths):
         # removes filepaths from processed if they are not in sys.modules
         self._update_internal_state()
         if isinstance(filepaths, dict):
             filepaths = filepaths.keys()
             plugin_infos = filepaths.values()
+
         # handle case of single filepath passed in
         if not isinstance(filepaths, list) and not isinstance(filepaths, types.GeneratorType):
             filepaths = list(filepaths)
