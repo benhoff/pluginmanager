@@ -1,11 +1,11 @@
 from simpleyapsy.iplugin import IPlugin
 import inspect
 
-class SubclassGetter(object):
+class SubclassParser(object):
     def __init__(self, klass=IPlugin):
         self.klass = klass
 
-    def return_plugins(self, module):
+    def get_plugins(self, module):
         plugins = []
         module_members = inspect.getmembers(module)
 

@@ -7,10 +7,7 @@ from simpleyapsy import log, IPlugin
 from simpleyapsy.plugin_getters import SubclassGetter 
 
 class PluginManager(object):
-    def __init__(self, 
-                 plugin_getters=[SubclassGetter(klass=IPlugin)]):
-
-        self.set_plugin_getters(plugin_getters)
+    def __init__(self):
         self.plugins = {}
 
     def set_plugin_getters(self, plugin_getters):

@@ -1,13 +1,16 @@
 import os
 import sys
 import types
+
 import importlib
-from importlib import machinery
 from importlib import util
-from simpleyapsy import plugin_getters
+
+from simpleyapsy.module_parsers import SubclassParser
+from simpleyapsy import util
 
 class ModuleLoader(object):
-    def __init__(self):
+    def __init__(self, module_parsers=[SubclassParser()]):
+        self.module_parsers = module_parsers
         self.loaded_modules = {}
         self.processed_filepaths = []
         self.blacklisted_filepaths = []
@@ -56,9 +59,9 @@ class ModuleLoader(object):
                 plugin_module_name = _create_unique_module_name(plugin_info)
             except NameError:
                 # no plugin_info object, so let's make one
-                name = _get_module_name(filepath)
+                name = util.get_module_name(filepath)
                 plugin_info = {'path':filepath, 'name':name}
-                plugin_module_name = _create_unique_module_name(name)
+                plugin_module_name = util.create_unique_module_name(name)
 
             spec = importlib.util.spec_from_file_location(plugin_module_name, filepath)
             try:
@@ -92,29 +95,3 @@ class ModuleLoader(object):
             if not module in system_modules:
                 self.processed_filepaths.remove(filepath)
                 self.loaded_modules.pop(module)
-
-def _get_module_name(filepath):
-    if filepath.endswith('__init__.py'):
-        name = os.path.dirname(filepath)
-    else:
-        name = os.path.splitext(os.path.basename(filepath))[0]
-    return name
-
-def _create_unique_module_name(plugin_info_or_name):
-    # get name
-    # check to see if dict, else assume filepath
-    if isinstance(plugin_info_or_filepath, dict):
-        name = plugin_info_or_filepath['name']
-    else:
-        name = plugin_info_or_name
-
-    module_template= 'yapsy_plugin_{name}'.format(name)
-    module_template += '_{number}'
-    number = 0
-    while True:
-        module_name = module_template.format(number)
-        if not module_name in sys.modules:
-            break
-        number += 1
-
-    return module_name
