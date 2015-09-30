@@ -28,3 +28,12 @@ def create_unique_module_name(plugin_info_or_name):
         number += 1
 
     return module_name
+
+
+def get_filepaths_from_dir(dir_path):
+    filepaths = []
+    for filename in os.listdir(dir_path):
+        filepath = os.path.join(dir_path, filename)
+        if os.path.isfile(filepath):
+            filepaths.append(filepath)
+    return filepaths

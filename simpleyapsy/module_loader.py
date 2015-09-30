@@ -97,7 +97,7 @@ class ModuleLoader(object):
     def _valid_filepath(self, filepath):
         valid = True
         if (filepath in self.blacklisted_filepaths or
-            filepath in self.processed_filepaths):
+                filepath in self.processed_filepaths):
             valid = False
 
         return valid

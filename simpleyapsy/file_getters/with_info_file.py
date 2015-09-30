@@ -1,6 +1,7 @@
 import os
 from configparser import ConfigParser
-from simpleyapsy import PLUGIN_NAME_FORBIDEN_STRING
+from simpleyapsy import util
+from . import PLUGIN_FORBIDDEN_NAME
 
 
 class WithInfoFileGetter(object):
@@ -55,7 +56,7 @@ class WithInfoFileGetter(object):
 
     def get_plugin_infos(self, dir_path):
         plugin_infos = []
-        filepaths = self._get_filepaths_from_dir(dir_path)
+        filepaths = util.get_filepaths_from_dir(dir_path)
 
         config_parser = ConfigParser()
         config_filepaths = config_parser.read(filepaths)
@@ -66,14 +67,15 @@ class WithInfoFileGetter(object):
 
                 with open(config_filepath) as f:
                     config_parser.read_file(f)
-                    config_dict = self._parse_config_details(config_parser)
+                    config_dict = self._parse_config_details(config_parser,
+                                                             dir_path)
 
                 if self._valid_config(config_dict):
                     plugin_infos.append(config_dict)
 
         return plugin_infos
 
-    def _parse_config_details(self, config_parser):
+    def _parse_config_details(self, config_parser, dir_path):
         config_dict = {}
         # get all data out of config_parser
         config_dict.update(config_parser)
@@ -99,14 +101,6 @@ class WithInfoFileGetter(object):
         config_dict['name'] = core_config["Name"].strip()
         return config_dict
 
-    def _get_filepaths_from_dir(self, dir_path):
-        filepaths = []
-        for filename in os.listdir(dir_path):
-            filepath = os.path.join(dir_path, filename)
-            if os.path.isfile(filepath):
-                filepaths.append(filepath)
-        return filepaths
-
     def _valid_config(self, config):
         valid_config = False
         if "Name" in config and "Module" in config:
@@ -114,7 +108,7 @@ class WithInfoFileGetter(object):
 
         name = config["Name"]
         name = name.strip()
-        if PLUGIN_NAME_FOBIDEN_STRING in name:
+        if PLUGIN_FORBIDDEN_NAME in name:
             valid_config = False
 
         return valid_config
