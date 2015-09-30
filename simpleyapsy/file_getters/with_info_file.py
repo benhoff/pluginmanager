@@ -26,7 +26,7 @@ class WithInfoFileGetter(object):
 
     def get_plugin_filepaths(self, dir_path, plugin_infos=None):
         # Enforce uniqueness of filepaths in `PluginLocator`
-        plugin_filepaths = []
+        plugin_filepaths = set()
         # if we've already got the infos list, get plugin filepath from those
         # else parse through the dir_path
         if plugin_infos is None:
@@ -34,8 +34,9 @@ class WithInfoFileGetter(object):
 
         for plugin_info in plugin_infos:
             path = plugin_info['path']
+            plugin_filepaths.update(path)
 
-        return plugin_filepaths 
+        return plugin_filepaths
 
     def plugin_valid(self, filepath):
         """
