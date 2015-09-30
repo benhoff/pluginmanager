@@ -21,7 +21,7 @@ class FileLocator(object):
         self.plugin_directories = plugin_directories
         self.file_getters = file_getters
         self.recursive = recursive
-        self.plugin_files = {}
+        self.plugin_files = set()
 
     def add_plugin_directories(self, paths):
         unique_paths = set.union(set(paths), set(self.plugin_directories))
@@ -58,47 +58,30 @@ class FileLocator(object):
         Return the candidates and number of plugins found.
         """
         self._plugin_dirs_to_absolute_paths()
-
-        located_plugin_filepaths = []
-        located_plugin_information = [] 
-
         for plugin_directory in self.plugin_directories:
             # handle whether we're recursively looking through directories
             dir_paths = self._get_dir_iterator(plugin_directory)
 
             for dir_path in dir_paths:
                 # Can have more than one file getter
-                filepaths, information = self._file_getter_iterator_helper(dir_path)
-
-                located_plugin_filepaths.extend(filepaths)
-                located_plugin_information.extend(information)
-
-        plugin_path_info_tuple = zip(located_plugin_filepaths, located_plugin_information)
-        for plugin_path, plugin_info in plugin_path_info_tuple:
-            self.plugin_files[plugin_path] = plugin_info
+                filepaths = self._file_getter_iterator_helper(dir_path)
+                self.plugin_files.update(filepaths)
 
         return self.plugin_files
 
     def get_plugin_filepaths(self):
-        if not self.plugin_files:
-            self.locate_plugins()
-        return self.plugin_files.keys()
+        return self.plugin_files
 
-    def _file_getter_iterator_helper(self, path):
+    def _file_getter_iterator_helper(self, dir_path):
         """
         helps iterate through all the file getters
         """
-        filepaths = []
-        info_objects = []
+        filepaths = set()
         for file_getter in self.file_getters:
-            plugin_info, plugin_path = file_getter.get_info_and_filepaths(path)
+            plugin_paths = file_getter.get_plugin_filepaths(dir_path)
+            filepaths.update(plugin_paths)
 
-            # check to see if plugin path is unique, and record if it is
-            if not plugin_path in filepaths and not plugin_path in self.plugin_files:
-                filepaths.extend(plugin_paths)
-                info_objects.extend(plugin_infos)
-
-        return filepaths, info_objects
+        return filepaths
 
     def _get_dir_iterator(self, directory):
         """
