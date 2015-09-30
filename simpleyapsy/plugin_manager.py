@@ -1,10 +1,5 @@
-import sys
-import os
-import types
-import itertools
-
 class PluginManager(object):
-    def __init__(self, 
+    def __init__(self,
                  plugin_filters=[]):
 
         self.plugins = []
@@ -19,13 +14,9 @@ class PluginManager(object):
         self.plugins.extend(plugins)
 
     def set_plugins(self, plugins):
-        if not isnstance(plugins, list):
+        if not isinstance(plugins, list):
             plugins = list(plugins)
         self.plugins = plugins
-
-    def deactivate_plugin(self, name):
-        plugin = self.get_plugin(name, type_)
-        plugin.deactivate()
 
     def get_active_plugins(self):
         plugins = self.get_plugins()

@@ -2,10 +2,11 @@ import os
 from configparser import ConfigParser
 from simpleyapsy import PLUGIN_NAME_FORBIDEN_STRING
 
+
 class WithInfoFileGetter(object):
     """
-    Only gets files that have configuration files ending with specific extensions,
-    nominally 'yapsy-plugin'
+    Only gets files that have configuration files ending with specific
+    extensions, nominally 'yapsy-plugin'
     """
     def __init__(self, extensions=["yapsy-plugin"]):
         self.extensions = extensions
@@ -18,11 +19,13 @@ class WithInfoFileGetter(object):
             extensions = list(extensions)
 
         self.extensions.extend(extensions)
-            
+
     def get_info_and_filepaths(self, dir_path):
         plugin_information = self.get_plugin_infos(dir_path)
-        plugin_filepaths = self.get_plugin_filepaths(dir_path, infos)
-        return plugin_information, plugin_filepaths 
+        plugin_filepaths = self.get_plugin_filepaths(dir_path,
+                                                     plugin_information)
+
+        return plugin_information, plugin_filepaths
 
     def get_plugin_filepaths(self, dir_path, plugin_infos=None):
         # Enforce uniqueness of filepaths in `PluginLocator`
@@ -45,7 +48,7 @@ class WithInfoFileGetter(object):
         """
         plugin_valid = False
         for extension in self.extensions:
-            if filename.endswith(".{}".format(extension)):
+            if filepath.endswith(".{}".format(extension)):
                 plugin_valid = True
                 break
         return plugin_valid
@@ -84,7 +87,8 @@ class WithInfoFileGetter(object):
 
         if os.path.isfile(path + '.py'):
             path += '.py'
-        elif os.path.isdir(path) and os.path.isfile(os.path.join(path, '__init__.py')):
+        elif (os.path.isdir(path) and
+                os.path.isfile(os.path.join(path, '__init__.py'))):
             path = os.path.join(path, '__init__.py')
         else:
             raise FileNotFoundError()
@@ -102,7 +106,7 @@ class WithInfoFileGetter(object):
             if os.path.isfile(filepath):
                 filepaths.append(filepath)
         return filepaths
-    
+
     def _valid_config(self, config):
         valid_config = False
         if "Name" in config and "Module" in config:

@@ -1,9 +1,7 @@
 import os
-import re
-import logging
 
-from simpleyapsy import log
 from simpleyapsy.file_getters import WithInfoFileGetter
+
 
 class FileLocator(object):
     """
@@ -14,7 +12,7 @@ class FileLocator(object):
                  file_getters=[WithInfoFileGetter('yapsy-plugin')],
                  plugin_directories=[],
                  recursive=True):
-        
+
         if plugin_directories == []:
             plugin_directories = [os.path.dirname(__file__)]
 
@@ -38,14 +36,16 @@ class FileLocator(object):
             file_getters = list(file_getters)
 
         self.file_getters.extend(file_getters)
-            
+
     def remove_getter_by_param(self, param_name, param_value):
         """
         Removes analyzers of a given name.
         """
         removed = False
         for getter in self.file_getters:
-            if hasattr(getter, param_name) and getattr(getter, param_name) == param_value:
+            if (hasattr(getter, param_name) and
+                    getattr(getter, param_name) == param_value):
+
                 self.file_getters.remove(getter)
                 removed = True
                 break
@@ -95,4 +95,6 @@ class FileLocator(object):
         return walk_iter
 
     def _plugin_dirs_to_absolute_paths(self):
-        self.plugin_directories = [os.path.abspath(x) for x in self.plugin_directories]
+        # alias out to meet <80 character line pep req
+        abspath = os.path.abspath
+        self.plugin_directories = [abspath(x) for x in self.plugin_directories]

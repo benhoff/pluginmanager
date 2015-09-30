@@ -1,6 +1,7 @@
 from simpleyapsy.iplugin import IPlugin
 import inspect
 
+
 class SubclassParser(object):
     def __init__(self, klass=IPlugin):
         self.klass = klass
@@ -14,4 +15,4 @@ class SubclassParser(object):
             if issubclass(value, self.klass):
                 plugins.append(value)
 
-        return plugins 
+        return plugins

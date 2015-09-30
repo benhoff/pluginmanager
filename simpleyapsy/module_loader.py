@@ -1,22 +1,21 @@
 import os
 import sys
-import types
 
 import importlib
-from importlib import util
 
 from simpleyapsy.module_parsers import SubclassParser
-from simpleyapsy import util
+from simpleyapsy import util as yapsy_util
+
 
 class ModuleLoader(object):
-    def __init__(self, 
+    def __init__(self,
                  module_parsers=[SubclassParser()],
                  blacklisted_filepaths=set()):
 
         self.loaded_modules = set()
         self.processed_filepaths = set()
         self.module_parsers = module_parsers
-        self.blacklisted_filepaths = blacklist_filepaths
+        self.blacklisted_filepaths = blacklisted_filepaths
 
     def set_module_parsers(self, module_parsers):
         if not isinstance(module_parsers, list):
@@ -70,10 +69,11 @@ class ModuleLoader(object):
             if not self._valid_filepath(filepath):
                 continue
 
-            name = util.get_module_name(filepath)
-            plugin_module_name = util.create_unique_module_name(name)
+            name = yapsy_util.get_module_name(filepath)
+            plugin_module_name = yapsy_util.create_unique_module_name(name)
 
-            spec = importlib.util.spec_from_file_location(plugin_module_name, filepath)
+            spec = importlib.util.spec_from_file_location(plugin_module_name,
+                                                          filepath)
             try:
                 module = spec.loader.load_module()
                 self.loaded_modules.update(module.__name__)
@@ -85,7 +85,9 @@ class ModuleLoader(object):
         return self.loaded_modules
 
     def _process_filepath(self, filepath):
-        if os.path.isdir(filepath) and os.path.isfile(os.path.join(filepath, '__init__.py')):
+        if (os.path.isdir(filepath) and
+                os.path.isfile(os.path.join(filepath, '__init__.py'))):
+
             filepath = os.path.join(filepath, '__init__.py')
 
         if not filepath.endswith('.py'):
@@ -93,8 +95,9 @@ class ModuleLoader(object):
         return filepath
 
     def _valid_filepath(self, filepath):
-        valid = True 
-        if filepath in self.blacklisted_filepaths or filepath in self.processed_filepaths:
+        valid = True
+        if (filepath in self.blacklisted_filepaths or
+            filepath in self.processed_filepaths):
             valid = False
 
         return valid
@@ -102,6 +105,6 @@ class ModuleLoader(object):
     def _update_internal_state(self):
         system_modules = sys.modules.keys()
         for module, filepath in self.loaded_modules.items():
-            if not module in system_modules:
+            if module not in system_modules:
                 self.processed_filepaths.pop(filepath)
                 self.loaded_modules.pop(module)
