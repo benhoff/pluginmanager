@@ -1,18 +1,17 @@
 language: python
 python:
-  - "2.6"
-  - "2.7"
-  - "3.2"
-  - "3.3"
   - "3.4"
 
 # command to install dependencies
 install:
-  - pip install -r requirements-tests.txt
+  - pip install flake8
 
 # command to run tests
+before_script:
+  - flake8 simpleyapsy
 script: 
-  - coverage run package/setup.py test
+  - coverage run -m unittest discover
 
 after_success:
+  - coverage report
   - coveralls
