@@ -11,10 +11,10 @@ from simpleyapsy import util
 class ModuleLoader(object):
     def __init__(self, 
                  module_parsers=[SubclassParser()],
-                 blacklist_filepaths=[]):
+                 blacklisted_filepaths=set()):
 
-        self.loaded_modules = {}
-        self.processed_filepaths = []
+        self.loaded_modules = set()
+        self.processed_filepaths = set()
         self.module_parsers = module_parsers
         self.blacklisted_filepaths = blacklist_filepaths
 
@@ -29,13 +29,11 @@ class ModuleLoader(object):
         self.module_parsers.extend(module_parsers)
 
     def blacklist_filepaths(self, filepaths):
-        if not isinstance(filepaths, list):
-            filepaths = list(filepaths)
-        self.blacklisted_filepaths.extend(filepaths)
+        self.blacklisted_filepaths.update(filepaths)
 
     def set_blacklisted_filepaths(self, filepaths):
-        if not isinstance(filepaths, list):
-            filepaths = list(filepaths)
+        if not isinstance(filepaths, set):
+            filepaths = set(filepaths)
         self.blacklisted_filepaths = filepaths
 
     def get_blacklisted_filepaths(self):
@@ -62,36 +60,27 @@ class ModuleLoader(object):
     def load_modules(self, filepaths):
         # removes filepaths from processed if they are not in sys.modules
         self._update_internal_state()
-        if isinstance(filepaths, dict):
-            filepaths = filepaths.keys()
-            plugin_infos = filepaths.values()
-
         # handle case of single filepath passed in
-        if not isinstance(filepaths, list) and not isinstance(filepaths, types.GeneratorType):
-            filepaths = list(filepaths)
+        if not isinstance(filepaths, list) or not isinstance(filepaths, set):
+            filepaths = set(filepaths)
 
-        for index, filepath in enumerate(filepaths):
+        for filepath in filepaths:
             filepath = self._process_filepath(filepath)
             # check to see if blacklisted or already processed
             if not self._valid_filepath(filepath):
                 continue
-            try:
-                plugin_info = plugin_infos[index]
-                plugin_module_name = _create_unique_module_name(plugin_info)
-            except NameError:
-                # no plugin_info object, so let's make one
-                name = util.get_module_name(filepath)
-                plugin_info = {'path':filepath, 'name':name}
-                plugin_module_name = util.create_unique_module_name(name)
+
+            name = util.get_module_name(filepath)
+            plugin_module_name = util.create_unique_module_name(name)
 
             spec = importlib.util.spec_from_file_location(plugin_module_name, filepath)
             try:
                 module = spec.loader.load_module()
-                self.loaded_modules[module.__name__] = plugin_info
+                self.loaded_modules.update(module.__name__)
             except ImportError:
                 pass
 
-            self.processed_filepaths.append(filepath)
+            self.processed_filepaths.update(filepath)
 
         return self.loaded_modules
 
@@ -114,5 +103,5 @@ class ModuleLoader(object):
         system_modules = sys.modules.keys()
         for module, filepath in self.loaded_modules.items():
             if not module in system_modules:
-                self.processed_filepaths.remove(filepath)
+                self.processed_filepaths.pop(filepath)
                 self.loaded_modules.pop(module)
