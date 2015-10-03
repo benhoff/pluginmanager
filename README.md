@@ -9,3 +9,8 @@ python plugin management, simplified.
     # Work with plugins here
 
 Library currently under heavy development
+
+### Installation
+    pip install git+https://github.com/benhoff/simpleyapsy.git
+
+API is currently too unstable to push to PyPi at this time
