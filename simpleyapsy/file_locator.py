@@ -1,4 +1,6 @@
 import os
+import sys
+import distutils
 
 from simpleyapsy.file_getters import WithInfoFileGetter
 
@@ -27,6 +29,9 @@ class FileLocator(object):
 
     def set_plugin_directories(self, paths):
         self.plugin_directories = paths
+
+    def add_site_packages_path(self):
+        self.add_plugin_directories(distutils.sysconfig.get_python_lib())
 
     def set_file_getters(self, file_getters):
         self.file_getters = file_getters
