@@ -18,7 +18,7 @@ class Interface(object):
     def add_plugin_directories(self, paths):
         self.file_locator.add_plugin_directories(paths)
 
-    def set_plugin_locations(self, paths):
+    def set_plugin_directories(self, paths):
         self.file_locator.set_plugin_directories(paths)
 
     def set_file_getters(self, file_getters):
