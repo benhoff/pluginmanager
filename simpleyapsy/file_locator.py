@@ -96,4 +96,5 @@ class FileLocator(object):
         # alias out to meet <80 character line pep req
         abspath = os.path.abspath
         self.plugin_directories = [abspath(x) for x in self.plugin_directories]
-        self.plugin_directories = set(self.plugin_directories)
+        # casting to set removes dups, casting back to list for type
+        self.plugin_directories = list(set(self.plugin_directories))
