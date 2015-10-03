@@ -10,12 +10,12 @@ class PluginManager(object):
 
     def add_plugins(self, plugins):
         if not isinstance(plugins, list):
-            plugins = list(plugins)
+            plugins = [plugins]
         self.plugins.extend(plugins)
 
     def set_plugins(self, plugins):
         if not isinstance(plugins, list):
-            plugins = list(plugins)
+            plugins = [plugins]
         self.plugins = plugins
 
     def get_active_plugins(self):
