@@ -22,7 +22,7 @@ class IPlugin(object):
         Called when the plugin is disabled.
         """
         self.active = False
-        
+
     def get_configuration_template(self):
         """
         If your plugin needs a configuration, override this method and return
@@ -32,10 +32,10 @@ class IPlugin(object):
         Note: if this method returns None, the plugin won't be configured
         """
         return None
-        
+
     def check_configuration(self, configuration):
         # TODO: Implement a sensible default
         pass
-        
+
     def configure(self, configuration):
         self.config = configuration

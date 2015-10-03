@@ -20,7 +20,7 @@ class Interface(object):
 
     def set_plugin_directories(self, paths):
         self.file_locator.set_plugin_directories(paths)
-    
+
     def add_site_packages_path(self):
         self.file_locator.add_site_packages_path()
 

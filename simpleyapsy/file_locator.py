@@ -1,5 +1,4 @@
 import os
-import sys
 import distutils
 
 from simpleyapsy.file_getters import WithInfoFileGetter
@@ -24,37 +23,31 @@ class FileLocator(object):
         self.plugin_files = set()
 
     def add_plugin_directories(self, paths):
+        if not isinstance(paths, list):
+            paths = [paths]
+
         unique_paths = set.union(set(paths), set(self.plugin_directories))
         self.plugin_directories = list(unique_paths)
 
     def set_plugin_directories(self, paths):
+        if not isinstance(paths, list):
+            paths = [paths]
         self.plugin_directories = paths
 
     def add_site_packages_path(self):
         self.add_plugin_directories(distutils.sysconfig.get_python_lib())
 
     def set_file_getters(self, file_getters):
+        if not isinstance(file_getters, list):
+            file_getters = [file_getters]
+
         self.file_getters = file_getters
 
     def add_file_getters(self, file_getters):
         if not isinstance(file_getters, list):
-            file_getters = list(file_getters)
+            file_getters = [file_getters]
 
         self.file_getters.extend(file_getters)
-
-    def remove_getter_by_param(self, param_name, param_value):
-        """
-        Removes analyzers of a given name.
-        """
-        removed = False
-        for getter in self.file_getters:
-            if (hasattr(getter, param_name) and
-                    getattr(getter, param_name) == param_value):
-
-                self.file_getters.remove(getter)
-                removed = True
-                break
-        return removed
 
     def locate_files(self):
         """
@@ -103,3 +96,4 @@ class FileLocator(object):
         # alias out to meet <80 character line pep req
         abspath = os.path.abspath
         self.plugin_directories = [abspath(x) for x in self.plugin_directories]
+        self.plugin_directories = set(self.plugin_directories)

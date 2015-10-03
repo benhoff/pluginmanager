@@ -13,11 +13,13 @@ class WithInfoFileGetter(object):
         self.extensions = extensions
 
     def set_file_extensions(self, extensions):
+        if not isinstance(extensions, list):
+            extensions = [extensions]
         self.extensions = extensions
 
     def add_file_extensions(self, extensions):
         if not isinstance(extensions, list):
-            extensions = list(extensions)
+            extensions = [extensions]
 
         self.extensions.extend(extensions)
 
