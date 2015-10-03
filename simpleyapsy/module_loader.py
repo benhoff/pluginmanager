@@ -19,20 +19,23 @@ class ModuleLoader(object):
 
     def set_module_parsers(self, module_parsers):
         if not isinstance(module_parsers, list):
-            module_parsers = list(module_parsers)
+            module_parsers = [module_parsers]
         self.module_parsers = module_parsers
 
     def add_module_parsers(self, module_parsers):
         if not isinstance(module_parsers, list):
-            module_parsers = list(module_parsers)
+            module_parsers = [module_parsers]
         self.module_parsers.extend(module_parsers)
 
     def blacklist_filepaths(self, filepaths):
+        if not isinstance(filepaths, list):
+            filepaths = [filepaths]
         self.blacklisted_filepaths.update(filepaths)
 
     def set_blacklisted_filepaths(self, filepaths):
-        if not isinstance(filepaths, set):
-            filepaths = set(filepaths)
+        if not isinstance(filepaths, list):
+            # casting to a list first to handle single str case
+            filepaths = set([filepaths])
         self.blacklisted_filepaths = filepaths
 
     def get_blacklisted_filepaths(self):
