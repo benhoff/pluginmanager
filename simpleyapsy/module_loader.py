@@ -83,7 +83,7 @@ class ModuleLoader(object):
             except ImportError:
                 pass
 
-            self.processed_filepaths.update(filepath)
+            self.processed_filepaths.add(filepath)
 
         return self.loaded_modules
 

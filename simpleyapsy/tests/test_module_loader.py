@@ -40,3 +40,18 @@ class TestModuleLoader(unittest.TestCase):
         self.module_loader.set_blacklisted_filepaths(mulitple_dirs)
         self.assertIn(mulitple_dirs[0], self.module_loader.blacklisted_filepaths)
         
+    def test_valid_filepath(self):
+        blacklist_filepath = 'dir/blacklist'
+        processed_filepath = 'dir/processed'
+        test_filepath = 'dir/test'
+        self.module_loader.blacklist_filepaths(blacklist_filepath)
+        self.module_loader.processed_filepaths.add(processed_filepath)
+        # test blacklisted filepath
+        valid = self.module_loader._valid_filepath(blacklist_filepath)
+        self.assertFalse(valid)
+        # test processed_filepath
+        valid = self.module_loader._valid_filepath(processed_filepath)
+        self.assertFalse(valid)
+        # test regular dir 
+        valid = self.module_loader._valid_filepath(test_filepath)
+        self.assertTrue(valid)
