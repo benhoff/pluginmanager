@@ -1,3 +1,4 @@
+import os
 import unittest
 from simpleyapsy.module_loader import ModuleLoader
 
@@ -28,7 +29,8 @@ class TestModuleLoader(unittest.TestCase):
         test_filepaths = ['dir/d', 'dir/b']
         self.module_loader.blacklist_filepaths(test_filepaths)
         self.assertIn(test_filepath, self.module_loader.blacklisted_filepaths)
-        self.assertIn(test_filepaths[0], self.module_loader.blacklisted_filepaths)
+        self.assertIn(test_filepaths[0],
+                      self.module_loader.blacklisted_filepaths)
 
     def test_set_blacklist_filepaths(self):
         removed_dir = 'test/dir'
@@ -38,8 +40,9 @@ class TestModuleLoader(unittest.TestCase):
         self.assertIn(single_dir, self.module_loader.blacklisted_filepaths)
         mulitple_dirs = ['dir/a', 'dir/b']
         self.module_loader.set_blacklisted_filepaths(mulitple_dirs)
-        self.assertIn(mulitple_dirs[0], self.module_loader.blacklisted_filepaths)
-        
+        self.assertIn(mulitple_dirs[0],
+                      self.module_loader.blacklisted_filepaths)
+
     def test_valid_filepath(self):
         blacklist_filepath = 'dir/blacklist'
         processed_filepath = 'dir/processed'
@@ -52,6 +55,15 @@ class TestModuleLoader(unittest.TestCase):
         # test processed_filepath
         valid = self.module_loader._valid_filepath(processed_filepath)
         self.assertFalse(valid)
-        # test regular dir 
+        # test regular dir
         valid = self.module_loader._valid_filepath(test_filepath)
         self.assertTrue(valid)
+
+    def test_process_filepath(self):
+        test_dir = os.path.dirname(__file__)
+        expected_filepath = os.path.join(test_dir, '__init__.py')
+        processed_file = self.module_loader._process_filepath(test_dir)
+        self.assertEqual(expected_filepath, processed_file)
+        no_ext = expected_filepath[:-3]
+        processed_ext = self.module_loader._process_filepath(no_ext)
+        self.assertEqual(processed_ext, expected_filepath)
