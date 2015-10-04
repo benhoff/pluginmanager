@@ -39,10 +39,10 @@ class TestFileLocator(unittest.TestCase):
 
     def test_locate_files(self):
         test_dir = os.getcwd()
-        plugin_file = tempfile.NamedTemporaryFile(suffix='yapsy-plugin',
+        plugin_file = tempfile.NamedTemporaryFile(suffix='.yapsy-plugin',
                                                   dir=test_dir)
 
-        fake_python = tempfile.NamedTemporaryFile(suffix='py',
+        fake_python = tempfile.NamedTemporaryFile(suffix='.py',
                                                   dir=test_dir)
 
         python_file_name = fake_python.name
