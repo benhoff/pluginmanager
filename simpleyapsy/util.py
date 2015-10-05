@@ -4,7 +4,7 @@ import sys
 
 def get_module_name(filepath):
     if filepath.endswith('__init__.py'):
-        name = os.path.dirname(filepath)
+        name = os.path.basename(os.path.dirname(filepath))
     else:
         name = os.path.splitext(os.path.basename(filepath))[0]
     return name
@@ -18,11 +18,11 @@ def create_unique_module_name(plugin_info_or_name):
     else:
         name = plugin_info_or_name
 
-    module_template = 'yapsy_plugin_{name}'.format(name)
+    module_template = 'yapsy_plugin_{}'.format(name)
     module_template += '_{number}'
     number = 0
     while True:
-        module_name = module_template.format(number)
+        module_name = module_template.format(number=number)
         if module_name not in sys.modules:
             break
         number += 1
