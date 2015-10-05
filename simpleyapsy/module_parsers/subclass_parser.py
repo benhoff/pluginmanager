@@ -12,7 +12,7 @@ class SubclassParser(object):
 
         # NOTE: `name` unused here but left for documentation
         for name, value in module_members:
-            if issubclass(value, self.klass):
+            if issubclass(value, self.klass) and not value == IPlugin:
                 plugins.append(value)
 
         return plugins
