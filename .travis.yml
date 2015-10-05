@@ -15,10 +15,8 @@ install:
 # command to run tests
 script: 
   - coverage run -m unittest discover
-
+  - flake8 simpleyapsy
+  
 after_success:
   - coverage report
   - coveralls
-
-after_script:
-  - flake8 simpleyapsy
