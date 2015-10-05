@@ -13,11 +13,12 @@ install:
   - pip install python-coveralls
 
 # command to run tests
-before_script:
-  - flake8 simpleyapsy
 script: 
   - coverage run -m unittest discover
 
 after_success:
   - coverage report
   - coveralls
+
+after_script:
+  - flake8 simpleyapsy
