@@ -40,7 +40,7 @@ class WithInfoFileGetter(object):
 
         for plugin_info in plugin_infos:
             path = plugin_info['path']
-            plugin_filepaths.update(path)
+            plugin_filepaths.add(path)
 
         return plugin_filepaths
 
@@ -105,10 +105,10 @@ class WithInfoFileGetter(object):
 
     def _valid_config(self, config):
         valid_config = False
-        if "Name" in config and "Module" in config:
+        if "name" in config and "path" in config:
             valid_config = True
 
-        name = config["Name"]
+        name = config['name']
         name = name.strip()
         if PLUGIN_FORBIDDEN_NAME in name:
             valid_config = False

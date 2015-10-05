@@ -37,27 +37,6 @@ class TestFileLocator(unittest.TestCase):
         self.file_locator.add_file_getters(test_obj)
         self.assertIn(test_obj, self.file_locator.file_getters)
 
-    def test_locate_files(self):
-        test_dir = os.getcwd()
-        plugin_file = tempfile.NamedTemporaryFile(suffix='.yapsy-plugin',
-                                                  dir=test_dir)
-
-        fake_python = tempfile.NamedTemporaryFile(suffix='.py',
-                                                  dir=test_dir)
-
-        python_file_name = fake_python.name
-        yapsy_contents = """
-        [Core]\n
-        Name = Test\n
-        Module = {}\n""".format(python_file_name)
-        yapsy_contents = bytes(yapsy_contents, 'utf-8')
-
-        plugin_file.write(yapsy_contents)
-
-        self.file_locator.set_plugin_directories(test_dir)
-        files = self.file_locator.get_plugin_filepaths()
-        self.assertIn(fake_python.name, files)
-
     def test_get_dir_iterator_recursive(self):
         dir = os.path.dirname(__file__)
         test_dir = os.path.join(dir, '..')
