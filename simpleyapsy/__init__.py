@@ -6,4 +6,5 @@ from .module_loader import ModuleLoader
 from .plugin_manager import PluginManager
 from .interface import Interface
 
-__all__ = ["iplugin", "file_locator", "module_loader", "plugin_manager", "interface"]
+__all__ = ["IPlugin", "FileLocator", "ModuleLoader", 
+           "PluginManager", "Interface"]
