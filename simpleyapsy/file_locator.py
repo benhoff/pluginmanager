@@ -2,6 +2,7 @@ import os
 import distutils
 
 from simpleyapsy.file_getters import WithInfoFileGetter
+from simpleyapsy import util
 
 
 class FileLocator(object):
@@ -23,30 +24,23 @@ class FileLocator(object):
         self.plugin_files = set()
 
     def add_plugin_directories(self, paths):
-        if not isinstance(paths, list):
-            paths = [paths]
-
+        paths = util.return_list(paths)
         unique_paths = set.union(set(paths), set(self.plugin_directories))
         self.plugin_directories = list(unique_paths)
 
     def set_plugin_directories(self, paths):
-        if not isinstance(paths, list):
-            paths = [paths]
+        paths = util.return_list(paths)
         self.plugin_directories = paths
 
     def add_site_packages_path(self):
         self.add_plugin_directories(distutils.sysconfig.get_python_lib())
 
     def set_file_getters(self, file_getters):
-        if not isinstance(file_getters, list):
-            file_getters = [file_getters]
-
+        file_getters = util.return_list(file_getters)
         self.file_getters = file_getters
 
     def add_file_getters(self, file_getters):
-        if not isinstance(file_getters, list):
-            file_getters = [file_getters]
-
+        file_getters = util.return_list(file_getters)
         self.file_getters.extend(file_getters)
 
     def locate_files(self):

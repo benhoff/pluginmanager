@@ -1,3 +1,4 @@
+from simpleyapsy import util
 class PluginManager(object):
     def __init__(self):
         self.plugins = []
@@ -10,16 +11,13 @@ class PluginManager(object):
         self.blacklisted_plugins.extend(plugins)
 
     def add_plugins(self, plugins):
-        if not isinstance(plugins, list):
-            plugins = [plugins]
-
+        plugins = util.return_list(plugins)
         for plugin in plugins:
             if plugin not in self.blacklisted_plugins:
                 self.plugins.append(plugin)
 
     def set_plugins(self, plugins):
-        if not isinstance(plugins, list):
-            plugins = [plugins]
+        plugins = util.return_list(plugins)
         self.plugins = []
 
         for plugin in plugins:

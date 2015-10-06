@@ -37,3 +37,9 @@ def get_filepaths_from_dir(dir_path):
         if os.path.isfile(filepath):
             filepaths.append(filepath)
     return filepaths
+
+def return_list(object):
+    if not isinstance(object, list):
+        return [object]
+    else:
+        return object

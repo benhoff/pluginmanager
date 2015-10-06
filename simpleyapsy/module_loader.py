@@ -18,24 +18,20 @@ class ModuleLoader(object):
         self.blacklisted_filepaths = blacklisted_filepaths
 
     def set_module_parsers(self, module_parsers):
-        if not isinstance(module_parsers, list):
-            module_parsers = [module_parsers]
+        module_parsers = yapsy_util.return_list(module_parsers)
         self.module_parsers = module_parsers
 
     def add_module_parsers(self, module_parsers):
-        if not isinstance(module_parsers, list):
-            module_parsers = [module_parsers]
+        module_parsers = yapsy_util.return_list(module_parsers)
         self.module_parsers.extend(module_parsers)
 
     def blacklist_filepaths(self, filepaths):
-        if not isinstance(filepaths, list):
-            filepaths = [filepaths]
+        filepaths = yapsy_util.return_list(filepaths)
         self.blacklisted_filepaths.update(filepaths)
 
     def set_blacklisted_filepaths(self, filepaths):
-        if not isinstance(filepaths, list):
-            # casting to a list first to handle single str case
-            filepaths = set([filepaths])
+        filepaths = yapsy_util.return_list(filepaths)
+        filepaths = set(filepaths)
         self.blacklisted_filepaths = filepaths
 
     def get_blacklisted_filepaths(self):
