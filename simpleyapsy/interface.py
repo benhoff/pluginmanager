@@ -30,9 +30,6 @@ class Interface(object):
     def add_file_getters(self, file_getters):
         self.file_locator.add_file_getters(file_getters)
 
-    def remove_file_getter_by_param(self, param_name, param_value):
-        self.file_locator.remove_getter_by_param(param_name, param_value)
-
     def get_plugin_locations(self):
         located_plugins = self.file_locator.locate_plugins()
         return located_plugins
@@ -58,59 +55,28 @@ class Interface(object):
     def reload_modules(self, module_or_module_name):
         self.module_loader.reload_module(module_or_module_name)
 
-    def get_plugins(self,
-                    names=None,
-                    klasses=None,
-                    categories=None,
-                    version=None):
-
+    def get_plugins(self):
         if self.managing_state:
-            loaded_plugins = self.load_plugins(names,
-                                               klasses,
-                                               categories,
-                                               version)
-
+            loaded_plugins = self.load_plugins()
             self.plugin_manager.set_plugins(loaded_plugins)
 
-        plugins = self.plugin_manager.get_plugins(names,
-                                                  klasses,
-                                                  categories,
-                                                  version)
-
+        plugins = self.plugin_manager.get_plugins()
         return plugins
 
-    def get_plugin_infos(self,
-                         names=None,
-                         klasses=None,
-                         categories=None,
-                         version=None):
+    def get_active_plugins(self):
+        return self.plugin_manager.get_active_plugins()
 
-        pass
+    def set_plugins(self, plugins):
+        self.plugin_manager.set_plugins(plugins)
 
-    def get_active_plugins(self,
-                           names=None,
-                           klasses=None,
-                           categories=None,
-                           version=None):
+    def add_plugins(self, plugins):
+        self.plugin_manager.add_plugins(plugins)
 
-        active_plugins = self.plugin_manager.get_active_plugins(names,
-                                                                klasses,
-                                                                categories,
-                                                                version)
+    def activate_all_plugins(self):
+        self.plugin_manager.activate_all_plugins()
 
-        return active_plugins
+    def deactivate_all_plugins(self):
+        self.plugin_manager.deactivate_all_plugins()
 
-    def activate_plugins(self,
-                         names=None,
-                         klasses=None,
-                         categories=None,
-                         version=None):
-
-        self.plugin_manager.activate_plugins(names,
-                                             klasses,
-                                             categories,
-                                             version)
-
-    def set_plugins(self, plugin):
-        if self.managing_state:
-            pass
+    def blacklist_plugin(self, plugins):
+        self.plugin_manager.blacklist_plugins(plugins)
