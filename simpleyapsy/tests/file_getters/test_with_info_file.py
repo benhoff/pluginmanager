@@ -31,7 +31,7 @@ class TestWithInfoFileGetter(unittest.TestCase):
         test_dir = tempfile.TemporaryDirectory()
         file_template = test_dir.name + 'plugin.{}'
         plugin_file = open(file_template.format('yapsy-plugin'), 'w+')
-        fake_python = open(file_template.format('py', 'w+')
+        fake_python = open(file_template.format('py', 'w+'))
 
         python_file_name = fake_python.name[:-3]
         yapsy_contents = """
@@ -49,7 +49,7 @@ class TestWithInfoFileGetter(unittest.TestCase):
         test_dir = tempfile.TemporaryDirectory()
         file_template = test_dir.name + 'plugin.{}'
         plugin_file = open(file_template.format('yapsy-plugin'), 'w+')
-        fake_python = open(file_template.format('py', 'w+')
+        fake_python = open(file_template.format('py', 'w+'))
 
         python_file_name = fake_python.name[:-3]
         yapsy_contents = """
