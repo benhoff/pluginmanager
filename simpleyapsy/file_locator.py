@@ -63,7 +63,7 @@ class FileLocator(object):
             for dir_path in dir_paths:
                 # Can have more than one file getter
                 filepaths = self._file_getter_iterator_helper(dir_path)
-                self.plugin_files.update(filepaths)
+                self.plugin_files.add(filepaths)
 
         return self.plugin_files
 
