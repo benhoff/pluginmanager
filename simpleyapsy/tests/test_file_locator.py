@@ -1,6 +1,5 @@
 import os
 import unittest
-import tempfile
 from simpleyapsy.file_locator import FileLocator
 
 

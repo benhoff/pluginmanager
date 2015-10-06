@@ -1,4 +1,3 @@
-import os
 import unittest
 import tempfile
 from simpleyapsy.file_getters import WithInfoFileGetter

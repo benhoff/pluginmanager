@@ -1,5 +1,5 @@
-from simpleyapsy.iplugin import IPlugin
 import inspect
+from simpleyapsy.iplugin import IPlugin
 
 
 class SubclassParser(object):
@@ -12,7 +12,10 @@ class SubclassParser(object):
 
         # NOTE: `name` unused here but left for documentation
         for name, value in module_members:
-            if issubclass(value, self.klass) and not value == IPlugin:
+            if (isinstance(value, type) and
+                    issubclass(value, self.klass) and
+                    not value == IPlugin):
+
                 plugins.append(value)
 
         return plugins

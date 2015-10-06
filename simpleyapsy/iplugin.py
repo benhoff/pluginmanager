@@ -31,11 +31,17 @@ class IPlugin(object):
         return {'LOGIN' : 'example@example.com', 'PASSWORD' : 'password'}
         Note: if this method returns None, the plugin won't be configured
         """
-        return None
+        return {}
 
     def check_configuration(self, configuration):
-        # TODO: Implement a sensible default
-        pass
+        config_template = self.get_configuration_template()
+        for key in config_template.keys():
+            if key not in configuration:
+                error = '{} doesn\'t contain the key {}'.format(configuration,
+                                                                key)
+
+                raise Exception(error)
+        return True
 
     def configure(self, configuration):
         self.config = configuration
