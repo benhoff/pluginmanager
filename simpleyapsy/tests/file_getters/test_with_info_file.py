@@ -39,7 +39,6 @@ class TestWithInfoFileGetter(unittest.TestCase):
         [Core]\n
         Name = Test\n
         Module = {}\n""".format(python_file_name)
-        yapsy_contents = bytes(yapsy_contents, 'utf-8')
 
         plugin_file.write(yapsy_contents)
         plugin_file.seek(0)
@@ -57,7 +56,6 @@ class TestWithInfoFileGetter(unittest.TestCase):
         [Core]\n
         Name = Test\n
         Module = {}\n""".format(python_file_name)
-        yapsy_contents = bytes(yapsy_contents, 'utf-8')
 
         plugin_file.write(yapsy_contents)
         plugin_file.seek(0)
