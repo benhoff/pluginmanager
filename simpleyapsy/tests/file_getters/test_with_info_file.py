@@ -48,7 +48,7 @@ class TestWithInfoFileGetter(unittest.TestCase):
         self.assertNotEqual(info, [])
 
     def test_get_plugin_filepath(self):
-        with tempfile.TemporaryDirectory() as test_dir
+        with tempfile.TemporaryDirectory() as test_dir:
             file_template = os.path.join(test_dir.name, 'plugin.{}')
             plugin_file = open(file_template.format('yapsy-plugin'), 'w+')
             fake_python = open(file_template.format('py'), 'w+')
