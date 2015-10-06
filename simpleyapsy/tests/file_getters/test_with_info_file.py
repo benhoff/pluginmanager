@@ -42,6 +42,8 @@ class TestWithInfoFileGetter(unittest.TestCase):
 
         plugin_file.write(yapsy_contents)
         plugin_file.seek(0)
+        plugin_file.close()
+        fake_python.close()
         info = self.file_getter.get_plugin_infos(test_dir.name)
         self.assertNotEqual(info, [])
 
@@ -50,7 +52,7 @@ class TestWithInfoFileGetter(unittest.TestCase):
         file_template = os.path.join(test_dir.name, 'plugin.{}')
         plugin_file = open(file_template.format('yapsy-plugin'), 'w+')
         fake_python = open(file_template.format('py'), 'w+')
-
+        
         python_file_name = fake_python.name[:-3]
         yapsy_contents = """
         [Core]\n
@@ -59,6 +61,7 @@ class TestWithInfoFileGetter(unittest.TestCase):
 
         plugin_file.write(yapsy_contents)
         plugin_file.seek(0)
-
+        plugin_file.close()
+        fake_python.close()
         files = self.file_getter.get_plugin_filepaths(test_dir.name)
         self.assertIn(fake_python.name, files)
