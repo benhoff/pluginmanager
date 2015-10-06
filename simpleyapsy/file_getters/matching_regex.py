@@ -1,6 +1,5 @@
 import os
 import re
-
 from simpleyapsy import util
 
 
@@ -10,25 +9,32 @@ class MatchingRegexFileGetter(object):
     name match a given regex.
     """
     def __init__(self, regexp):
-        self.regex_expressions = regexp
+        if not isinstance(regexp, list):
+            regexp = [regexp]
+        regex_expressions = []
+        for regex in regexp:
+            regex_expressions.append(re.compile(regex))
+        self.regex_expressions = regex_expressions
 
     def set_regex_expressions(self, regex_expressions):
+        if not isinstance(regex_expressions, list):
+            regex_expressions = [regex_expressions]
         self.regex_expressions = regex_expressions
 
     def add_regex_expressions(self, regex_expressions):
         if not isinstance(regex_expressions, list):
-            regex_expressions = list(regex_expressions)
+            regex_expressions = [regex_expressions]
         self.regex_expressions.extend(regex_expressions)
 
     def plugin_valid(self, filename):
         """
         Checks if the given filename is a valid plugin for this Strategy
         """
-        plugin_valid = False
-        reg = re.compile(self.regexp)
-        if reg.match(filename):
-                plugin_valid = True
-        return plugin_valid
+        filename = os.path.basename(filename)
+        for regex in self.regex_expressions:
+            if regex.match(filename):
+                return True
+        return False
 
     def get_info_and_filepaths(self, dir_path):
         pass
