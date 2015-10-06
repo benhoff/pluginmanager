@@ -1,4 +1,6 @@
 from simpleyapsy import util
+
+
 class PluginManager(object):
     def __init__(self):
         self.plugins = []

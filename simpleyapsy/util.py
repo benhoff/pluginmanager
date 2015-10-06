@@ -38,6 +38,7 @@ def get_filepaths_from_dir(dir_path):
             filepaths.append(filepath)
     return filepaths
 
+
 def return_list(object):
     if not isinstance(object, list):
         return [object]
