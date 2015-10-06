@@ -30,7 +30,7 @@ class TestWithInfoFileGetter(unittest.TestCase):
 
     def test_get_plugin_info(self):
         with tempfile.TemporaryDirectory() as test_dir:
-            file_template = os.path.join(test_dir.name, 'plugin.{}')
+            file_template = os.path.join(test_dir, 'plugin.{}')
             plugin_file = open(file_template.format('yapsy-plugin'), 'w+')
             fake_python = open(file_template.format('py'), 'w+')
 
@@ -41,15 +41,14 @@ class TestWithInfoFileGetter(unittest.TestCase):
             Module = {}\n""".format(python_file_name)
 
             plugin_file.write(yapsy_contents)
-            plugin_file.seek(0)
             plugin_file.close()
             fake_python.close()
-            info = self.file_getter.get_plugin_infos(test_dir.name)
+            info = self.file_getter.get_plugin_infos(test_dir)
         self.assertNotEqual(info, [])
 
     def test_get_plugin_filepath(self):
         with tempfile.TemporaryDirectory() as test_dir:
-            file_template = os.path.join(test_dir.name, 'plugin.{}')
+            file_template = os.path.join(test_dir, 'plugin.{}')
             plugin_file = open(file_template.format('yapsy-plugin'), 'w+')
             fake_python = open(file_template.format('py'), 'w+')
 
@@ -60,8 +59,7 @@ class TestWithInfoFileGetter(unittest.TestCase):
             Module = {}\n""".format(python_file_name)
 
             plugin_file.write(yapsy_contents)
-            plugin_file.seek(0)
             plugin_file.close()
             fake_python.close()
-            files = self.file_getter.get_plugin_filepaths(test_dir.name)
+            files = self.file_getter.get_plugin_filepaths(test_dir)
         self.assertIn(fake_python.name, files)
