@@ -26,13 +26,6 @@ class PluginManager(object):
             if plugin not in self.blacklisted_plugins:
                 self.plugins.append(plugin)
 
-    def get_active_plugins(self):
-        active_plugins = []
-        for plugin in self.plugins:
-            if plugin.active:
-                active_plugins.append(plugin)
-        return active_plugins
-
     def deactivate_all_plugins(self):
         for plugin in self.plugins:
             plugin.deactivate()
