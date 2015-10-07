@@ -25,11 +25,3 @@ class PluginManager(object):
         for plugin in plugins:
             if plugin not in self.blacklisted_plugins:
                 self.plugins.append(plugin)
-
-    def deactivate_all_plugins(self):
-        for plugin in self.plugins:
-            plugin.deactivate()
-
-    def activate_all_plugins(self):
-        for plugin in self.plugins:
-            plugin.activate()
