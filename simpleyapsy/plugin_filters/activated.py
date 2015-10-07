@@ -1,4 +1,4 @@
-def active(plugins):
+def activated(plugins):
     activated = []
     for pluign in plugins:
         if plugin.active:
