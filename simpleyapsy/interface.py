@@ -1,6 +1,7 @@
 from .file_locator import FileLocator
 from .plugin_manager import PluginManager
 from .module_loader import ModuleLoader
+from .directory_manager import DirectoryManager
 
 
 class Interface(object):
@@ -14,15 +15,19 @@ class Interface(object):
         self.file_locator = file_locator
         self.module_loader = module_loader
         self.plugin_manager = plugin_manager
+        self.directory_manager = DirectoryManager()
 
     def add_plugin_directories(self, paths):
-        self.file_locator.add_plugin_directories(paths)
+        self.directory_manager.add_directories(paths)
 
     def set_plugin_directories(self, paths):
-        self.file_locator.set_plugin_directories(paths)
+        self.directory_manager.set_directories(paths)
+
+    def get_plugin_directories(self):
+        return self.directory_manager.get_directories()
 
     def track_site_package_paths(self):
-        self.file_locator.add_site_packages_paths()
+        self.directory_manager.add_site_packages_paths()
 
     def set_file_getters(self, file_getters):
         self.file_locator.set_file_getters(file_getters)
@@ -31,10 +36,9 @@ class Interface(object):
         self.file_locator.add_file_getters(file_getters)
 
     def locate_plugin_filepaths(self, directories=None):
-        if directories:
-            return self.file_locator.locate_filepaths(directories)
-        else:
-            return self.file_locator.locate_filepaths()
+        if directories is None:
+            directories = self.get_plugin_directories()
+        return self.file_locator.locate_filepaths(directories)
 
     def get_plugin_filepaths(self):
         return self.file_locator.get_plugin_filepaths()
