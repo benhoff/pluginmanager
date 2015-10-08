@@ -21,8 +21,8 @@ class Interface(object):
     def set_plugin_directories(self, paths):
         self.file_locator.set_plugin_directories(paths)
 
-    def add_site_packages_path(self):
-        self.file_locator.add_site_packages_path()
+    def track_site_package_paths(self):
+        self.file_locator.add_site_packages_paths()
 
     def set_file_getters(self, file_getters):
         self.file_locator.set_file_getters(file_getters)
