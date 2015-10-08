@@ -28,7 +28,7 @@ class TestWithInfoFileGetter(unittest.TestCase):
         self.assertTrue(valid_filepath)
         self.assertFalse(unvalid_filepath)
 
-    def test_get_plugin_info(self):
+    def _create_tempfiles(self):
         with tempfile.TemporaryDirectory() as test_dir:
             file_template = os.path.join(test_dir, 'plugin.{}')
             plugin_file = open(file_template.format('yapsy-plugin'), 'w+')
@@ -44,22 +44,13 @@ class TestWithInfoFileGetter(unittest.TestCase):
             plugin_file.close()
             fake_python.close()
             info = self.file_getter.get_plugin_infos(test_dir)
+            files = self.file_getter.get_plugin_filepaths(test_dir)
+        return info, files
+
+    def test_get_plugin_info(self):
+        info, _ = self._create_tempfiles()
         self.assertNotEqual(info, [])
 
     def test_get_plugin_filepath(self):
-        with tempfile.TemporaryDirectory() as test_dir:
-            file_template = os.path.join(test_dir, 'plugin.{}')
-            plugin_file = open(file_template.format('yapsy-plugin'), 'w+')
-            fake_python = open(file_template.format('py'), 'w+')
-
-            python_file_name = fake_python.name[:-3]
-            yapsy_contents = """
-            [Core]\n
-            Name = Test\n
-            Module = {}\n""".format(python_file_name)
-
-            plugin_file.write(yapsy_contents)
-            plugin_file.close()
-            fake_python.close()
-            files = self.file_getter.get_plugin_filepaths(test_dir)
+        _, files = self._create_tempfiles()
         self.assertIn(fake_python.name, files)
