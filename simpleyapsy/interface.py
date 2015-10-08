@@ -30,9 +30,17 @@ class Interface(object):
     def add_file_getters(self, file_getters):
         self.file_locator.add_file_getters(file_getters)
 
-    def get_plugin_locations(self):
-        located_plugins = self.file_locator.locate_plugins()
-        return located_plugins
+    def get_plugin_filepaths(self, directories=None):
+        if directories and self.managing_state:
+            self.add_plugin_directories(directories)
+            filepaths = self.file_locator.locate_filepaths()
+        elif directories:
+            filepaths = self.file_locator.locate_filepaths(directories)
+        elif self.managing_state:
+            filepaths = self.file_locator.locate_filepaths()
+        else:
+            filepaths = self.file_locator.get_plugin_filepaths()
+        return filepaths
 
     def blacklist_filepaths(self, filepaths):
         self.module_loader.blacklist_filepaths(filepaths)
@@ -45,7 +53,7 @@ class Interface(object):
 
     def load_modules(self, filepaths=None):
         if filepaths is None:
-            filepaths = self.file_locator.get_plugin_filepaths()
+            filepaths = self.get_plugin_filepaths()
 
         self.module_loader.load_modules(filepaths)
         if self.managing_state:
