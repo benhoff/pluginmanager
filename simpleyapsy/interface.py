@@ -63,20 +63,11 @@ class Interface(object):
         plugins = self.plugin_manager.get_plugins()
         return plugins
 
-    def get_active_plugins(self):
-        return self.plugin_manager.get_active_plugins()
-
     def set_plugins(self, plugins):
         self.plugin_manager.set_plugins(plugins)
 
     def add_plugins(self, plugins):
         self.plugin_manager.add_plugins(plugins)
-
-    def activate_all_plugins(self):
-        self.plugin_manager.activate_all_plugins()
-
-    def deactivate_all_plugins(self):
-        self.plugin_manager.deactivate_all_plugins()
 
     def blacklist_plugin(self, plugins):
         self.plugin_manager.blacklist_plugins(plugins)
