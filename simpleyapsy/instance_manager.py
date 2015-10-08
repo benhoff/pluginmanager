@@ -8,9 +8,9 @@ class InstanceManager(object):
                  instantiate_classes=True):
 
         self.unique_instances = unique_instances
-        self.instanatiate_classes = instanatiate_classes
+        self.instantiate_classes = instantiate_classes
         self.instances = []
-    
+
     def _handle_class_instance(self, klass):
         if not self.instanatiate_classes:
             return
@@ -27,11 +27,11 @@ class InstanceManager(object):
                 self.instances.append(instance)
         else:
             self.instances.append(instance)
-    
+
     def _instance_parser(self, instances):
         instances = util.return_list(instances)
         for instance in instances:
-            if inspect.isclass(instace):
+            if inspect.isclass(instance):
                 self._handle_class_instance(instance)
             else:
                 self._handle_object_instance(instance)
@@ -70,15 +70,15 @@ class InstanceManager(object):
             result = instance.check_configuration(config_instance)
             results.append((name, result, config_instance))
         return results
-        
+
     def _parse_instance_helper(self, instances, unique_override=False):
         instances = util.return_list(instances)
         for instance in instances:
-            if (self.unique_instances and 
+            if (self.unique_instances and
                     self._unique_instance(instance) and not
                     unique_override):
-                
+
                 pass
 
-    def _unique_class(self, klass):
-        return not any(isinstance(instance, klass) for instance in self.instances)
+    def _unique_class(self, cls):
+        return not any(isinstance(obj, cls) for obj in self.instances)
