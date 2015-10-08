@@ -7,6 +7,7 @@ from simpleyapsy.file_getters import WithInfoFileGetter
 class TestWithInfoFileGetter(unittest.TestCase):
     def setUp(self):
         self.file_getter = WithInfoFileGetter()
+        self._plugin_file_name = 'plugin.{}'
 
     def test_set_file_extension(self):
         test_extension = 'test'
@@ -30,7 +31,9 @@ class TestWithInfoFileGetter(unittest.TestCase):
 
     def _create_tempfiles(self):
         with tempfile.TemporaryDirectory() as test_dir:
-            file_template = os.path.join(test_dir, 'plugin.{}')
+            file_template = os.path.join(test_dir,
+                                         self._plugin_file_name)
+
             plugin_file = open(file_template.format('yapsy-plugin'), 'w+')
             fake_python = open(file_template.format('py'), 'w+')
 
@@ -53,4 +56,6 @@ class TestWithInfoFileGetter(unittest.TestCase):
 
     def test_get_plugin_filepath(self):
         _, files = self._create_tempfiles()
-        self.assertIn(fake_python.name, files)
+        file_name = self._plugin_file_name.format('py')
+        python_file = os.path.basename(files.pop())
+        self.assertEqual(file_name, python_file)
