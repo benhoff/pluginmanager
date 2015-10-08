@@ -43,7 +43,7 @@ class FileLocator(object):
         file_getters = util.return_list(file_getters)
         self.file_getters.extend(file_getters)
 
-    def locate_files(self):
+    def locate_filepaths(self, directories=None):
         """
         Walk through the plugins' places and look for plugins.
 
