@@ -2,6 +2,7 @@ from .file_locator import FileLocator
 from .plugin_manager import PluginManager
 from .module_loader import ModuleLoader
 from .directory_manager import DirectoryManager
+from .instance_manager import InstanceManager
 
 
 class Interface(object):
@@ -9,6 +10,7 @@ class Interface(object):
                  file_locator=FileLocator(),
                  module_loader=ModuleLoader(),
                  plugin_manager=PluginManager(),
+                 instance_manager=InstanceManager(),
                  auto_manage_state=True):
 
         self.managing_state = auto_manage_state
@@ -16,6 +18,7 @@ class Interface(object):
         self.module_loader = module_loader
         self.plugin_manager = plugin_manager
         self.directory_manager = DirectoryManager()
+        self.instance_manager = instance_manager
 
     def add_plugin_directories(self, paths):
         self.directory_manager.add_directories(paths)
@@ -77,3 +80,26 @@ class Interface(object):
 
     def blacklist_plugin(self, plugins):
         self.plugin_manager.blacklist_plugins(plugins)
+
+    def add_instances(self, instances):
+        self.instance_manager.add_instances(instances)
+
+    def set_instances(self, instances):
+        self.instance_manager.set_instances(instances)
+
+    def instantiate_plugins(self, classes=None):
+        # TODO: get class's from plugin_manager
+        # instantiate and add
+        pass
+
+    def activate_instances(self):
+        pass
+
+    def configure_instances(self, config):
+        pass
+
+    def get_configuration_template(self):
+        pass
+
+    def check_configuration(self):
+        pass
