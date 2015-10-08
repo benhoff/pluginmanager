@@ -1,4 +1,3 @@
-import os
 import unittest
 from simpleyapsy.file_locator import FileLocator
 
@@ -23,7 +22,6 @@ class TestFileLocator(unittest.TestCase):
         test_obj = TestClass()
         self.file_locator.add_file_getters(test_obj)
         self.assertIn(test_obj, self.file_locator.file_getters)
-
 
 
 if __name__ == '__main__':

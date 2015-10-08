@@ -17,7 +17,8 @@ class TestDirectoryManager(unittest.TestCase):
         test_dir = 'my/plugin/dir'
         self.directory_manager.set_directories(test_dir)
         self.assertIn(test_dir, self.directory_manager.plugin_directories)
-        self.assertNotIn(current_dirs, self.directory_manager.plugin_directories)
+        self.assertNotIn(current_dirs,
+                         self.directory_manager.plugin_directories)
 
     def test_get_dir_iterator_recursive(self):
         directories = self.directory_manager.get_directories()

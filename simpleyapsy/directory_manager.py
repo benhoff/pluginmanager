@@ -3,8 +3,9 @@ import site
 
 from simpleyapsy import util
 
+
 class DirectoryManager(object):
-    def __init__(self, 
+    def __init__(self,
                  plugin_directories=set(),
                  recursive=True):
 

@@ -29,7 +29,7 @@ class FileLocator(object):
         """
         for directory in directories:
             # Can have more than one file getter
-            filepaths = self._file_getter_iterator_helper(dir_path)
+            filepaths = self._file_getter_iterator_helper(directory)
             self.plugin_files.add(filepaths)
 
         return self.plugin_files
