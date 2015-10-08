@@ -13,17 +13,19 @@ class InstanceManager(object):
         instances = util.return_list(instances)
         self.instances = instances
 
+    def activate_instances(self):
+        for instance in self.instances:
+            instance.activate()
+
+    def deactivate_instances(self):
+        for instance in self.instances:
+            instance.deactivate()
+
+    def get_configuration_templates(self):
+        pass
+
     def configure_instances(self, config):
         pass
 
-    def activate_instances(self):
-        pass
-
-    def deactivate_instances(self):
-        pass
-
-    def get_configuration_template(self):
-        pass
-
-    def check_configuration(self):
+    def check_configurations(self):
         pass

@@ -1,3 +1,4 @@
+import inspect
 from .file_locator import FileLocator
 from .plugin_manager import PluginManager
 from .module_loader import ModuleLoader
@@ -88,18 +89,22 @@ class Interface(object):
         self.instance_manager.set_instances(instances)
 
     def instantiate_plugins(self, classes=None):
-        # TODO: get class's from plugin_manager
-        # instantiate and add
-        pass
+        if self.managing_state:
+            isclass = inspect.isclass
+            plugin_classes = [x for x in self.get_plugins() if isclass(x)]
+            self.instance_manager.add_instances(plugin_classes)
 
     def activate_instances(self):
-        pass
+        self.instance_manager.activate_instances()
+
+    def deactivate_instances(self):
+        self.instance_manager.deactivate_instances()
 
     def configure_instances(self, config):
-        pass
+        self.instance_manager.configure_instances(config)
 
-    def get_configuration_template(self):
-        pass
+    def get_configuration_templates(self):
+        return self.instance_manager.get_configuration_templates()
 
-    def check_configuration(self):
+    def check_configurations(self):
         pass
