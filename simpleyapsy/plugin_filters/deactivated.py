@@ -1,6 +1,6 @@
 def deactived(plugins):
     deactivated = []
-    for pluign in plugins:
+    for plugin in plugins:
         if not plugin.active:
             deactivated.append(plugin)
 
