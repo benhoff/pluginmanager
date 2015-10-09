@@ -73,11 +73,21 @@ class Interface(object):
             modules = self.load_modules()
         return self.module_loader.get_plugins_from_modules(modules)
 
+    def collect_plugins(self):
+        plugins = self.get_plugins_from_modules()
+        self.add_plugins(plugins)
+        if self.managing_state:
+            self.instantiate_plugins(plugins)
+        return plugins
+
     def set_plugins(self, plugins):
         self.plugin_manager.set_plugins(plugins)
 
     def add_plugins(self, plugins):
         self.plugin_manager.add_plugins(plugins)
+
+    def get_plugins(self):
+        return self.plugin_manager.get_plugins()
 
     def blacklist_plugin(self, plugins):
         self.plugin_manager.blacklist_plugins(plugins)
@@ -93,6 +103,9 @@ class Interface(object):
             isclass = inspect.isclass
             plugin_classes = [x for x in self.get_plugins() if isclass(x)]
             self.instance_manager.add_instances(plugin_classes)
+
+    def get_instances(self):
+        return self.instance_manager.instances
 
     def activate_instances(self):
         self.instance_manager.activate_instances()
