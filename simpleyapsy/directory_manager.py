@@ -31,7 +31,7 @@ class DirectoryManager(object):
         except AttributeError:
             # getsitepackages is broken with virtualenvs
             # https://github.com/pypa/virtualenv/issues/355
-            from distuils.sysconfig import get_python_lib
+            from distutils.sysconfig import get_python_lib
             self.add_directories(get_python_lib())
 
     def get_directories(self):
