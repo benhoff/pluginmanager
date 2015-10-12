@@ -1,7 +1,7 @@
 import os
 try:
     from site import getsitepackages
-except AttributeError:
+except ImportError:
     # getsitepackages is broken with virtualenvs
     # https://github.com/pypa/virtualenv/issues/355
     from distutils.sysconfig import get_python_lib as getsitepackages
