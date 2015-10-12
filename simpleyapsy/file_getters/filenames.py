@@ -4,6 +4,7 @@ from simpleyapsy import util
 
 class FilenameFileGetter(object):
     def __init__(self, filenames=['__init__.py']):
+        filenames = util.return_list(filenames)
         self.filenames = filenames
 
     def plugin_valid(self, filename):
