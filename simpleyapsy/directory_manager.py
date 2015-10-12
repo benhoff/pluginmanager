@@ -26,7 +26,13 @@ class DirectoryManager(object):
         self.plugin_directories = set(paths)
 
     def add_site_packages_paths(self):
-        self.add_directories(site.getsitepackages())
+        try:
+            self.add_directories(site.getsitepackages())
+        except AttributeError:
+            # getsitepackages is broken with virtualenvs
+            # https://github.com/pypa/virtualenv/issues/355
+            from distuils.sysconfig import get_python_lib
+            self.add_directories(get_python_lib())
 
     def get_directories(self):
         self._plugin_dirs_to_absolute_paths()
