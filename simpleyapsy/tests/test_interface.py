@@ -6,7 +6,8 @@ class TestInterface(unittest.TestCase):
     def setUp(self):
         self.test_obj = type('', (), {})
         self.interface = Interface()
-
+    
+    """
     def test_add_plugin_directories(self):
         added_dir = 'simpleyapsy'
         self.interface.add_plugin_directories(added_dir)
@@ -20,6 +21,7 @@ class TestInterface(unittest.TestCase):
         directories = self.interface.get_plugin_directories()
         self.assertIn(set_dir, directories)
         self.assertNotIn(preset_dir, directories)
+    """
 
     def test_track_site_package_path(self):
         # TODO: better test method
@@ -37,6 +39,23 @@ class TestInterface(unittest.TestCase):
         self.interface.add_file_getters(self.test_obj)
         file_getters = self.interface.get_file_getters()
         self.assertIn(self.test_obj, file_getters)
+
+    def test_set_plugins(self):
+        self.interface.set_plugins(self.test_obj)
+        plugins = self.interface.get_plugins()
+        self.assertIn(self.test_obj, plugins)
+
+    def test_set_instances(self):
+        test_obj = self.test_obj()
+        self.interface.set_instances(test_obj)
+        instances = self.interface.get_instances()
+        self.assertIn(test_obj, instances)
+
+    def test_set_blacklist_filepath(self):
+        filepath = 'test/dir'
+        self.interface.set_blacklisted_filepaths(filepath)
+        blacklisted = self.interface.get_blacklisted_filepaths()
+        self.assertIn(filepath, blacklisted)
 
     def test_locate_plugin_filepaths(self):
         pass

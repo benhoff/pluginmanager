@@ -12,7 +12,7 @@ class InstanceManager(object):
         self.instances = []
 
     def _handle_class_instance(self, klass):
-        if not self.instanatiate_classes:
+        if not self.instantiate_classes:
             return
         if self.unique_instances and self._unique_class(klass):
             self.instances.append(klass())
