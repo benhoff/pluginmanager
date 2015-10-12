@@ -6,7 +6,6 @@ class TestInterface(unittest.TestCase):
     def setUp(self):
         self.test_obj = type('', (), {})
         self.interface = Interface()
-    
     """
     def test_add_plugin_directories(self):
         added_dir = 'simpleyapsy'
