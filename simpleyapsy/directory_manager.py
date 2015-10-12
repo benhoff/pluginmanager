@@ -26,7 +26,7 @@ class DirectoryManager(object):
         self.plugin_directories = set(paths)
 
     def add_site_packages_paths(self):
-        self.add_plugin_directories(site.getsitepackages())
+        self.add_directories(site.getsitepackages())
 
     def get_directories(self):
         self._plugin_dirs_to_absolute_paths()

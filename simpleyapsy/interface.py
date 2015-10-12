@@ -39,6 +39,9 @@ class Interface(object):
     def add_file_getters(self, file_getters):
         self.file_locator.add_file_getters(file_getters)
 
+    def get_file_getters(self):
+        return self.file_locator.file_getters
+
     def locate_plugin_filepaths(self, directories=None):
         if directories is None:
             directories = self.get_plugin_directories()
