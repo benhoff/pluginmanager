@@ -1,5 +1,5 @@
 import unittest
-from simpleyapsy import InstanceManager 
+from simpleyapsy import InstanceManager
 
 
 class InstanceClass(object):

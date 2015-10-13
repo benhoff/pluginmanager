@@ -8,4 +8,4 @@ from .instance_manager import InstanceManager
 from .interface import Interface
 
 __all__ = ["IPlugin", "FileLocator", "ModuleLoader",
-           "PluginManager", "Interface"]
+           "PluginManager", "Interface", "InstanceManager"]
