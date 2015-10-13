@@ -1,7 +1,13 @@
+from simpleyapsy import util
+
+
 def by_class(plugins, classes):
+    classes = util.return_list(classes)
     approved_plugins = []
     for plugin in plugins:
-        if isinstance(plugin, classes):
-            approved_plugins.append(plugin)
+        for klass in classes:
+            if isinstance(plugin, klass):
+                approved_plugins.append(plugin)
+                break
 
     return approved_plugins

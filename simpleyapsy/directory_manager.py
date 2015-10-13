@@ -1,5 +1,10 @@
 import os
-import site
+try:
+    from site import getsitepackages
+except ImportError:
+    # getsitepackages is broken with virtualenvs
+    # https://github.com/pypa/virtualenv/issues/355
+    from distutils.sysconfig import get_python_lib as getsitepackages
 
 from simpleyapsy import util
 
@@ -26,7 +31,7 @@ class DirectoryManager(object):
         self.plugin_directories = set(paths)
 
     def add_site_packages_paths(self):
-        self.add_plugin_directories(site.getsitepackages())
+        self.add_directories(getsitepackages())
 
     def get_directories(self):
         self._plugin_dirs_to_absolute_paths()

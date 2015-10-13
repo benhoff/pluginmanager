@@ -1,4 +1,4 @@
-def deactived(plugins):
+def deactivated(plugins):
     deactivated = []
     for plugin in plugins:
         if not plugin.active:

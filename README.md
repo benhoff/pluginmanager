@@ -3,16 +3,18 @@
 
 python plugin management, simplified.
 
-    from simpleyapsy import Interface
-    
-    plugin_manager = Interface()
-    plugin_manager.set_plugin_locations('my/fancy/plugin/path')
-    plugins = plugin_manager.get_plugins()
-    # Work with plugins here
+	from simpleyapsy import Interface
+	
+	plugin_interface = Interface()
+	plugin_interface.set_plugin_directories('my/fancy/plugin/path')
+	# plugins returns both classes and functions
+	plugins = plugin_interface.collect_plugins()
+	# plugin instances are instances of a class	
+	plugin_instances = plugin_interface.get_instances()
 
 Library currently under heavy development
 
 ### Installation
-    pip install git+https://github.com/benhoff/simpleyapsy.git
+	pip install git+https://github.com/benhoff/simpleyapsy.git
 
 API is currently too unstable to push to PyPi at this time
