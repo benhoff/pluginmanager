@@ -28,7 +28,7 @@ class ModuleLoader(object):
 
     def blacklist_filepaths(self, filepaths):
         filepaths = yapsy_util.return_list(filepaths)
-        self.blacklisted_filepaths.update(filepaths)
+        self.blacklisted_filepaths.add(filepaths)
 
     def set_blacklisted_filepaths(self, filepaths):
         filepaths = yapsy_util.return_list(filepaths)
@@ -42,16 +42,21 @@ class ModuleLoader(object):
         module = sys.modules[name]
         importlib.reload(module)
 
-    def get_loaded_modules(self):
+    def _get_modules(self, names):
         loaded_modules = []
-        for name in self.loaded_modules.keys():
+        for name in names:
             loaded_modules.append(sys.modules[name])
         return loaded_modules
+
+    def get_loaded_modules(self, names=None):
+        return self._get_modules(self.loaded_modules)
 
     def get_plugins_from_modules(self, modules=None):
         plugins = []
         if modules is None:
             modules = self.get_loaded_modules()
+        else:
+            modules = yapsy_util.return_list(modules) 
         for module in modules:
             for plugin_parser in self.module_parsers:
                 plugins.extend(plugin_parser.get_plugins(module))
@@ -64,6 +69,7 @@ class ModuleLoader(object):
         if not isinstance(filepaths, list) or not isinstance(filepaths, set):
             filepaths = set(filepaths)
 
+        modules = []
         for filepath in filepaths:
             filepath = self._process_filepath(filepath)
             # check to see if blacklisted or already processed
@@ -77,13 +83,14 @@ class ModuleLoader(object):
                                                           filepath)
             try:
                 module = spec.loader.load_module()
-                self.loaded_modules.update(module.__name__)
+                self.loaded_modules.add(module.__name__)
+                modules.append(module)
             except ImportError:
                 pass
 
             self.processed_filepaths[module.__name__] = filepath
 
-        return self.loaded_modules
+        return modules
 
     def _process_filepath(self, filepath):
         if (os.path.isdir(filepath) and
