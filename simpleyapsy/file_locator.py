@@ -10,6 +10,7 @@ class FileLocator(object):
     def __init__(self,
                  file_getters=[WithInfoFileGetter('yapsy-plugin')]):
 
+        file_getters = util.return_list(file_getters)
         self.file_getters = file_getters
         self.plugin_files = set()
 
