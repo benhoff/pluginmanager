@@ -48,7 +48,7 @@ class TestModuleLoader(unittest.TestCase):
         processed_filepath = 'dir/processed'
         test_filepath = 'dir/test'
         self.module_loader.blacklist_filepaths(blacklist_filepath)
-        self.module_loader.processed_filepaths.add(processed_filepath)
+        self.module_loader.processed_filepaths['test'] = processed_filepath
         # test blacklisted filepath
         valid = self.module_loader._valid_filepath(blacklist_filepath)
         self.assertFalse(valid)
