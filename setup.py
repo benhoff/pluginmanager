@@ -39,7 +39,7 @@ os.chdir(os.path.dirname(os.path.abspath(__file__)))
 try:
 	setup(
 		name = "simpleyapsy",
-		version = '0.0.1',
+		version = '0.0.2',
                 packages= find_packages(exclude=['artwork', 'doc', 'test']),
 		
 		# the unit tests
