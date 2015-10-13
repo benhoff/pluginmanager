@@ -3,7 +3,7 @@ from simpleyapsy import util
 
 
 class KeywordParser(object):
-    def __init__(self, keywords=['plugins']):
+    def __init__(self, keywords=['PLUGINS']):
         keywords = util.return_list(keywords)
         self.keywords = keywords
 
