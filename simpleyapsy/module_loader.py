@@ -12,8 +12,9 @@ class ModuleLoader(object):
                  module_parsers=[SubclassParser()],
                  blacklisted_filepaths=set()):
 
+        module_parsers = yapsy_util.return_list(module_parsers)
         self.loaded_modules = set()
-        self.processed_filepaths = set()
+        self.processed_filepaths = {}
         self.module_parsers = module_parsers
         self.blacklisted_filepaths = blacklisted_filepaths
 
@@ -47,10 +48,11 @@ class ModuleLoader(object):
             loaded_modules.append(sys.modules[name])
         return loaded_modules
 
-    def get_plugins_from_modules(self):
+    def get_plugins_from_modules(self, modules=None):
         plugins = []
-        loaded_modules = self.get_loaded_modules()
-        for module in loaded_modules:
+        if modules is None:
+            modules = self.get_loaded_modules()
+        for module in modules:
             for plugin_parser in self.module_parsers:
                 plugins.extend(plugin_parser.get_plugins(module))
         return plugins
@@ -79,7 +81,7 @@ class ModuleLoader(object):
             except ImportError:
                 pass
 
-            self.processed_filepaths.add(filepath)
+            self.processed_filepaths[module.__name__] = filepath
 
         return self.loaded_modules
 
@@ -96,14 +98,14 @@ class ModuleLoader(object):
     def _valid_filepath(self, filepath):
         valid = True
         if (filepath in self.blacklisted_filepaths or
-                filepath in self.processed_filepaths):
+                filepath in self.processed_filepaths.values()):
             valid = False
 
         return valid
 
     def _update_internal_state(self):
         system_modules = sys.modules.keys()
-        for module, filepath in self.loaded_modules.items():
+        for module in self.loaded_modules:
             if module not in system_modules:
-                self.processed_filepaths.pop(filepath)
+                self.processed_filepaths.pop(module)
                 self.loaded_modules.pop(module)
