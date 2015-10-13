@@ -43,6 +43,9 @@ class InstanceManager(object):
         self.instances = []
         self._instance_parser(instances)
 
+    def get_instances(self):
+        return self.instances
+
     def activate_instances(self):
         for instance in self.instances:
             instance.activate()

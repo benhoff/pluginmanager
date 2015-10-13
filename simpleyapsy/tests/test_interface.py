@@ -34,7 +34,7 @@ class TestInterface(unittest.TestCase):
         file_getters = self.interface.get_file_getters()
         self.assertIn(self.test_obj, file_getters)
 
-    def test_get_file_getters(self):
+    def test_add_file_getters(self):
         self.interface.add_file_getters(self.test_obj)
         file_getters = self.interface.get_file_getters()
         self.assertIn(self.test_obj, file_getters)
