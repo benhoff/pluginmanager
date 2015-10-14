@@ -1,5 +1,5 @@
 import unittest
-from simpleyapsy.plugin_filters import by_name
+from pluginmanager.plugin_filters import by_name
 
 
 class NameClass:

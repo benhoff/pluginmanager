@@ -1,5 +1,5 @@
 import unittest
-from simpleyapsy import InstanceManager
+from pluginmanager import InstanceManager
 
 
 class InstanceClass(object):

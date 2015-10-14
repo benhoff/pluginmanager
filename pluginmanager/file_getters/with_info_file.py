@@ -1,6 +1,6 @@
 import os
 from configparser import ConfigParser
-from simpleyapsy import util
+from pluginmanager import util
 from . import PLUGIN_FORBIDDEN_NAME
 
 

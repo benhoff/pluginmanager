@@ -1,6 +1,6 @@
 import unittest
 from . import ActiveTestClass
-from simpleyapsy.plugin_filters import by_class
+from pluginmanager.plugin_filters import by_class
 
 
 class BogusClass:

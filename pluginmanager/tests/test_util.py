@@ -1,6 +1,6 @@
 import sys
 import unittest
-from simpleyapsy import util
+from pluginmanager import util
 
 
 class TestUtil(unittest.TestCase):

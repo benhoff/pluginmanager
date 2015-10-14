@@ -1,5 +1,5 @@
-from simpleyapsy.file_getters import WithInfoFileGetter
-from simpleyapsy import util
+from pluginmanager.file_getters import WithInfoFileGetter
+from pluginmanager import util
 
 
 class FileLocator(object):

@@ -1,6 +1,6 @@
 import os
 import unittest
-from simpleyapsy.module_loader import ModuleLoader
+from pluginmanager.module_loader import ModuleLoader
 
 
 class TestClass:

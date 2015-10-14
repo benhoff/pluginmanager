@@ -1,6 +1,6 @@
 import unittest
 from . import ActiveTestClass
-from simpleyapsy.plugin_filters import deactivated
+from pluginmanager.plugin_filters import deactivated
 
 
 class TestDeactivated(unittest.TestCase):

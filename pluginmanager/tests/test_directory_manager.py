@@ -1,6 +1,6 @@
 import os
 import unittest
-from simpleyapsy.directory_manager import DirectoryManager
+from pluginmanager.directory_manager import DirectoryManager
 
 
 class TestDirectoryManager(unittest.TestCase):
@@ -31,7 +31,7 @@ class TestDirectoryManager(unittest.TestCase):
         self.assertEqual(len(directories), 1)
 
     def test_plugin_paths_to_absolute(self):
-        self.directory_manager.set_directories('simpleyapsy')
+        self.directory_manager.set_directories('pluginmanager')
         plugin_dirs = self.directory_manager.plugin_directories
         self.assertFalse(os.path.isabs(next(iter(plugin_dirs))))
         self.directory_manager._plugin_dirs_to_absolute_paths()

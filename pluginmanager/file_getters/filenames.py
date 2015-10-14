@@ -1,5 +1,5 @@
 import os
-from simpleyapsy import util
+from pluginmanager import util
 
 
 class FilenameFileGetter(object):

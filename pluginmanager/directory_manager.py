@@ -6,7 +6,7 @@ except ImportError:
     # https://github.com/pypa/virtualenv/issues/355
     from distutils.sysconfig import get_python_lib as getsitepackages
 
-from simpleyapsy import util
+from pluginmanager import util
 
 
 class DirectoryManager(object):

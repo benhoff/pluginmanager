@@ -1,5 +1,5 @@
 import logging
-log = logging.getLogger('simpleyapsy')
+log = logging.getLogger('pluginmanager')
 from .iplugin import IPlugin
 from .file_locator import FileLocator
 from .module_loader import ModuleLoader

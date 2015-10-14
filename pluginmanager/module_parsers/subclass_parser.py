@@ -1,5 +1,5 @@
 import inspect
-from simpleyapsy.iplugin import IPlugin
+from pluginmanager.iplugin import IPlugin
 
 
 class SubclassParser(object):

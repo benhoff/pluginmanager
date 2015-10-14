@@ -3,8 +3,8 @@ import sys
 
 import importlib
 
-from simpleyapsy.module_parsers import SubclassParser
-from simpleyapsy import util as yapsy_util
+from pluginmanager.module_parsers import SubclassParser
+from pluginmanager import util as yapsy_util
 
 
 class ModuleLoader(object):

@@ -1,7 +1,7 @@
 import types
 import unittest
-from simpleyapsy import IPlugin
-from simpleyapsy.module_parsers import SubclassParser
+from pluginmanager import IPlugin
+from pluginmanager.module_parsers import SubclassParser
 
 
 class Subclass(IPlugin):

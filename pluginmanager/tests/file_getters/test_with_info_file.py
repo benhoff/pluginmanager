@@ -1,7 +1,7 @@
 import os
 import unittest
 import tempfile
-from simpleyapsy.file_getters import WithInfoFileGetter
+from pluginmanager.file_getters import WithInfoFileGetter
 
 
 class TestWithInfoFileGetter(unittest.TestCase):

@@ -1,4 +1,4 @@
-from simpleyapsy import util
+from pluginmanager import util
 
 
 class PluginManager(object):

@@ -1,7 +1,7 @@
 import types
 import unittest
 
-from simpleyapsy.module_parsers import KeywordParser
+from pluginmanager.module_parsers import KeywordParser
 
 
 class TestKeywordParser(unittest.TestCase):

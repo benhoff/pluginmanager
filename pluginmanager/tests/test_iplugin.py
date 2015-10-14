@@ -1,5 +1,5 @@
 import unittest
-from simpleyapsy import IPlugin
+from pluginmanager import IPlugin
 
 
 class TestObj:

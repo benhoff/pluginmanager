@@ -1,5 +1,5 @@
 import unittest
-from simpleyapsy.plugin_filters import by_version
+from pluginmanager.plugin_filters import by_version
 
 
 class TestVersion(object):

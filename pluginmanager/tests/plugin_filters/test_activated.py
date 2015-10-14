@@ -2,7 +2,7 @@ import unittest
 
 from . import ActiveTestClass
 
-from simpleyapsy.plugin_filters import activated
+from pluginmanager.plugin_filters import activated
 
 
 class TestActivated(unittest.TestCase):

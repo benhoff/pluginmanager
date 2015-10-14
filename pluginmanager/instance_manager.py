@@ -1,5 +1,5 @@
 import inspect
-from simpleyapsy import util
+from pluginmanager import util
 
 
 class InstanceManager(object):

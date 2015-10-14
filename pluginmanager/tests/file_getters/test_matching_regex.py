@@ -1,6 +1,6 @@
 import unittest
 import re
-from simpleyapsy.file_getters import MatchingRegexFileGetter
+from pluginmanager.file_getters import MatchingRegexFileGetter
 
 
 class TestMatchingRegexFileGetter(unittest.TestCase):

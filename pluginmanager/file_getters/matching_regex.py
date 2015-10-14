@@ -1,6 +1,6 @@
 import os
 import re
-from simpleyapsy import util
+from pluginmanager import util
 
 
 class MatchingRegexFileGetter(object):

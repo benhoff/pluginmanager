@@ -1,5 +1,5 @@
 import unittest
-from simpleyapsy.interface import Interface
+from pluginmanager.interface import Interface
 
 
 class TestInterface(unittest.TestCase):
@@ -8,14 +8,14 @@ class TestInterface(unittest.TestCase):
         self.interface = Interface()
     """
     def test_add_plugin_directories(self):
-        added_dir = 'simpleyapsy'
+        added_dir = 'pluginmanager'
         self.interface.add_plugin_directories(added_dir)
         directories = self.interface.get_plugin_directories()
         self.assertIn(added_dir, directories)
 
     def test_set_plugin_directories(self):
         preset_dir = self.interface.get_plugin_directories().pop()
-        set_dir = 'simpleyapsy'
+        set_dir = 'pluginmanager'
         self.interface.set_plugin_directories(set_dir)
         directories = self.interface.get_plugin_directories()
         self.assertIn(set_dir, directories)

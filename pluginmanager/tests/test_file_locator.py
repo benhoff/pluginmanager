@@ -1,5 +1,5 @@
 import unittest
-from simpleyapsy.file_locator import FileLocator
+from pluginmanager.file_locator import FileLocator
 
 
 class TestClass:
