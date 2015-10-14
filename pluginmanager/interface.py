@@ -96,7 +96,7 @@ class Interface(object):
 
     def check_configurations(self):
         pass
-    
+
     def add_plugin_directories(self, paths):
         self.directory_manager.add_directories(paths)
 
