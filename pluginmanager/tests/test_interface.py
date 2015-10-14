@@ -37,41 +37,46 @@ class TestInterface(unittest.TestCase):
     def test_add_get_modules(self):
         pass
 
+    def test_instance_manager(self):
+        pass
+
+    def test_plugin_directories(self):
+        pass
+
     def test_adders_getters_and_setters(self):
-        add = ['add_blacklisted_filepaths',
-                'add_file_getters',
-                'add_instances',
-                'add_plugin_directories',
-                'add_plugin_filepaths',
-                'add_plugins']
+        adders = ['add_blacklisted_filepaths',
+                  'add_file_getters',
+                  'add_plugin_filepaths',
+                  'add_plugins']
 
-        add = [getattr(self.interface, name) for name in add]
+        getters = ['get_blacklisted_filepaths',
+                   'get_file_getters',
+                   'get_plugin_filepaths',
+                   'get_plugins']
 
-        get = ['get_blacklisted_filepaths',
-                'get_file_getters',
-                'get_instances',
-                'get_plugin_directories',
-                'get_plugin_filepaths',
-                'get_plugins']
+        setters = ['set_blacklisted_filepaths',
+                   'set_file_getters',
+                   'set_plugin_filepaths',
+                   'set_plugins']
 
-        get = [getattr(self.interface, name) for name in get]
-
-        set = ['set_blacklisted_filepaths',
-                'set_file_getters',
-                'set_instances',
-                'set_plugin_directories',
-                'set_plugin_filepaths',
-                'set_plugins']
-
-        set = [getattr(self.interface, name) for name in set]
-        for adder in add:
+        all = [adders, getters, setters]
+        for index, value in enumerate(all):
+            all[index] = [getattr(self.interface, name) for name in value]
+        adders, getters, setters = all
+        test_obj = type('', (), {})
+        for index, (adder, getter, setter) in enumerate(zip(adders,
+                                                            getters,
+                                                            setters)):
             adder(self.test_obj)
+            self.assertIn(self.test_obj,
+                          getter(),
+                          '{} not found in {} from {}'.format(self.test_obj,
+                                                              getter(),
+                                                              adder))
 
-        for index, value in got:
-            self.assertIn(self.test_obj, value())
-
-        file_getters = self.interface.get_file_getters()
-        self.assertIn(self.test_obj, file_getters)
+            setter(test_obj)
+            self.assertIn(test_obj, getter())
+            self.assertNotIn(self.test_obj, getter())
 
     def test_set_plugins(self):
         self.interface.set_plugins(self.test_obj)

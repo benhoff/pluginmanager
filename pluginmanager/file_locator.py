@@ -14,6 +14,14 @@ class FileLocator(object):
         self.file_getters = file_getters
         self.plugin_files = set()
 
+    def add_plugin_filepaths(self, filepaths):
+        filepaths = set(util.return_list(filepaths))
+        self.plugin_files.update(filepaths)
+
+    def set_plugin_filepaths(self, filepaths):
+        filepaths = set(util.return_list(filepaths))
+        self.plugin_files = filepaths
+
     def set_file_getters(self, file_getters):
         file_getters = util.return_list(file_getters)
         self.file_getters = file_getters

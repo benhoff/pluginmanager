@@ -23,18 +23,18 @@ class TestModuleLoader(unittest.TestCase):
         self.module_loader.add_module_parsers(test_obj)
         self.assertIn(test_obj, self.module_loader.module_parsers)
 
-    def test_blacklist_filepaths(self):
+    def test_add_blacklisted_filepaths(self):
         test_filepath = 'fancy/dir'
-        self.module_loader.blacklist_filepaths(test_filepath)
+        self.module_loader.add_blacklisted_filepaths(test_filepath)
         test_filepaths = ['dir/d', 'dir/b']
-        self.module_loader.blacklist_filepaths(test_filepaths)
+        self.module_loader.add_blacklisted_filepaths(test_filepaths)
         self.assertIn(test_filepath, self.module_loader.blacklisted_filepaths)
         self.assertIn(test_filepaths[0],
                       self.module_loader.blacklisted_filepaths)
 
     def test_set_blacklist_filepaths(self):
         removed_dir = 'test/dir'
-        self.module_loader.blacklist_filepaths(removed_dir)
+        self.module_loader.add_blacklisted_filepaths(removed_dir)
         single_dir = 'dir/b'
         self.module_loader.set_blacklisted_filepaths(single_dir)
         self.assertIn(single_dir, self.module_loader.blacklisted_filepaths)
@@ -47,7 +47,7 @@ class TestModuleLoader(unittest.TestCase):
         blacklist_filepath = 'dir/blacklist'
         processed_filepath = 'dir/processed'
         test_filepath = 'dir/test'
-        self.module_loader.blacklist_filepaths(blacklist_filepath)
+        self.module_loader.add_blacklisted_filepaths(blacklist_filepath)
         self.module_loader.processed_filepaths['test'] = processed_filepath
         # test blacklisted filepath
         valid = self.module_loader._valid_filepath(blacklist_filepath)

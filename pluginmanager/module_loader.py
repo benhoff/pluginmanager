@@ -26,7 +26,7 @@ class ModuleLoader(object):
         module_parsers = yapsy_util.return_list(module_parsers)
         self.module_parsers.extend(module_parsers)
 
-    def blacklist_filepaths(self, filepaths):
+    def add_blacklisted_filepaths(self, filepaths):
         filepaths = set(yapsy_util.return_list(filepaths))
         self.blacklisted_filepaths.update(filepaths)
 
