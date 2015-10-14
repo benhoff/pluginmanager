@@ -15,14 +15,19 @@ class Interface(object):
                  auto_manage_state=True):
 
         self.managing_state = auto_manage_state
+        self.directory_manager = DirectoryManager()
         self.file_locator = file_locator
         self.module_loader = module_loader
         self.plugin_manager = plugin_manager
-        self.directory_manager = DirectoryManager()
         self.instance_manager = instance_manager
 
     def track_site_package_paths(self):
         return self.directory_manager.add_site_packages_paths()
+
+    def collect_plugin_directories(self, directories=None):
+        if directories is None:
+            directories = self.directory_manager.get_plugin_directories()
+        return self.directory_manager.collect_plugin_directories(directories)
 
     def collect_plugin_filepaths(self, directories=None):
         if directories is None:
@@ -35,9 +40,6 @@ class Interface(object):
 
         return self.module_loader.collect_modules(filepaths)
 
-    def reload_modules(self, module_or_module_name):
-        self.module_loader.reload_module(module_or_module_name)
-
     def collect_plugins(self, modules=None):
         if modules is None:
             modules = self.collect_modules()
@@ -49,6 +51,9 @@ class Interface(object):
         if self.managing_state:
             self.instantiate_plugins(plugins)
         return plugins
+
+    def reload_modules(self, module_or_module_name):
+        self.module_loader.reload_module(module_or_module_name)
 
     def set_plugins(self, plugins):
         self.plugin_manager.set_plugins(plugins)
