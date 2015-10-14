@@ -43,12 +43,9 @@ class Interface(object):
     def collect_plugins(self, modules=None):
         if modules is None:
             modules = self.collect_modules()
-        return self.module_loader.get_plugins_from_modules(modules)
-
-    def collect_plugins(self):
-        plugins = self.get_plugins_from_modules()
-        self.add_plugins(plugins)
+        plugins = self.module_loader.get_plugins_from_modules(modules)
         if self.managing_state:
+            self.add_plugins(plugins)
             self.instantiate_plugins(plugins)
         return plugins
 
@@ -147,9 +144,9 @@ class Interface(object):
 
     def get_file_getters(self):
         return self.file_locator.file_getters
-        
+
     def remove_file_getters(self, file_getters):
         self.file_locator.remove_file_getters(file_getters)
-        
+
     def set_file_getters(self, file_getters):
         self.file_locator.set_file_getters(file_getters)
