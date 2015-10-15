@@ -14,7 +14,7 @@ class TestIPlugin(unittest.TestCase):
         self.assertFalse(self.plugin.active)
 
     def test_key_not_in_config(self):
-        self.plugin.CONFIG_TEMPLATE = {'api_key':None}
+        self.plugin.CONFIG_TEMPLATE = {'api_key': None}
         self.assertRaises(Exception, self.plugin.check_configuration, {})
 
     def test_autoname(self):
