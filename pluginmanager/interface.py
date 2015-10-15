@@ -1,4 +1,3 @@
-import inspect
 from .file_locator import FileLocator
 from .plugin_manager import PluginManager
 from .module_loader import ModuleLoader

@@ -1,9 +1,10 @@
+import inspect
 from pluginmanager import util
 
 
 class PluginManager(object):
-    def __init__(self, 
-                 unique_instances=True, 
+    def __init__(self,
+                 unique_instances=True,
                  instantiate_classes=True):
 
         self.plugins = []
