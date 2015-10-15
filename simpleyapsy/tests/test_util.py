@@ -21,6 +21,11 @@ class TestUtil(unittest.TestCase):
         self.assertEqual(module_name, 'yapsy_plugin_test_0')
         self.assertEqual(second_module_name, 'yapsy_plugin_test_1')
 
+    def test_create_module_name_with_dict(self):
+        name = {'name': 'test'}
+        name = util.create_unique_module_name(name)
+        self.assertEqual(name, 'yapsy_plugin_test_0')
+
     def test_get_paths_from_dir(self):
         # TODO: make temp dir, make dir in temp dir and make file
         # in temp dir. see if can get file and dir
