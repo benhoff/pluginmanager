@@ -13,6 +13,14 @@ class TestIPlugin(unittest.TestCase):
     def test_active(self):
         self.assertFalse(self.plugin.active)
 
+    def test_key_not_in_config(self):
+        self.plugin.CONFIG_TEMPLATE = {'api_key':None}
+        self.assertRaises(Exception, self.plugin.check_configuration, {})
+
+    def test_autoname(self):
+        plugin = IPlugin()
+        self.assertEqual(plugin.name, "IPlugin")
+
     def test_activate(self):
         self.plugin.activate()
         self.assertTrue(self.plugin.active)
