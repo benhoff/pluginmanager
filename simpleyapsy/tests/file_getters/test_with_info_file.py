@@ -34,14 +34,12 @@ class TestWithInfoFileGetter(unittest.TestCase):
             file_template = os.path.join(test_dir,
                                          self._plugin_file_name)
 
-            plugin_file = open(file_template.format('yapsy-plugin'), 'a+')
+            plugin_file = open(file_template.format('yapsy-plugin'), 'w+')
             fake_python = open(file_template.format('py'), 'a').close()
-
-            python_file_name = fake_python.name[:-3]
             yapsy_contents = """
             [Core]\n
             Name = Test\n
-            Module = {}\n""".format(python_file_name)
+            Module = {}\n""".format(self.file_template[:-1])
 
             plugin_file.write(yapsy_contents).close()
             info = self.file_getter.get_plugin_infos(test_dir)
@@ -61,13 +59,11 @@ class TestWithInfoFileGetter(unittest.TestCase):
     def test_parse_config_details(self):
         dir_path = os.path.dirname(__file__)
         base, dir_name = os.path.split(dir_path)
-        config = {"Core":{"Module":dir_name}}
-        self.assertRaises(FileNotFoundError, 
+        config = {"Core": {"Module": dir_name}}
+        self.assertRaises(FileNotFoundError,
                           self.file_getter._parse_config_details,
                           config,
                           'invalid_dir/path')
         config = self.file_getter._parse_config_details(config, base)
         dir_path = os.path.join(dir_path, '__init__.py')
         self.assertTrue(config['path'] == dir_path)
-
-        
