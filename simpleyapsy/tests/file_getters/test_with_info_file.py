@@ -35,11 +35,11 @@ class TestWithInfoFileGetter(unittest.TestCase):
                                          self._plugin_file_name)
 
             plugin_file = open(file_template.format('yapsy-plugin'), 'w+')
-            fake_python = open(file_template.format('py'), 'a').close()
+            open(file_template.format('py'), 'a').close()
             yapsy_contents = """
             [Core]\n
             Name = Test\n
-            Module = {}\n""".format(self.file_template[:-1])
+            Module = {}\n""".format(self._plugin_file_name[:-1])
 
             plugin_file.write(yapsy_contents).close()
             info = self.file_getter.get_plugin_infos(test_dir)
@@ -67,3 +67,9 @@ class TestWithInfoFileGetter(unittest.TestCase):
         config = self.file_getter._parse_config_details(config, base)
         dir_path = os.path.join(dir_path, '__init__.py')
         self.assertTrue(config['path'] == dir_path)
+
+    def test_empty_dirs(self):
+        dir_path = os.path.dirname(__file__)
+        info, filepaths = self.file_getter.get_info_and_filepaths(dir_path)
+        self.assertIs(info, [])
+        self.assertIs(filepaths, [])
