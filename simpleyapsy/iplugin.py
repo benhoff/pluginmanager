@@ -2,12 +2,13 @@ class IPlugin(object):
     """
     Simple interface to be inherited when creating a plugin.
     """
+    CONFIG_TEMPLATE = {}
+
     def __init__(self):
         self.active = False
         self.config = None
         try:
-            if not getattr(self, 'name'):
-                self.name = self.__class__.__name__
+            getattr(self, 'name')
         except AttributeError:
             self.name = self.__class__.__name__
 
@@ -31,7 +32,7 @@ class IPlugin(object):
         return {'LOGIN' : 'example@example.com', 'PASSWORD' : 'password'}
         Note: if this method returns None, the plugin won't be configured
         """
-        return {}
+        return self.CONFIG_TEMPLATE
 
     def check_configuration(self, configuration):
         config_template = self.get_configuration_template()
