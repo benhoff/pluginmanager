@@ -65,10 +65,10 @@ class TestWithInfoFileGetter(unittest.TestCase):
         dir_path = os.path.dirname(__file__)
         base, dir_name = os.path.split(dir_path)
         config = {"Core": {"Module": dir_name}}
-        self.assertRaises(FILE_ERROR,
-                          self.file_getter._parse_config_details,
-                          config,
-                          'invalid_dir/path')
+        with self.assertRaises(FILE_ERROR):
+            self.file_getter._parse_config_details(config,
+                                                   'invalid/dir')
+
         config = {"Core": {"Module": dir_name, "Name": 'test'}}
         config = self.file_getter._parse_config_details(config, base)
         dir_path = os.path.join(dir_path, '__init__.py')
