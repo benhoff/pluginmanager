@@ -36,9 +36,6 @@ class MatchingRegexFileGetter(object):
                 return True
         return False
 
-    def get_info_and_filepaths(self, dir_path):
-        pass
-
     def get_plugin_filepaths(self, dir_path):
         plugin_filepaths = []
         filepaths = util.get_filepaths_from_dir(dir_path)
@@ -46,21 +43,3 @@ class MatchingRegexFileGetter(object):
             if self.plugin_valid(filepath):
                 plugin_filepaths.append(filepath)
         return plugin_filepaths
-
-    def get_plugin_infos(self, dir_path):
-        """
-        Returns the extracted plugin informations as a dictionary.
-        This function ensures that "name" and "path" are provided.
-        """
-        # use the filename alone to extract minimal informations.
-        infos = {}
-        filepaths = util.get_filepaths_from_dir(dir_path)
-        for filepath in filepaths:
-            module_name = os.path.splitext(filepath)[0]
-            plugin_filename = os.path.join(dir_path, filepath)
-            if module_name == "__init__":
-                module_name = os.path.basename(dir_path)
-                plugin_filename = dir_path
-            infos["name"] = "%s" % module_name
-            infos["path"] = plugin_filename
-        return infos

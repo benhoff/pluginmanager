@@ -1,5 +1,7 @@
-import unittest
+import os
 import re
+import unittest
+import tempfile
 from simpleyapsy.file_getters import MatchingRegexFileGetter
 
 
@@ -24,3 +26,15 @@ class TestMatchingRegexFileGetter(unittest.TestCase):
         unvalid_name = self.file_getter.plugin_valid(unvalid_name)
         self.assertTrue(valid_name)
         self.assertFalse(unvalid_name)
+
+    def test_get_plugin_filepaths(self):
+        valid = 'plugin_file.py'
+        unvalid = 'unvalid.py'
+        with tempfile.TemporaryDirectory() as temp_dir:
+            valid = os.path.join(temp_dir, valid)
+            unvalid = os.path.join(temp_dir, unvalid)
+            open(valid, 'a').close()
+            open(unvalid, 'a').close()
+            filepaths = self.file_getter.get_plugin_filepaths(temp_dir)
+        self.assertIn(valid, filepaths)
+        self.assertNotIn(unvalid, filepaths)
