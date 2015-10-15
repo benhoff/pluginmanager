@@ -95,7 +95,7 @@ class WithInfoFileGetter(object):
                 os.path.isfile(os.path.join(path, '__init__.py'))):
             path = os.path.join(path, '__init__.py')
         else:
-            raise FILE_ERROR()
+            raise FILE_ERROR
 
         config_dict['path'] = path
 
