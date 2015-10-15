@@ -1,6 +1,10 @@
 import os
 import unittest
 import tempfile
+import builtins
+# Work around for python 3.2
+FILE_ERROR = getattr(builtins, "FileNotFoundError", "OSError")
+
 from simpleyapsy.file_getters import WithInfoFileGetter
 
 
@@ -61,7 +65,7 @@ class TestWithInfoFileGetter(unittest.TestCase):
         dir_path = os.path.dirname(__file__)
         base, dir_name = os.path.split(dir_path)
         config = {"Core": {"Module": dir_name}}
-        self.assertRaises(FileNotFoundError,
+        self.assertRaises(FILE_ERROR,
                           self.file_getter._parse_config_details,
                           config,
                           'invalid_dir/path')
