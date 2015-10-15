@@ -1,3 +1,6 @@
+import __builtin__
+# Work around for python 3.2
+FILE_ERROR = getattr(__builtin__, "FileNotFoundError", "OSError")
 import os
 from configparser import ConfigParser
 from simpleyapsy import util
@@ -92,7 +95,7 @@ class WithInfoFileGetter(object):
                 os.path.isfile(os.path.join(path, '__init__.py'))):
             path = os.path.join(path, '__init__.py')
         else:
-            raise FileNotFoundError()
+            raise FILE_ERROR()
 
         config_dict['path'] = path
 
