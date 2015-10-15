@@ -3,7 +3,6 @@ from .file_locator import FileLocator
 from .plugin_manager import PluginManager
 from .module_loader import ModuleLoader
 from .directory_manager import DirectoryManager
-from .instance_manager import InstanceManager
 
 
 class Interface(object):
@@ -11,7 +10,6 @@ class Interface(object):
                  file_locator=FileLocator(),
                  module_loader=ModuleLoader(),
                  plugin_manager=PluginManager(),
-                 instance_manager=InstanceManager(),
                  auto_manage_state=True):
 
         self.managing_state = auto_manage_state
@@ -19,7 +17,6 @@ class Interface(object):
         self.file_locator = file_locator
         self.module_loader = module_loader
         self.plugin_manager = plugin_manager
-        self.instance_manager = instance_manager
 
     def track_site_package_paths(self):
         return self.directory_manager.add_site_packages_paths()
@@ -67,32 +64,11 @@ class Interface(object):
     def blacklist_plugin(self, plugins):
         self.plugin_manager.blacklist_plugins(plugins)
 
-    def add_instances(self, instances):
-        self.instance_manager.add_instances(instances)
-
-    def set_instances(self, instances):
-        self.instance_manager.set_instances(instances)
-
-    def instantiate_plugins(self, classes=None):
-        if self.managing_state:
-            isclass = inspect.isclass
-            plugin_classes = [x for x in self.get_plugins() if isclass(x)]
-            self.instance_manager.add_instances(plugin_classes)
-
-    def get_instances(self):
-        return self.instance_manager.instances
-
-    def activate_instances(self):
-        self.instance_manager.activate_instances()
-
-    def deactivate_instances(self):
-        self.instance_manager.deactivate_instances()
-
-    def configure_instances(self, config):
-        self.instance_manager.configure_instances(config)
+    def configure_plugins(self, config):
+        self.plugin_manager.configure_plugins(config)
 
     def get_configuration_templates(self):
-        return self.instance_manager.get_configuration_templates()
+        return self.plugin_manager.get_configuration_templates()
 
     def check_configurations(self):
         pass

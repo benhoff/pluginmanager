@@ -83,12 +83,6 @@ class TestInterface(unittest.TestCase):
         plugins = self.interface.get_plugins()
         self.assertIn(self.test_obj, plugins)
 
-    def test_set_instances(self):
-        test_obj = self.test_obj()
-        self.interface.set_instances(test_obj)
-        instances = self.interface.get_instances()
-        self.assertIn(test_obj, instances)
-
     def test_set_blacklist_filepath(self):
         filepath = 'test/dir'
         self.interface.set_blacklisted_filepaths(filepath)
