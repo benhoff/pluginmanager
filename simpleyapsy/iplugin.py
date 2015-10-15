@@ -8,8 +8,7 @@ class IPlugin(object):
         self.active = False
         self.config = None
         try:
-            if not getattr(self, 'name'):
-                self.name = self.__class__.__name__
+            getattr(self, 'name')
         except AttributeError:
             self.name = self.__class__.__name__
 
