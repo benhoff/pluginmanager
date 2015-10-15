@@ -39,9 +39,10 @@ class TestWithInfoFileGetter(unittest.TestCase):
             yapsy_contents = """
             [Core]\n
             Name = Test\n
-            Module = {}\n""".format(self._plugin_file_name[:-1])
+            Module = {}\n""".format(self._plugin_file_name[:-3])
 
-            plugin_file.write(yapsy_contents).close()
+            plugin_file.write(yapsy_contents)
+            plugin_file.close()
             info = self.file_getter.get_plugin_infos(test_dir)
             files = self.file_getter.get_plugin_filepaths(test_dir)
         return info, files
@@ -64,12 +65,13 @@ class TestWithInfoFileGetter(unittest.TestCase):
                           self.file_getter._parse_config_details,
                           config,
                           'invalid_dir/path')
+        config = {"Core": {"Module": dir_name, "Name": 'test'}}
         config = self.file_getter._parse_config_details(config, base)
         dir_path = os.path.join(dir_path, '__init__.py')
         self.assertTrue(config['path'] == dir_path)
 
     def test_empty_dirs(self):
-        dir_path = os.path.dirname(__file__)
-        info, filepaths = self.file_getter.get_info_and_filepaths(dir_path)
-        self.assertIs(info, [])
-        self.assertIs(filepaths, [])
+        with tempfile.TemporaryDirectory() as temp_dir:
+            info, filepaths = self.file_getter.get_info_and_filepaths(temp_dir)
+        self.assertEqual(info, [])
+        self.assertEqual(filepaths, set())
