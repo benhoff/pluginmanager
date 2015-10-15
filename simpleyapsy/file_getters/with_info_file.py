@@ -1,10 +1,13 @@
 import builtins
-# Work around for python 3.2
-FILE_ERROR = getattr(builtins, "FileNotFoundError", "OSError")
 import os
 from configparser import ConfigParser
 from simpleyapsy import util
 from . import PLUGIN_FORBIDDEN_NAME
+
+# Work around for python 3.2
+FILE_ERROR = getattr(builtins,
+                     "FileNotFoundError",
+                     getattr(builtins, "OSError"))
 
 
 class WithInfoFileGetter(object):
@@ -95,7 +98,7 @@ class WithInfoFileGetter(object):
                 os.path.isfile(os.path.join(path, '__init__.py'))):
             path = os.path.join(path, '__init__.py')
         else:
-            raise FILE_ERROR()
+            raise FILE_ERROR('{} not a `.py` file or a dir'.format(path))
 
         config_dict['path'] = path
 
