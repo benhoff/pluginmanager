@@ -1,8 +1,13 @@
-import builtins
-# Work around for python 3.2
-FILE_ERROR = getattr(builtins, "FileNotFoundError", "OSError")
+try:
+    import builtins
+    # Work around for python 3.2
+    FILE_ERROR = getattr(builtins, "FileNotFoundError", "OSError")
+    from configparser import ConfigParser
+except:
+    FILE_ERROR = IOError
+    from ConfigParser import ConfigParser
+
 import os
-from configparser import ConfigParser
 from simpleyapsy import util
 from . import PLUGIN_FORBIDDEN_NAME
 
