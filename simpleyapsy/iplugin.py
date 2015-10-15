@@ -3,6 +3,7 @@ class IPlugin(object):
     Simple interface to be inherited when creating a plugin.
     """
     CONFIG_TEMPLATE = {}
+
     def __init__(self):
         self.active = False
         self.config = None
