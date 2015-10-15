@@ -27,7 +27,7 @@ class TestMatchingRegexFileGetter(unittest.TestCase):
         self.assertFalse(unvalid_name)
 
     def test_get_plugin_filepaths(self):
-        with tempfile.TempDirectory() as temp_dir:
+        with tempfile.TemporaryDirectory() as temp_dir:
             valid = 'plugin_file.py'
             unvalid = 'unvalid.py'
             open(valid, 'a').close()
