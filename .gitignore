@@ -8,7 +8,7 @@ bin/
 plugins/
 db/*
 log/*
-env3.4/
+env/
 dist/
 build/
 *.egg-info/
