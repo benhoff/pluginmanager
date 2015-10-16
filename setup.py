@@ -1,68 +1,35 @@
-#!/usr/bin/python
-# -*- coding: utf-8; tab-width: 4; indent-tabs-mode: t -*-
-
-"""
-The setup.py script needed to build a .egg for an easier distribution
-and installation of yapsy.
-
-Requires 'Easy Install' to be installed :)
-see there: http://peak.telecommunity.com/DevCenter/EasyInstall#installation-instructions
-
-Then to create a package run:
-$ python setup.py bdist_egg
-
-To use the generated .egg file then:
-easy_install Yapsy-{yapsy version}-py{python version}.egg
-
-Automagical stuff:
-
-  - test everything::
-
-      python setup.py test
-
-  - build the packages (sources an egg) and upload all the stuff to pypi::
-
-      python setup.py sdist bdist_egg upload
-
-  - build the documentation
-   
-      python setup.py build_sphinx
-"""
-
 import os
-from setuptools import find_packages
-from setuptools import setup
+from setuptools import find_packages, setup
 
-# just in case setup.py is launched from elsewhere that the containing directory
-originalDir = os.getcwd()
-os.chdir(os.path.dirname(os.path.abspath(__file__)))
-try:
-	setup(
-		name = "simpleyapsy",
-		version = '0.0.2',
-                packages= find_packages(exclude=['artwork', 'doc', 'test']),
-		
-		# the unit tests
-		test_suite = "test.test_All.MainTestSuite",
-		
-		# metadata for upload to PyPI
-		author = "Thibauld Nion",
-		author_email = "thibauld@tibonihoo.net",
-		description = "Yet another plugin system",
-		license = "BSD",
-		keywords = "plugin manager",
-		url = "http://yapsy.sourceforge.net",
-		# more details
-		classifiers=['Development Status :: 5 - Production/Stable',
-					 'Intended Audience :: Developers',
-					 'License :: OSI Approved :: BSD License',
-					 'Operating System :: OS Independent',
-					 'Programming Language :: Python',
-					 'Programming Language :: Python :: 2',
-					 'Programming Language :: Python :: 3',
-					 'Topic :: Software Development :: Libraries :: Python Modules'],
-		platforms='All',
-		)
-	
-finally:
-  os.chdir(originalDir)
+
+directory = os.path.abspath(os.path.dirname(__file__))
+
+with open(os.path.join(directory, 'README.md')) as f:
+    long_description = f.read()
+setup(
+    name="pluginmanager",
+    version='0.0.1',
+    description='Python Plugin Management, simplified',
+    long_description=long_description,
+    url='https://github.com/benhoff/pluginmanager',
+    license='GPL3',
+    classifiers=[
+        'Development Status :: 2 - Pre-Alpha',
+        'Intended Audience :: Developers',
+        'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.2',
+        'Programming Language :: Python :: 3.3',
+        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
+        'Topic :: Software Development :: Libraries :: Python Modules',
+        'Topic :: Utilities',
+        'Operating System :: OS Independent'],
+    keywords='plugin manager',
+    author='Ben Hoff',
+    author_email='beohoff@gmail.com',
+    packages= find_packages(exclude=['docs', 'tests']),
+    extras_require={
+        'dev': ['flake8']
+    },
+)
