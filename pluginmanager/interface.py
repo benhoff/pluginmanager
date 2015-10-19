@@ -23,23 +23,25 @@ class Interface(object):
     def collect_plugin_directories(self, directories=None):
         if directories is None:
             directories = self.directory_manager.get_plugin_directories()
-        return self.directory_manager.collect_plugin_directories(directories)
+        plugin_directories = self.directory_manager.collect_plugin_directories(directories)
+        return plugin_directories
 
     def collect_plugin_filepaths(self, directories=None):
         if directories is None:
-            directories = self.get_plugin_directories()
-        return self.file_locator.collect_filepaths(directories)
+            directories = self.collect_plugin_directories()
+        plugin_filepaths = self.file_locator.collect_filepaths(directories)
+        return plugin_filepaths
 
-    def collect_modules(self, filepaths=None):
+    def load_modules(self, filepaths=None):
         if filepaths is None:
             filepaths = self.collect_plugin_filepaths()
-
-        return self.module_loader.collect_modules(filepaths)
+        loaded_modules = self.module_loader.collect_modules(filepaths)
+        return loaded_modules
 
     def collect_plugins(self, modules=None):
         if modules is None:
-            modules = self.collect_modules()
-        plugins = self.module_loader.get_plugins_from_modules(modules)
+            modules = self.load_modules()
+        plugins = self.module_loader.collect_plugins(modules)
         if self.managing_state:
             self.add_plugins(plugins)
             self.instantiate_plugins(plugins)
