@@ -3,7 +3,6 @@ import sys
 import inspect
 import importlib
 
-from pluginmanager.module_parsers import SubclassParser
 from pluginmanager import util as manager_util
 
 
@@ -59,8 +58,16 @@ class ModuleLoader(object):
             modules = manager_util.return_list(modules)
         for module in modules:
             module_plugins = inspect.getmembers(module)
-            module_plugins = self._filter_plugins(plugins)
+            module_plugins = self._filter_modules(plugins)
             plugins.extend(module_plugins)
+        return plugins
+        
+    def _filter_modules(self, plugins):
+        if self.module_filters:
+            module_plugins = []
+            for module_filter in self.module_filters:
+                module_plugins.extend(module_filter(plugins))
+            plugins = module_plugins
         return plugins
 
     def load_modules(self, filepaths):
