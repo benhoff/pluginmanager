@@ -6,7 +6,7 @@ import importlib
 from pluginmanager import util as manager_util
 
 
-class ModuleLoader(object):
+class ModuleManager(object):
     def __init__(self,
                  module_filters=[],
                  blacklisted_filepaths=set()):
