@@ -11,17 +11,17 @@ class TestModuleManager(unittest.TestCase):
     def setUp(self):
         self.module_manager = ModuleManager()
 
-    def test_set_module_parsers(self):
+    def test_set_module_filters(self):
         test_obj = TestClass()
-        previous_module = self.module_manager.module_parsers[0]
-        self.module_manager.set_module_parsers(test_obj)
-        self.assertIn(test_obj, self.module_manager.module_parsers)
-        self.assertNotIn(previous_module, self.module_manager.module_parsers)
+        previous_module = self.module_manager.module_filters[0]
+        self.module_manager.set_module_filters(test_obj)
+        self.assertIn(test_obj, self.module_manager.module_filters)
+        self.assertNotIn(previous_module, self.module_manager.module_filters)
 
     def test_add_module_parser(self):
         test_obj = TestClass()
-        self.module_manager.add_module_parsers(test_obj)
-        self.assertIn(test_obj, self.module_manager.module_parsers)
+        self.module_manager.add_module_filters(test_obj)
+        self.assertIn(test_obj, self.module_manager.module_filters)
 
     def test_add_blacklisted_filepaths(self):
         test_filepath = 'fancy/dir'

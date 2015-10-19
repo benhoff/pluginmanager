@@ -1,12 +1,12 @@
 import os
 import unittest
 import tempfile
-from pluginmanager.file_getters import FilenameFileGetter
+from pluginmanager.file_filters import FilenameFileFilters
 
 
 class TestFilenameFileGetter(unittest.TestCase):
     def setUp(self):
-        self.filegetter = FilenameFileGetter()
+        self.file_filter = FilenameFileFilter()
 
     def test_plugin_valid(self):
         filename = self.filegetter.filenames[0]
