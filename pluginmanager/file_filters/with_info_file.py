@@ -10,7 +10,7 @@ FILE_ERROR = getattr(builtins,
                      getattr(builtins, "OSError"))
 
 
-class WithInfoFileGetter(object):
+class WithInfoFileFilter(object):
     """
     Only gets files that have configuration files ending with specific
     extensions, nominally 'yapsy-plugin'

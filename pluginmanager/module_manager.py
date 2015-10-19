@@ -1,37 +1,36 @@
 import os
 import sys
-
+import inspect
 import importlib
 
-from pluginmanager.module_parsers import SubclassParser
-from pluginmanager import util as yapsy_util
+from pluginmanager import util as manager_util
 
 
-class ModuleLoader(object):
+class ModuleManager(object):
     def __init__(self,
-                 module_parsers=[SubclassParser()],
+                 module_filters=[],
                  blacklisted_filepaths=set()):
 
-        module_parsers = yapsy_util.return_list(module_parsers)
+        module_filters = manager_util.return_list(module_filters)
         self.loaded_modules = set()
         self.processed_filepaths = {}
-        self.module_parsers = module_parsers
+        self.module_filters = module_filters
         self.blacklisted_filepaths = blacklisted_filepaths
 
-    def set_module_parsers(self, module_parsers):
-        module_parsers = yapsy_util.return_list(module_parsers)
-        self.module_parsers = module_parsers
+    def set_module_filters(self, module_filters):
+        module_filters = manager_util.return_list(module_filters)
+        self.module_filters = module_filters
 
-    def add_module_parsers(self, module_parsers):
-        module_parsers = yapsy_util.return_list(module_parsers)
-        self.module_parsers.extend(module_parsers)
+    def add_module_filters(self, module_filters):
+        module_filters = manager_util.return_list(module_filters)
+        self.module_filters.extend(module_filters)
 
     def add_blacklisted_filepaths(self, filepaths):
-        filepaths = set(yapsy_util.return_list(filepaths))
+        filepaths = set(manager_util.return_list(filepaths))
         self.blacklisted_filepaths.update(filepaths)
 
     def set_blacklisted_filepaths(self, filepaths):
-        filepaths = yapsy_util.return_list(filepaths)
+        filepaths = manager_util.return_list(filepaths)
         filepaths = set(filepaths)
         self.blacklisted_filepaths = filepaths
 
@@ -51,15 +50,24 @@ class ModuleLoader(object):
     def get_loaded_modules(self, names=None):
         return self._get_modules(self.loaded_modules)
 
-    def get_plugins_from_modules(self, modules=None):
+    def collect_plugins(self, modules=None):
         plugins = []
         if modules is None:
             modules = self.get_loaded_modules()
         else:
-            modules = yapsy_util.return_list(modules)
+            modules = manager_util.return_list(modules)
         for module in modules:
-            for plugin_parser in self.module_parsers:
-                plugins.extend(plugin_parser.get_plugins(module))
+            module_plugins = inspect.getmembers(module)
+            module_plugins = self._filter_modules(plugins)
+            plugins.extend(module_plugins)
+        return plugins
+
+    def _filter_modules(self, plugins):
+        if self.module_filters:
+            module_plugins = []
+            for module_filter in self.module_filters:
+                module_plugins.extend(module_filter(plugins))
+            plugins = module_plugins
         return plugins
 
     def load_modules(self, filepaths):
@@ -76,8 +84,8 @@ class ModuleLoader(object):
             if not self._valid_filepath(filepath):
                 continue
 
-            name = yapsy_util.get_module_name(filepath)
-            plugin_module_name = yapsy_util.create_unique_module_name(name)
+            name = manager_util.get_module_name(filepath)
+            plugin_module_name = manager_util.create_unique_module_name(name)
 
             spec = importlib.util.spec_from_file_location(plugin_module_name,
                                                           filepath)

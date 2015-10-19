@@ -1,9 +1,8 @@
 import os
 import re
-from pluginmanager import util
 
 
-class MatchingRegexFileGetter(object):
+class MatchingRegexFileFilter(object):
     """
     An analyzer that targets plugins decribed by files whose
     name match a given regex.
@@ -15,6 +14,13 @@ class MatchingRegexFileGetter(object):
         for regex in regexp:
             regex_expressions.append(re.compile(regex))
         self.regex_expressions = regex_expressions
+
+    def __call__(self, filepaths):
+        plugin_filepaths = []
+        for filepath in filepaths:
+            if self.plugin_valid(filepath):
+                plugin_filepaths.append(filepath)
+        return plugin_filepaths
 
     def set_regex_expressions(self, regex_expressions):
         if not isinstance(regex_expressions, list):
@@ -35,11 +41,3 @@ class MatchingRegexFileGetter(object):
             if regex.match(filename):
                 return True
         return False
-
-    def get_plugin_filepaths(self, dir_path):
-        plugin_filepaths = []
-        filepaths = util.get_filepaths_from_dir(dir_path)
-        for filepath in filepaths:
-            if self.plugin_valid(filepath):
-                plugin_filepaths.append(filepath)
-        return plugin_filepaths

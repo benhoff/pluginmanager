@@ -29,11 +29,6 @@ class TestInterface(unittest.TestCase):
         new_num_dirs = len(self.interface.get_plugin_directories())
         self.assertTrue(new_num_dirs > num_directories)
 
-    def test_set_file_getters(self):
-        self.interface.set_file_getters(self.test_obj)
-        file_getters = self.interface.get_file_getters()
-        self.assertIn(self.test_obj, file_getters)
-
     def test_add_get_modules(self):
         pass
 
@@ -45,17 +40,17 @@ class TestInterface(unittest.TestCase):
 
     def test_adders_getters_and_setters(self):
         adders = ['add_blacklisted_filepaths',
-                  'add_file_getters',
+                  'add_file_filters',
                   'add_plugin_filepaths',
                   'add_plugins']
 
         getters = ['get_blacklisted_filepaths',
-                   'get_file_getters',
+                   'get_file_filters',
                    'get_plugin_filepaths',
                    'get_plugins']
 
         setters = ['set_blacklisted_filepaths',
-                   'set_file_getters',
+                   'set_file_filters',
                    'set_plugin_filepaths',
                    'set_plugins']
 

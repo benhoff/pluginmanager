@@ -7,31 +7,31 @@ FILE_ERROR = getattr(builtins,
                      "FileNotFoundError",
                      getattr(builtins, "OSError"))
 
-from pluginmanager.file_getters import WithInfoFileGetter
+from pluginmanager.file_filters import WithInfoFileFilter
 
 
 class TestWithInfoFileGetter(unittest.TestCase):
     def setUp(self):
-        self.file_getter = WithInfoFileGetter()
+        self.file_filter = WithInfoFileFilter()
         self._plugin_file_name = 'plugin.{}'
 
     def test_set_file_extension(self):
         test_extension = 'test'
-        self.file_getter.set_file_extensions(test_extension)
-        self.assertIn(test_extension, self.file_getter.extensions)
+        self.file_filter.set_file_extensions(test_extension)
+        self.assertIn(test_extension, self.file_filter.extensions)
 
     def test_add_file_extensions(self):
         new_extension = 'test'
-        previous_extension = self.file_getter.extensions[0]
-        self.file_getter.add_file_extensions(new_extension)
-        self.assertIn(new_extension, self.file_getter.extensions)
-        self.assertIn(previous_extension, self.file_getter.extensions)
+        previous_extension = self.file_filter.extensions[0]
+        self.file_filter.add_file_extensions(new_extension)
+        self.assertIn(new_extension, self.file_filter.extensions)
+        self.assertIn(previous_extension, self.file_filter.extensions)
 
     def test_plugin_valid(self):
         valid_filepath = 'file.yapsy-plugin'
         unvalid_filepath = 'file.bad'
-        valid_filepath = self.file_getter.plugin_valid(valid_filepath)
-        unvalid_filepath = self.file_getter.plugin_valid(unvalid_filepath)
+        valid_filepath = self.file_filter.plugin_valid(valid_filepath)
+        unvalid_filepath = self.file_filter.plugin_valid(unvalid_filepath)
         self.assertTrue(valid_filepath)
         self.assertFalse(unvalid_filepath)
 
@@ -49,8 +49,14 @@ class TestWithInfoFileGetter(unittest.TestCase):
 
             plugin_file.write(yapsy_contents)
             plugin_file.close()
+<<<<<<< HEAD:pluginmanager/tests/file_getters/test_with_info_file.py
             info = self.file_getter.get_plugin_infos(test_dir)
             files = self.file_getter.get_plugin_filepaths(test_dir)
+=======
+            fake_python.close()
+            info = self.file_filter.get_plugin_infos(test_dir)
+            files = self.file_filter.get_plugin_filepaths(test_dir)
+>>>>>>> interface-changes:pluginmanager/tests/file_filters/test_with_info_file.py
         return info, files
 
     def test_get_plugin_info(self):
