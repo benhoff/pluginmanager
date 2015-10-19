@@ -8,7 +8,7 @@ class TestClass:
 
 class TestFileManager(unittest.TestCase):
     def setUp(self):
-        self.file_manager = FileLocator()
+        self.file_manager = FileManager()
 
     def test_set_file_filters(self):
         current_file_filters = self.file_manager.file_filters[0]
