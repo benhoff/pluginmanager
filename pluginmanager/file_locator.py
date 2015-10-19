@@ -1,4 +1,3 @@
-from pluginmanager.file_getters import WithInfoFileGetter
 from pluginmanager import util
 
 
@@ -8,10 +7,10 @@ class FileLocator(object):
     to determine what files actually corresponds to plugins.
     """
     def __init__(self,
-                 file_getters=[WithInfoFileGetter('yapsy-plugin')]):
+                 filepath_parsers=[]):
 
-        file_getters = util.return_list(file_getters)
-        self.file_getters = file_getters
+        filepath_parsers = util.return_list(filepath_parsers)
+        self.filepath_parsers = filepath_parsers
         self.plugin_files = set()
 
     def add_plugin_filepaths(self, filepaths):
@@ -22,37 +21,40 @@ class FileLocator(object):
         filepaths = set(util.return_list(filepaths))
         self.plugin_files = filepaths
 
-    def set_file_getters(self, file_getters):
-        file_getters = util.return_list(file_getters)
-        self.file_getters = file_getters
+    def set_filepath_parsers(self, filepath_parsers):
+        filepath_parsers = util.return_list(filepath_parsers)
+        self.filepath_parsers = filepath_parsers
 
-    def add_file_getters(self, file_getters):
-        file_getters = util.return_list(file_getters)
-        self.file_getters.extend(file_getters)
+    def add_file_parsers(self, filepath_parsers):
+        filepath_parsers = util.return_list(filepath_parsers)
+        self.filepath_parsers.extend(filepath_parsers)
 
-    def locate_filepaths(self, directories):
+    def collect_filepaths(self, directories):
         """
         Walk through the plugins' places and look for plugins.
 
         Return the candidates and number of plugins found.
         """
+        plugin_files = set()
+        directories = util.return_list(directories)
         for directory in directories:
-            # Can have more than one file getter
-            filepaths = self._file_getter_iterator_helper(directory)
-            self.plugin_files.update(filepaths)
+            filepaths = util.get_filepaths_from_dir(directory)
+            filepaths = self._filter_filepaths(directory)
+            plugin_files.update(filepaths)
 
-        return self.plugin_files
+        return plugin_files
 
     def get_plugin_filepaths(self):
         return self.plugin_files
 
-    def _file_getter_iterator_helper(self, dir_path):
+    def _filter_filepaths(self, filepaths):
         """
-        helps iterate through all the file getters
+        helps iterate through all the file parsers
         """
-        filepaths = set()
-        for file_getter in self.file_getters:
-            plugin_paths = file_getter.get_plugin_filepaths(dir_path)
-            filepaths.update(plugin_paths)
+        if self.filepath_parsers:
+            plugin_files = set()
+            for filepath_parser in self.filepath_parsers:
+            plugin_paths = filepath_parsers.filter_filepaths(filepaths)
+            plugin_files.update(plugin_paths)
 
-        return filepaths
+        return plugin_files
