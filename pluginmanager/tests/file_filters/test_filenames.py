@@ -1,6 +1,5 @@
 import os
 import unittest
-import tempfile
 from pluginmanager.file_filters import FilenameFileFilter
 
 

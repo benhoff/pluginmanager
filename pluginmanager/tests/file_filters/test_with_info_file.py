@@ -49,14 +49,8 @@ class TestWithInfoFileGetter(unittest.TestCase):
 
             plugin_file.write(yapsy_contents)
             plugin_file.close()
-<<<<<<< HEAD:pluginmanager/tests/file_getters/test_with_info_file.py
-            info = self.file_getter.get_plugin_infos(test_dir)
-            files = self.file_getter.get_plugin_filepaths(test_dir)
-=======
-            fake_python.close()
             info = self.file_filter.get_plugin_infos(test_dir)
             files = self.file_filter.get_plugin_filepaths(test_dir)
->>>>>>> interface-changes:pluginmanager/tests/file_filters/test_with_info_file.py
         return info, files
 
     def test_get_plugin_info(self):
@@ -74,17 +68,17 @@ class TestWithInfoFileGetter(unittest.TestCase):
         base, dir_name = os.path.split(dir_path)
         config = {"Core": {"Module": dir_name}}
         self.assertRaises(FILE_ERROR,
-                          self.file_getter._parse_config_details,
+                          self.file_filter._parse_config_details,
                           config,
                           'invalid/dir')
 
         config = {"Core": {"Module": dir_name, "Name": 'test'}}
-        config = self.file_getter._parse_config_details(config, base)
+        config = self.file_filter._parse_config_details(config, base)
         dir_path = os.path.join(dir_path, '__init__.py')
         self.assertTrue(config['path'] == dir_path)
 
     def test_empty_dirs(self):
         with tempfile.TemporaryDirectory() as temp_dir:
-            info, filepaths = self.file_getter.get_info_and_filepaths(temp_dir)
+            info, filepaths = self.file_filter.get_info_and_filepaths(temp_dir)
         self.assertEqual(info, [])
         self.assertEqual(filepaths, set())
