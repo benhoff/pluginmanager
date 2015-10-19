@@ -1,16 +1,16 @@
 from pluginmanager import util
 
 
-class FileLocator(object):
+class FileManager(object):
     """
     Holds onto and locates the filepaths of plugins using a set of getters
     to determine what files actually corresponds to plugins.
     """
     def __init__(self,
-                 filepath_parsers=[]):
+                 file_filters=[]):
 
-        filepath_parsers = util.return_list(filepath_parsers)
-        self.filepath_parsers = filepath_parsers
+        file_filters = util.return_list(file_filters)
+        self.file_filters = file_filters
         self.plugin_files = set()
 
     def add_plugin_filepaths(self, filepaths):
@@ -21,13 +21,13 @@ class FileLocator(object):
         filepaths = set(util.return_list(filepaths))
         self.plugin_files = filepaths
 
-    def set_filepath_parsers(self, filepath_parsers):
-        filepath_parsers = util.return_list(filepath_parsers)
-        self.filepath_parsers = filepath_parsers
+    def set_file_filters(self, file_filters):
+        file_filters = util.return_list(file_filters)
+        self.file_filters = file_filters
 
-    def add_file_parsers(self, filepath_parsers):
-        filepath_parsers = util.return_list(filepath_parsers)
-        self.filepath_parsers.extend(filepath_parsers)
+    def add_file_filters(self, file_filters):
+        file_filters = util.return_list(file_filters)
+        self.file_filters.extend(file_filters)
 
     def collect_filepaths(self, directories):
         """
@@ -51,10 +51,10 @@ class FileLocator(object):
         """
         helps iterate through all the file parsers
         """
-        if self.filepath_parsers:
+        if self.file_filters:
             plugin_files = set()
-            for filepath_parser in self.filepath_parsers:
-                plugin_paths = filepath_parsers.filter_filepaths(filepaths)
+            for file_filter in self.file_filters:
+                plugin_paths = file_filters(filepaths)
                 plugin_files.update(plugin_paths)
             filepaths = plugin_files
 

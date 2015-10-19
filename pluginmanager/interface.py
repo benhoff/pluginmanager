@@ -1,4 +1,4 @@
-from .file_locator import FileLocator
+from .file_manager import FileManager
 from .plugin_manager import PluginManager
 from .module_loader import ModuleLoader
 from .directory_manager import DirectoryManager
@@ -6,14 +6,14 @@ from .directory_manager import DirectoryManager
 
 class Interface(object):
     def __init__(self,
-                 file_locator=FileLocator(),
+                 file_manager=FileManager(),
                  module_loader=ModuleLoader(),
                  plugin_manager=PluginManager(),
                  auto_manage_state=True):
 
         self.managing_state = auto_manage_state
         self.directory_manager = DirectoryManager()
-        self.file_locator = file_locator
+        self.file_manager = file_manager
         self.module_loader = module_loader
         self.plugin_manager = plugin_manager
 
@@ -29,7 +29,7 @@ class Interface(object):
     def collect_plugin_filepaths(self, directories=None):
         if directories is None:
             directories = self.collect_plugin_directories()
-        plugin_filepaths = self.file_locator.collect_filepaths(directories)
+        plugin_filepaths = self.file_manager.collect_filepaths(directories)
         return plugin_filepaths
 
     def load_modules(self, filepaths=None):
@@ -87,16 +87,16 @@ class Interface(object):
         self.directory_manager.set_directories(paths)
 
     def add_plugin_filepaths(self, filepaths):
-        self.file_locator.add_plugin_filepaths(filepaths)
+        self.file_manager.add_plugin_filepaths(filepaths)
 
     def get_plugin_filepaths(self):
-        return self.file_locator.get_plugin_filepaths()
+        return self.file_manager.get_plugin_filepaths()
 
     def remove_plugin_filepaths(self, filepaths):
-        self.file_locator.remove_plugin_filepaths(filepaths)
+        self.file_manager.remove_plugin_filepaths(filepaths)
 
     def set_plugin_filepaths(self, filepaths):
-        self.file_locator.set_plugin_filepaths(filepaths)
+        self.file_manager.set_plugin_filepaths(filepaths)
 
     def add_blacklisted_filepaths(self, filepaths):
         self.module_loader.add_blacklisted_filepaths(filepaths)
@@ -116,14 +116,14 @@ class Interface(object):
     def get_loaded_modules(self):
         return self.module_loader.get_loaded_modules()
 
-    def add_file_getters(self, file_getters):
-        self.file_locator.add_file_getters(file_getters)
+    def add_file_filters(self, file_filters):
+        self.file_manager.add_file_filters(file_filters)
 
-    def get_file_getters(self):
-        return self.file_locator.file_getters
+    def get_file_filters(self):
+        return self.file_manager.file_filters
 
-    def remove_file_getters(self, file_getters):
-        self.file_locator.remove_file_getters(file_getters)
+    def remove_file_filters(self, file_filters):
+        self.file_manager.remove_file_filters(file_filters)
 
-    def set_file_getters(self, file_getters):
-        self.file_locator.set_file_getters(file_getters)
+    def set_file_filters(self, file_filters):
+        self.file_manager.set_file_filters(file_filters)
