@@ -1,6 +1,6 @@
 import os
 import sys
-
+import inspect
 import importlib
 
 from pluginmanager.module_parsers import SubclassParser
@@ -9,22 +9,22 @@ from pluginmanager import util as manager_util
 
 class ModuleLoader(object):
     def __init__(self,
-                 module_parsers=[SubclassParser()],
+                 module_filters=[],
                  blacklisted_filepaths=set()):
 
-        module_parsers = manager_util.return_list(module_parsers)
+        module_filters = manager_util.return_list(module_filters)
         self.loaded_modules = set()
         self.processed_filepaths = {}
-        self.module_parsers = module_parsers
+        self.module_filters = module_filters
         self.blacklisted_filepaths = blacklisted_filepaths
 
-    def set_module_parsers(self, module_parsers):
-        module_parsers = manager_util.return_list(module_parsers)
-        self.module_parsers = module_parsers
+    def set_module_filters(self, module_filters):
+        module_filters = manager_util.return_list(module_filters)
+        self.module_filters = module_filters
 
-    def add_module_parsers(self, module_parsers):
-        module_parsers = manager_util.return_list(module_parsers)
-        self.module_parsers.extend(module_parsers)
+    def add_module_filters(self, module_filters):
+        module_filters = manager_util.return_list(module_filters)
+        self.module_filters.extend(module_filters)
 
     def add_blacklisted_filepaths(self, filepaths):
         filepaths = set(manager_util.return_list(filepaths))
@@ -51,15 +51,16 @@ class ModuleLoader(object):
     def get_loaded_modules(self, names=None):
         return self._get_modules(self.loaded_modules)
 
-    def get_plugins_from_modules(self, modules=None):
+    def collect_plugins(self, modules=None):
         plugins = []
         if modules is None:
             modules = self.get_loaded_modules()
         else:
             modules = manager_util.return_list(modules)
         for module in modules:
-            for plugin_parser in self.module_parsers:
-                plugins.extend(plugin_parser.get_plugins(module))
+            module_plugins = inspect.getmembers(module)
+            module_plugins = self._filter_plugins(plugins)
+            plugins.extend(module_plugins)
         return plugins
 
     def load_modules(self, filepaths):
