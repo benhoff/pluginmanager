@@ -4,7 +4,7 @@ import sys
 import importlib
 
 from pluginmanager.module_parsers import SubclassParser
-from pluginmanager import util as yapsy_util
+from pluginmanager import util as manager_util
 
 
 class ModuleLoader(object):
@@ -12,26 +12,26 @@ class ModuleLoader(object):
                  module_parsers=[SubclassParser()],
                  blacklisted_filepaths=set()):
 
-        module_parsers = yapsy_util.return_list(module_parsers)
+        module_parsers = manager_util.return_list(module_parsers)
         self.loaded_modules = set()
         self.processed_filepaths = {}
         self.module_parsers = module_parsers
         self.blacklisted_filepaths = blacklisted_filepaths
 
     def set_module_parsers(self, module_parsers):
-        module_parsers = yapsy_util.return_list(module_parsers)
+        module_parsers = manager_util.return_list(module_parsers)
         self.module_parsers = module_parsers
 
     def add_module_parsers(self, module_parsers):
-        module_parsers = yapsy_util.return_list(module_parsers)
+        module_parsers = manager_util.return_list(module_parsers)
         self.module_parsers.extend(module_parsers)
 
     def add_blacklisted_filepaths(self, filepaths):
-        filepaths = set(yapsy_util.return_list(filepaths))
+        filepaths = set(manager_util.return_list(filepaths))
         self.blacklisted_filepaths.update(filepaths)
 
     def set_blacklisted_filepaths(self, filepaths):
-        filepaths = yapsy_util.return_list(filepaths)
+        filepaths = manager_util.return_list(filepaths)
         filepaths = set(filepaths)
         self.blacklisted_filepaths = filepaths
 
@@ -56,7 +56,7 @@ class ModuleLoader(object):
         if modules is None:
             modules = self.get_loaded_modules()
         else:
-            modules = yapsy_util.return_list(modules)
+            modules = manager_util.return_list(modules)
         for module in modules:
             for plugin_parser in self.module_parsers:
                 plugins.extend(plugin_parser.get_plugins(module))
@@ -76,8 +76,8 @@ class ModuleLoader(object):
             if not self._valid_filepath(filepath):
                 continue
 
-            name = yapsy_util.get_module_name(filepath)
-            plugin_module_name = yapsy_util.create_unique_module_name(name)
+            name = manager_util.get_module_name(filepath)
+            plugin_module_name = manager_util.create_unique_module_name(name)
 
             spec = importlib.util.spec_from_file_location(plugin_module_name,
                                                           filepath)
