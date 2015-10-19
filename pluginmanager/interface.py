@@ -23,7 +23,9 @@ class Interface(object):
     def collect_plugin_directories(self, directories=None):
         if directories is None:
             directories = self.directory_manager.get_plugin_directories()
-        plugin_directories = self.directory_manager.collect_plugin_directories(directories)
+        # alias for pep8 reasons
+        dir_manage = self.directory_manager
+        plugin_directories = dir_manage.collect_plugin_directories(directories)
         return plugin_directories
 
     def collect_plugin_filepaths(self, directories=None):

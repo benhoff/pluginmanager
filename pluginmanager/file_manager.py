@@ -54,7 +54,7 @@ class FileManager(object):
         if self.file_filters:
             plugin_files = set()
             for file_filter in self.file_filters:
-                plugin_paths = file_filters(filepaths)
+                plugin_paths = file_filter(filepaths)
                 plugin_files.update(plugin_paths)
             filepaths = plugin_files
 

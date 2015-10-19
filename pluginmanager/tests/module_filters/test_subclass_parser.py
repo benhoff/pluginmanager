@@ -1,7 +1,7 @@
 import types
 import unittest
 from pluginmanager import IPlugin
-from pluginmanager.module_parsers import SubclassParser
+from pluginmanager.module_filters import SubclassParser
 
 
 class Subclass(IPlugin):

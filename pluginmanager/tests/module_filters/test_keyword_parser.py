@@ -1,18 +1,18 @@
 import types
 import unittest
 
-from pluginmanager.module_parsers import KeywordParser
+from pluginmanager.module_filters import KeywordParser
 
 
 class TestKeywordParser(unittest.TestCase):
     def setUp(self):
-        self.module_parser = KeywordParser()
+        self.module_filter = KeywordParser()
 
     def test_get_plugin(self):
-        keyword = self.module_parser.keywords[0]
+        keyword = self.module_filter.keywords[0]
         test_module = types.ModuleType("TestModule")
         test_obj = type('', (), {})
         set_plugins = [test_obj]
         setattr(test_module, keyword, set_plugins)
-        plugins = self.module_parser.get_plugins(test_module)
+        plugins = self.module_filter.get_plugins(test_module)
         self.assertIn(test_obj, plugins)

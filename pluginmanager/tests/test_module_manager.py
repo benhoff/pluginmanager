@@ -18,7 +18,7 @@ class TestModuleManager(unittest.TestCase):
         self.assertIn(test_obj, self.module_manager.module_filters)
         self.assertNotIn(previous_module, self.module_manager.module_filters)
 
-    def test_add_module_parser(self):
+    def test_add_module_filter(self):
         test_obj = TestClass()
         self.module_manager.add_module_filters(test_obj)
         self.assertIn(test_obj, self.module_manager.module_filters)

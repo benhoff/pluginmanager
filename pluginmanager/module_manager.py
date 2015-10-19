@@ -61,7 +61,7 @@ class ModuleManager(object):
             module_plugins = self._filter_modules(plugins)
             plugins.extend(module_plugins)
         return plugins
-        
+
     def _filter_modules(self, plugins):
         if self.module_filters:
             module_plugins = []

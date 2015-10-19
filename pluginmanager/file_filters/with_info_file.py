@@ -4,7 +4,7 @@ from pluginmanager import util
 from . import PLUGIN_FORBIDDEN_NAME
 
 
-class WithInfoFileGetter(object):
+class WithInfoFileFilter(object):
     """
     Only gets files that have configuration files ending with specific
     extensions, nominally 'yapsy-plugin'
