@@ -39,8 +39,8 @@ class FileManager(object):
         directories = util.return_list(directories)
         for directory in directories:
             filepaths = util.get_filepaths_from_dir(directory)
-            filepaths = self._filter_filepaths(directory)
-            plugin_files.update(filepaths)
+            filepaths = self._filter_filepaths(filepaths)
+            plugin_files.update(set(filepaths))
 
         return plugin_files
 
