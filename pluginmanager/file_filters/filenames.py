@@ -9,8 +9,9 @@ class FilenameFileFilter(object):
 
     def __call__(self, filepaths):
         plugin_filepaths = []
-        if self.plugin_valid(filepath):
-            plugin_filepaths.append(filepath)
+        for filepath in filepaths:
+            if self.plugin_valid(filepath):
+                plugin_filepaths.append(filepath)
         return plugin_filepaths
 
     def plugin_valid(self, filename):

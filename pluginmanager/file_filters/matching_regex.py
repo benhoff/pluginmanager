@@ -1,6 +1,5 @@
 import os
 import re
-from pluginmanager import util
 
 
 class MatchingRegexFileFilter(object):
