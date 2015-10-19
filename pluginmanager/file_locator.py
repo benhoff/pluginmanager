@@ -54,7 +54,8 @@ class FileLocator(object):
         if self.filepath_parsers:
             plugin_files = set()
             for filepath_parser in self.filepath_parsers:
-            plugin_paths = filepath_parsers.filter_filepaths(filepaths)
-            plugin_files.update(plugin_paths)
+                plugin_paths = filepath_parsers.filter_filepaths(filepaths)
+                plugin_files.update(plugin_paths)
+            filepaths = plugin_files
 
-        return plugin_files
+        return filepaths
