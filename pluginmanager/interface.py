@@ -64,9 +64,6 @@ class Interface(object):
     def get_plugins(self):
         return self.plugin_manager.get_plugins()
 
-    def blacklist_plugin(self, plugins):
-        self.plugin_manager.blacklist_plugins(plugins)
-
     def configure_plugins(self, config):
         self.plugin_manager.configure_plugins(config)
 
@@ -100,32 +97,8 @@ class Interface(object):
     def set_plugin_filepaths(self, filepaths):
         self.file_manager.set_plugin_filepaths(filepaths)
 
-    def add_blacklisted_filepaths(self, filepaths):
-        self.module_manager.add_blacklisted_filepaths(filepaths)
-
-    def get_blacklisted_filepaths(self):
-        return self.module_manager.blacklisted_filepaths
-
-    def set_blacklisted_filepaths(self, filepaths):
-        self.module_manager.set_blacklisted_filepaths(filepaths)
-
-    def remove_blacklisted_filepaths(self, filepaths):
-        self.module_manager.remove_blacklisted_filepaths(filepaths)
-
     def add_to_loaded_modules(self, modules):
         self.module_manager.add_to_loaded_modules(modules)
 
     def get_loaded_modules(self):
         return self.module_manager.get_loaded_modules()
-
-    def add_file_filters(self, file_filters):
-        self.file_manager.add_file_filters(file_filters)
-
-    def get_file_filters(self):
-        return self.file_manager.file_filters
-
-    def remove_file_filters(self, file_filters):
-        self.file_manager.remove_file_filters(file_filters)
-
-    def set_file_filters(self, file_filters):
-        self.file_manager.set_file_filters(file_filters)
