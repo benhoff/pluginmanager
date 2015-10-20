@@ -25,6 +25,14 @@ class FileManager(object):
         file_filters = util.return_list(file_filters)
         self.file_filters = file_filters
 
+    def remove_file_filters(self, file_filters):
+        file_filters = util.return_list(file_filters)
+        for file_filter in file_filters:
+            self.file_filters.remove(file_filter)
+
+    def get_file_filters(self):
+        return self.file_filters
+
     def add_file_filters(self, file_filters):
         file_filters = util.return_list(file_filters)
         self.file_filters.extend(file_filters)

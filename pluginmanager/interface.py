@@ -2,6 +2,8 @@ from .file_manager import FileManager
 from .plugin_manager import PluginManager
 from .module_manager import ModuleManager
 from .directory_manager import DirectoryManager
+from .blacklist_interface import BlacklistInterface
+from .filter_interface import FilterInterface
 
 
 class Interface(object):
@@ -51,6 +53,26 @@ class Interface(object):
 
     def reload_modules(self, module_or_module_name):
         self.module_manager.reload_module(module_or_module_name)
+
+    def get_blacklist_interface(self, blacklist_class=None):
+        if blacklist_class is None:
+            blacklist_class = BlacklistInterface
+        blacklist_interface = blacklist_class(self.directory_manager,
+                                              self.file_manager,
+                                              self.module_manager,
+                                              self.plugin_manager)
+
+        return blacklist_interface
+
+    def get_filter_interface(self, filter_class=None):
+        if filter_class is None:
+            filter_class = FilterInterface
+        filter_interface = filter_class(self.directory_manager,
+                                        self.file_manager,
+                                        self.module_manager,
+                                        self.plugin_manager)
+
+        return filter_interface
 
     def set_plugins(self, plugins):
         self.plugin_manager.set_plugins(plugins)

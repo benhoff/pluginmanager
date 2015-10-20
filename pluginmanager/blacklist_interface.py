@@ -1,10 +1,10 @@
-class BlacklistManager(object):
+class BlacklistInterface(object):
     def __init__(self,
                  directory_manager,
                  file_manager,
                  module_manager,
                  plugin_manager):
-        
+
         self.directory_manager = directory_manager
         self.file_manager = file_manager
         self.module_manager = module_manager
