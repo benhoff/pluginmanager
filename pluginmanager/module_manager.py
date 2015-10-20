@@ -73,9 +73,7 @@ class ModuleManager(object):
     def load_modules(self, filepaths):
         # removes filepaths from processed if they are not in sys.modules
         self._update_internal_state()
-        # handle case of single filepath passed in
-        if not isinstance(filepaths, list) or not isinstance(filepaths, set):
-            filepaths = set(filepaths)
+        filepaths = manager_util.return_list(filepaths)
 
         modules = []
         for filepath in filepaths:
@@ -120,7 +118,7 @@ class ModuleManager(object):
 
     def _update_internal_state(self):
         system_modules = sys.modules.keys()
-        for module in self.loaded_modules:
+        for module in list(self.loaded_modules):
             if module not in system_modules:
                 self.processed_filepaths.pop(module)
-                self.loaded_modules.pop(module)
+                self.loaded_modules.remove(module)
