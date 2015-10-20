@@ -80,8 +80,16 @@ class PluginManager(object):
     def get_plugins(self):
         return self.plugins
 
-    def blacklist_plugins(self, plugins):
+    def add_blacklisted_plugins(self, plugins):
+        plugins = util.return_list(plugins)
         self.blacklisted_plugins.extend(plugins)
+
+    def set_blacklisted_plugins(self, plugins):
+        plugins = util.return_list(plugins)
+        self.blacklisted_plugins = plugins
+
+    def get_blacklisted_plugins(self):
+        return self.blacklisted_plugins
 
     def add_plugins(self, plugins):
         plugins = util.return_list(plugins)
