@@ -17,6 +17,12 @@ class TestMatchingRegexFileGetter(unittest.TestCase):
         self.assertIn('red', self.file_filter.regex_expressions)
         self.assertNotIn(previous, self.file_filter.regex_expressions)
 
+    def test_call(self):
+        paths = ['fancy/plugin_blue.py', 'test/dir/blah.py']
+        filtered = self.file_filter(paths)
+        self.assertIn(paths[0], filtered)
+        self.assertNotIn(paths[1], filtered)
+
     def test_plugin_valid(self):
         valid_name = 'my/fancy/plugin_blue.py'
         unvalid_name = 'plugin/fancy/path/but_not.py'
