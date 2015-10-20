@@ -91,6 +91,11 @@ class PluginManager(object):
     def get_blacklisted_plugins(self):
         return self.blacklisted_plugins
 
+    def remove_blacklisted_plugins(self, plugins):
+        plugins = util.return_list(plugins)
+        for plugin in plugins:
+            self.blacklisted_plugins.remove(plugin)
+
     def add_plugins(self, plugins):
         plugins = util.return_list(plugins)
         for plugin in plugins:

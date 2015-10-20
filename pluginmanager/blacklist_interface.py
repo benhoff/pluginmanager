@@ -11,37 +11,37 @@ class BlacklistInterface(object):
         self.plugin_manager = plugin_manager
 
     def add_blacklisted_directories(self, directories):
-        pass
+        self.directory_manager.add_blacklisted_directories(directories)
 
     def get_blacklisted_directories(self):
-        pass
+        return self.directory_manager.get_blacklisted_directories()
 
     def set_blacklisted_directories(self, directories):
-        pass
+        self.directory_manager.set_blacklisted_directories(directories)
 
     def remove_blacklisted_directories(self, directories):
-        pass
+        self.directory_manager.remove_blacklisted_directories(directories)
 
     def add_blacklisted_filepaths(self, filepaths):
-        self.module_manager.add_blacklisted_filepaths(filepaths)
+        self.file_manager.add_blacklisted_filepaths(filepaths)
 
     def get_blacklisted_filepaths(self):
-        return self.module_manager.blacklisted_filepaths
+        return self.file_manager.get_blacklisted_filepaths()
 
     def set_blacklisted_filepaths(self, filepaths):
-        self.module_manager.set_blacklisted_filepaths(filepaths)
+        self.file_manager.set_blacklisted_filepaths(filepaths)
 
     def remove_blacklisted_filepaths(self, filepaths):
-        self.module_manager.remove_blacklisted_filepaths(filepaths)
+        self.file_manager.remove_blacklisted_filepaths(filepaths)
 
     def add_blacklisted_plugins(self, plugins):
-        pass
+        self.plugin_manager.add_blacklisted_plugins(plugins)
 
     def get_blacklisted_plugins(self):
-        pass
+        return self.plugin_manager.get_blacklisted_plugins()
 
     def set_blacklisted_plugins(self, plugins):
-        pass
+        self.plugin_manager.set_blacklisted_plugins(plugins)
 
     def remove_blacklisted_plugins(self, plugins):
-        pass
+        self.plugin_manager.remove_blacklisted_plugins(plugins)
