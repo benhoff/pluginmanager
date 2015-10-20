@@ -85,7 +85,7 @@ class TestModuleManager(unittest.TestCase):
 
     def _load_modules(self):
         with tempfile.TemporaryDirectory() as temp_dir:
-            code = 'PLUGINS = []\nfive = 5.0'
+            code = 'PLUGINS = [5,4]\nfive = 5.0\ndef func():\n    pass'
             filename = os.path.join(temp_dir, "mod_test.py")
             f = open(filename, 'w+')
             f.write(code)
@@ -102,19 +102,20 @@ class TestModuleManager(unittest.TestCase):
         self.assertIn(module, got_modules)
         loaded_modules = self.module_manager.get_loaded_modules()
         self.assertIn(module, loaded_modules)
-    """
+
     def test_collect_plugins(self):
         self.module_manager.module_filters = []
         module, _ = self._load_modules()
         plugins = self.module_manager.collect_plugins(module)
-    """
+        plugins = [plugin[0] for plugin in plugins]
+        self.assertIn('PLUGINS', plugins)
 
     def test_load_modules(self):
         module, filename = self._load_modules()
 
         self.assertIn(filename,
                       self.module_manager.processed_filepaths.values())
-        self.assertEqual(module.PLUGINS, [])
+        self.assertEqual(module.PLUGINS, [5,4])
         self.assertEqual(module.five, 5.0)
 
     def test_update_internal_state(self):

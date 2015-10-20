@@ -66,7 +66,7 @@ class ModuleManager(object):
             modules = manager_util.return_list(modules)
         for module in modules:
             module_plugins = inspect.getmembers(module)
-            module_plugins = self._filter_modules(plugins)
+            module_plugins = self._filter_modules(module_plugins)
             plugins.extend(module_plugins)
         return plugins
 
