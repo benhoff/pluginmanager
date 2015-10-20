@@ -115,7 +115,8 @@ class TestModuleManager(unittest.TestCase):
 
         self.assertIn(filename,
                       self.module_manager.processed_filepaths.values())
-        self.assertEqual(module.PLUGINS, [5,4])
+
+        self.assertEqual(module.PLUGINS, [5, 4])
         self.assertEqual(module.five, 5.0)
 
     def test_update_internal_state(self):
