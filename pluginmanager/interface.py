@@ -2,6 +2,8 @@ from .file_manager import FileManager
 from .plugin_manager import PluginManager
 from .module_manager import ModuleManager
 from .directory_manager import DirectoryManager
+from .blacklist_interface import BlacklistInterface
+from .filter_interface import FilterInterface
 
 
 class Interface(object):
@@ -52,6 +54,26 @@ class Interface(object):
     def reload_modules(self, module_or_module_name):
         self.module_manager.reload_module(module_or_module_name)
 
+    def get_blacklist_interface(self, blacklist_class=None):
+        if blacklist_class is None:
+            blacklist_class = BlacklistInterface
+        blacklist_interface = blacklist_class(self.directory_manager,
+                                              self.file_manager,
+                                              self.module_manager,
+                                              self.plugin_manager)
+
+        return blacklist_interface
+
+    def get_filter_interface(self, filter_class=None):
+        if filter_class is None:
+            filter_class = FilterInterface
+        filter_interface = filter_class(self.directory_manager,
+                                        self.file_manager,
+                                        self.module_manager,
+                                        self.plugin_manager)
+
+        return filter_interface
+
     def set_plugins(self, plugins):
         self.plugin_manager.set_plugins(plugins)
 
@@ -63,9 +85,6 @@ class Interface(object):
 
     def get_plugins(self):
         return self.plugin_manager.get_plugins()
-
-    def blacklist_plugin(self, plugins):
-        self.plugin_manager.blacklist_plugins(plugins)
 
     def configure_plugins(self, config):
         self.plugin_manager.configure_plugins(config)
@@ -100,32 +119,8 @@ class Interface(object):
     def set_plugin_filepaths(self, filepaths):
         self.file_manager.set_plugin_filepaths(filepaths)
 
-    def add_blacklisted_filepaths(self, filepaths):
-        self.module_manager.add_blacklisted_filepaths(filepaths)
-
-    def get_blacklisted_filepaths(self):
-        return self.module_manager.blacklisted_filepaths
-
-    def set_blacklisted_filepaths(self, filepaths):
-        self.module_manager.set_blacklisted_filepaths(filepaths)
-
-    def remove_blacklisted_filepaths(self, filepaths):
-        self.module_manager.remove_blacklisted_filepaths(filepaths)
-
     def add_to_loaded_modules(self, modules):
         self.module_manager.add_to_loaded_modules(modules)
 
     def get_loaded_modules(self):
         return self.module_manager.get_loaded_modules()
-
-    def add_file_filters(self, file_filters):
-        self.file_manager.add_file_filters(file_filters)
-
-    def get_file_filters(self):
-        return self.file_manager.file_filters
-
-    def remove_file_filters(self, file_filters):
-        self.file_manager.remove_file_filters(file_filters)
-
-    def set_file_filters(self, file_filters):
-        self.file_manager.set_file_filters(file_filters)

@@ -19,6 +19,7 @@ class DirectoryManager(object):
             plugin_directories.add(os.path.dirname(__file__))
 
         self.plugin_directories = plugin_directories
+        self.blacklisted_directories = set()
         self.recursive = recursive
 
     def add_directories(self, paths):
@@ -32,6 +33,23 @@ class DirectoryManager(object):
 
     def add_site_packages_paths(self):
         self.add_directories(getsitepackages())
+
+    def add_blacklisted_directories(self, directories):
+        directories = set(util.return_list(directories))
+        unique = set.union(directories, self.blacklisted_directories)
+        self.blacklisted_directories = unique
+
+    def set_blacklisted_directories(self, directories):
+        directories = set(util.return_list(directories))
+        self.blacklisted_directories = directories
+
+    def get_blacklisted_directories(self):
+        return self.blacklisted_directories
+
+    def remove_blacklisted_directories(self, directories):
+        directories = util.return_list(directories)
+        for directory in directories:
+            self.blacklisted_directories.remove(directory)
 
     def get_directories(self):
         self._plugin_dirs_to_absolute_paths()
