@@ -22,7 +22,7 @@ class PluginManager(object):
         self._instance_parser(plugins)
 
     def set_plugins(self, plugins):
-        self.plugin = []
+        self.plugins = []
         self._instance_parser(plugins)
 
     def _handle_class_instance(self, klass):

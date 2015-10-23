@@ -61,12 +61,12 @@ class TestPluginManager(unittest.TestCase):
         self.plugin_manager._handle_class_instance(InstanceClass)
         self.assertTrue(len(self.plugin_manager.plugins) == num_plugins)
 
-    def test_set_instances(self):
+    def test_set_plugins(self):
         instance_2 = InstanceClass()
         self.plugin_manager.set_plugins(instance_2)
-        instances = self.plugin_manager.get_plugins()
-        self.assertIn(instance_2, instances)
-        self.assertNotIn(self.instance, instances)
+        plugins = self.plugin_manager.get_plugins()
+        self.assertIn(instance_2, plugins)
+        self.assertNotIn(self.instance, plugins)
 
     def test_activate_instances(self):
         self.plugin_manager.activate_plugins()
