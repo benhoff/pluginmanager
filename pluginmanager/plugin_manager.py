@@ -12,6 +12,19 @@ class PluginManager(object):
         self.instantiate_classes = instantiate_classes
         self.blacklisted_plugins = []
 
+    def get_plugins(self, filter_function=None):
+        plugins = self.plugins
+        if filter_function is not None:
+            plugins = filter_function(plugins)
+        return plugins
+
+    def add_plugins(self, plugins):
+        self._instance_parser(plugins)
+
+    def set_plugins(self, plugins):
+        self.plugin = []
+        self._instance_parser(plugins)
+
     def _handle_class_instance(self, klass):
         if not self.instantiate_classes:
             return
@@ -77,9 +90,6 @@ class PluginManager(object):
     def _unique_class(self, cls):
         return not any(isinstance(obj, cls) for obj in self.plugins)
 
-    def get_plugins(self):
-        return self.plugins
-
     def add_blacklisted_plugins(self, plugins):
         plugins = util.return_list(plugins)
         self.blacklisted_plugins.extend(plugins)
@@ -95,17 +105,3 @@ class PluginManager(object):
         plugins = util.return_list(plugins)
         for plugin in plugins:
             self.blacklisted_plugins.remove(plugin)
-
-    def add_plugins(self, plugins):
-        plugins = util.return_list(plugins)
-        for plugin in plugins:
-            if plugin not in self.blacklisted_plugins:
-                self.plugins.append(plugin)
-
-    def set_plugins(self, plugins):
-        plugins = util.return_list(plugins)
-        self.plugins = []
-
-        for plugin in plugins:
-            if plugin not in self.blacklisted_plugins:
-                self.plugins.append(plugin)
