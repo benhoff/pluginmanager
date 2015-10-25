@@ -8,16 +8,14 @@ from .filter_interface import FilterInterface
 
 class Interface(object):
     def __init__(self,
-                 file_manager=FileManager(),
-                 module_manager=ModuleManager(),
-                 plugin_manager=PluginManager(),
-                 auto_manage_state=True):
+                 auto_manage_state=True,
+                 **kwargs):
 
         self.managing_state = auto_manage_state
         self.directory_manager = DirectoryManager()
-        self.file_manager = file_manager
-        self.module_manager = module_manager
-        self.plugin_manager = plugin_manager
+        self.file_manager = kwargs.get('file_manager', FileManager())
+        self.module_manager = kwargs.get('module_manager', ModuleManager())
+        self.plugin_manager = kwargs.get('plugin_manager', PluginManager())
 
     def track_site_package_paths(self):
         return self.directory_manager.add_site_packages_paths()
