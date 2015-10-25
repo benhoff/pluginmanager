@@ -25,6 +25,11 @@ class PluginManager(object):
         self.plugins = []
         self._instance_parser(plugins)
 
+    def get_instances(self):
+        isclass = inspect.isclass
+        return [x for x in self.plugins if (isclass(type(x)) and not
+                                            type(x) == type)]
+
     def _instance_parser(self, plugins):
         plugins = util.return_list(plugins)
         for instance in plugins:
@@ -34,51 +39,55 @@ class PluginManager(object):
                 self._handle_object_instance(instance)
 
     def _handle_class_instance(self, klass):
-        if not self.instantiate_classes or klass in self.blacklisted_plugins:
+        if klass in self.blacklisted_plugins or not self.instantiate_classes:
             return
-        if self.unique_instances and self._unique_class(klass):
+        elif self.unique_instances and self._unique_class(klass):
             self.plugins.append(klass())
         elif not self.unique_instances:
             self.plugins.append(klass())
 
     def _handle_object_instance(self, instance):
         klass = type(instance)
-        instance_is_unique = self._unique_class(klass)
 
         if klass in self.blacklisted_plugins:
             return
-        elif self.unique_instances and instance_is_unique:
-            self.plugins.append(instance)
+        elif self.unique_instances:
+            if self._unique_class(klass):
+                self.plugins.append(instance)
+            else:
+                return
         else:
             self.plugins.append(instance)
 
     def activate_plugins(self):
-        for instance in self.plugins:
+        for instance in self.get_instances():
             instance.activate()
 
     def deactivate_plugins(self):
-        for instance in self.plugins:
+        for instance in self.get_instances():
             instance.deactivate()
 
     def get_configuration_templates(self):
         config = {}
-        names = [plugin.name for plugin in self.get_plugins(
-        for instance in self.plugins:
+        for instance in self.get_instances():
             name = instance.name
             if name in config:
                 old_config = config[name]
-                extended_name = '{}.{}.{}'.format(instance.__module__, instance.__class__, name)
-            else
-            config[instance.name] = instance.get_configuration_template()
+                extended_name = '{}.{}.{}'.format(instance.__module__,
+                                                  instance.__class__,
+                                                  name)
+
+            else:
+                config[instance.name] = instance.get_configuration_template()
         return config
 
     def configure_plugins(self, config):
-        for instance in self.plugins:
+        for instance in self.get_instances():
             instance.configure(config[instance.name])
 
     def check_configurations(self, config):
         results = []
-        for instance in self.plugins:
+        for instance in self.get_instances():
             name = instance.name
             config_instance = config[name]
             result = instance.check_configuration(config_instance)
