@@ -1,4 +1,7 @@
-class IPlugin(object):
+import abc
+
+
+class IPlugin(metaclass=abc.ABCMeta):
     """
     Simple interface to be inherited when creating a plugin.
     """
