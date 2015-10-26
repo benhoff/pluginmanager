@@ -1,24 +1,10 @@
 import unittest
-from pluginmanager import PluginManager
+from pluginmanager import PluginManager, IPlugin
 
 
-class InstanceClass(object):
+class InstanceClass(IPlugin):
     def __init__(self, active=False):
-        self.active = active
-        self.name = 'instance_class'
-        self.config = {}
-
-    def activate(self):
-        self.active = True
-
-    def deactivate(self):
-        self.active = False
-
-    def get_configuration_template(self):
-        return {'key_example': None}
-
-    def configure(self, config):
-        self.config = config
+        super().__init__
 
 
 class TestPluginManager(unittest.TestCase):
@@ -72,15 +58,6 @@ class TestPluginManager(unittest.TestCase):
         self.plugin_manager.activate_plugins()
         instances = self.plugin_manager.get_plugins()
         self.assertTrue(instances[0].active)
-
-    def test_get_config_template(self):
-        config = self.plugin_manager.get_configuration_templates()
-        self.assertIn('instance_class', config)
-    """
-    def test_configure_plugins(self):
-        config = {'instance_class': {'key_example': 1.0}}
-        self.plugin_manager.configure_plugins(config)
-    """
 
     def test_deactive_instances(self):
         instance = InstanceClass(True)

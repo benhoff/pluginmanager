@@ -1,10 +1,11 @@
 import unittest
 from pluginmanager.interface import Interface
+from pluginmanager.iplugin import IPlugin
 
 
 class TestInterface(unittest.TestCase):
     def setUp(self):
-        self.test_obj = type('', (), {})
+        self.test_obj = IPlugin()
         self.interface = Interface()
 
     def test_track_site_package_path(self):
@@ -28,7 +29,7 @@ class TestInterface(unittest.TestCase):
         for index, value in enumerate(all_):
             all_[index] = [getattr(self.interface, name) for name in value]
         adders, getters, setters = all_
-        test_obj = type('', (), {})
+        test_obj = IPlugin()
         for index, (adder, getter, setter) in enumerate(zip(adders,
                                                             getters,
                                                             setters)):

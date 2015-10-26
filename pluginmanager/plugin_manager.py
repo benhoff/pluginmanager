@@ -1,5 +1,6 @@
 import inspect
-from pluginmanager import util
+from . import util
+from .iplugin import IPlugin
 
 
 class PluginManager(object):
@@ -26,9 +27,16 @@ class PluginManager(object):
         self._instance_parser(plugins)
 
     def get_instances(self):
-        isclass = inspect.isclass
-        return [x for x in self.plugins if (isclass(type(x)) and not
-                                            type(x) == type)]
+        return [x for x in self.plugins if isinstance(x, IPlugin)]
+
+    def register_classes(self, classes):
+        """
+        Register classes as plugins that are not subclassed from
+        IPlugin
+        """
+        classes = util.return_list(classes)
+        for klass in classes:
+            IPlugin.register(klass)
 
     def _instance_parser(self, plugins):
         plugins = util.return_list(plugins)
@@ -66,42 +74,6 @@ class PluginManager(object):
     def deactivate_plugins(self):
         for instance in self.get_instances():
             instance.deactivate()
-
-    def get_configuration_templates(self):
-        config = {}
-        for instance in self.get_instances():
-            name = instance.name
-            if name in config:
-                old_config = config[name]
-                extended_name = '{}.{}.{}'.format(instance.__module__,
-                                                  instance.__class__,
-                                                  name)
-
-            else:
-                config[instance.name] = instance.get_configuration_template()
-        return config
-
-    def configure_plugins(self, config):
-        for instance in self.get_instances():
-            instance.configure(config[instance.name])
-
-    def check_configurations(self, config):
-        results = []
-        for instance in self.get_instances():
-            name = instance.name
-            config_instance = config[name]
-            result = instance.check_configuration(config_instance)
-            results.append((name, result, config_instance))
-        return results
-
-    def _parse_instance_helper(self, plugins, unique_override=False):
-        plugins = util.return_list(plugins)
-        for instance in plugins:
-            if (self.unique_instances and
-                    self._unique_instance(instance) and not
-                    unique_override):
-
-                pass
 
     def _unique_class(self, cls):
         return not any(isinstance(obj, cls) for obj in self.plugins)
