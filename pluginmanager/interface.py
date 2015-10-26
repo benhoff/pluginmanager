@@ -12,7 +12,9 @@ class Interface(object):
                  **kwargs):
 
         self.managing_state = auto_manage_state
-        self.directory_manager = DirectoryManager()
+        self.directory_manager = kwargs.get('directory_manager', 
+                                            DirectoryManager())
+
         self.file_manager = kwargs.get('file_manager', FileManager())
         self.module_manager = kwargs.get('module_manager', ModuleManager())
         self.plugin_manager = kwargs.get('plugin_manager', PluginManager())
