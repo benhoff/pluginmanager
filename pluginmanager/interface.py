@@ -48,7 +48,6 @@ class Interface(object):
         plugins = self.module_manager.collect_plugins(modules)
         if self.managing_state:
             self.add_plugins(plugins)
-            self.instantiate_plugins(plugins)
         return plugins
 
     def reload_modules(self, module_or_module_name):
