@@ -1,3 +1,4 @@
+import os
 import unittest
 import tempfile
 from pluginmanager.interface import Interface
@@ -20,6 +21,16 @@ class TestInterface(unittest.TestCase):
                 dirs = self.interface.collect_plugin_directories(main_dir)
         self.assertIn(dir_names[0], dirs)
         self.assertIn(dir_names[1], dirs)
+
+    def test_collect_plugin_filepaths(self):
+        self.interface.file_manager.set_file_filters([])
+        filename = 'test.py'
+        filepaths = []
+        with tempfile.TemporaryDirectory() as main_dir:
+            filename = os.path.join(main_dir, filename)
+            open(filename, 'a+').close()
+            filepaths = self.interface.collect_plugin_filepaths(main_dir)
+        self.assertIn(filename, filepaths)
 
     def test_track_site_package_path(self):
         # TODO: better test method
