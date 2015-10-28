@@ -1,7 +1,8 @@
-from .file_manager import FileManager
-from .plugin_manager import PluginManager
-from .module_manager import ModuleManager
 from .directory_manager import DirectoryManager
+from .file_manager import FileManager
+from .module_manager import ModuleManager
+from .plugin_manager import PluginManager
+
 from .blacklist_interface import BlacklistInterface
 from .filter_interface import FilterInterface
 
@@ -18,6 +19,10 @@ class Interface(object):
         self.file_manager = kwargs.get('file_manager', FileManager())
         self.module_manager = kwargs.get('module_manager', ModuleManager())
         self.plugin_manager = kwargs.get('plugin_manager', PluginManager())
+        self._managers = {'directory_manager': self.directory_manager,
+                          'file_manager': self.file_manager,
+                          'module_manager': self.module_manager,
+                          'plugin_manager': self.plugin_manager}
 
     def track_site_package_paths(self):
         return self.directory_manager.add_site_packages_paths()
@@ -56,21 +61,13 @@ class Interface(object):
     def get_blacklist_interface(self, blacklist_class=None):
         if blacklist_class is None:
             blacklist_class = BlacklistInterface
-        blacklist_interface = blacklist_class(self.directory_manager,
-                                              self.file_manager,
-                                              self.module_manager,
-                                              self.plugin_manager)
-
+        blacklist_interface = blacklist_class(**self._managers)
         return blacklist_interface
 
     def get_filter_interface(self, filter_class=None):
         if filter_class is None:
             filter_class = FilterInterface
-        filter_interface = filter_class(self.directory_manager,
-                                        self.file_manager,
-                                        self.module_manager,
-                                        self.plugin_manager)
-
+        filter_interface = filter_class(**self._managers)
         return filter_interface
 
     def set_plugins(self, plugins):

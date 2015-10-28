@@ -1,14 +1,17 @@
-class BlacklistInterface(object):
-    def __init__(self,
-                 directory_manager,
-                 file_manager,
-                 module_manager,
-                 plugin_manager):
+from .directory_manager import DirectoryManager
+from .file_manager import FileManager
+from .module_manager import ModuleManager
+from .plugin_manager import PluginManager
 
-        self.directory_manager = directory_manager
-        self.file_manager = file_manager
-        self.module_manager = module_manager
-        self.plugin_manager = plugin_manager
+
+class BlacklistInterface(object):
+    def __init__(self, **kwargs):
+        self.directory_manager = kwargs.get('directory_manager',
+                                            DirectoryManager())
+
+        self.file_manager = kwargs.get('file_manager', FileManager())
+        self.module_manager = kwargs.get('module_manager', ModuleManager())
+        self.plugin_manager = kwargs.get('plugin_manager', PluginManager())
 
     def add_blacklisted_directories(self, directories):
         self.directory_manager.add_blacklisted_directories(directories)
