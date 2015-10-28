@@ -51,6 +51,11 @@ class Interface(object):
         if modules is None:
             modules = self.load_modules()
         plugins = self.module_manager.collect_plugins(modules)
+        try:
+            # NOTE: `names` unused
+            names, plugins = plugins
+        except ValueError:
+            pass
         if self.managing_state:
             self.add_plugins(plugins)
         return plugins
