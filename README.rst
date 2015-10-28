@@ -12,6 +12,7 @@ python plugin management, simplified.
     plugin_interface = PluginInterface()
     plugin_interface.set_plugin_directories('my/fancy/plugin/path')
     plugin_interface.collect_plugins()
+
     plugins = plugin_interface.get_instances()
 
 Library currently under heavy development and may not be ready for use

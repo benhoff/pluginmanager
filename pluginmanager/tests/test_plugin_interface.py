@@ -1,4 +1,5 @@
 import os
+import types
 import unittest
 import tempfile
 from pluginmanager.plugin_interface import PluginInterface
@@ -9,6 +10,10 @@ class TestInterface(unittest.TestCase):
     def setUp(self):
         self.test_obj = IPlugin()
         self.interface = PluginInterface()
+
+        # fixes weird state issues on my machine
+        self.interface.file_manager.set_file_filters([])
+        self.interface.module_manager.set_module_filters([])
 
     def test_collect_plugin_directories(self):
         dir_names = []
@@ -23,7 +28,6 @@ class TestInterface(unittest.TestCase):
         self.assertIn(dir_names[1], dirs)
 
     def test_collect_plugin_filepaths(self):
-        self.interface.file_manager.set_file_filters([])
         filename = 'test.py'
         filepaths = []
         with tempfile.TemporaryDirectory() as main_dir:
@@ -40,6 +44,12 @@ class TestInterface(unittest.TestCase):
             module = self.interface.load_modules(file.name)
         module = module.pop()
         self.assertEqual(module.test, 1)
+
+    def test_collect_plugins(self):
+        module = types.ModuleType('test')
+        module.test = 5
+        plugins = self.interface.collect_plugins(module)
+        self.assertIn(5, plugins)
 
     def test_track_site_package_path(self):
         # TODO: better test method

@@ -53,7 +53,7 @@ class PluginInterface(object):
         plugins = self.module_manager.collect_plugins(modules)
         try:
             # NOTE: `names` unused
-            names, plugins = plugins
+            names, plugins = zip(*plugins)
         except ValueError:
             pass
         if self.managing_state:
