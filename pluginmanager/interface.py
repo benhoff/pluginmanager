@@ -123,3 +123,6 @@ class Interface(object):
 
     def get_loaded_modules(self):
         return self.module_manager.get_loaded_modules()
+
+    def get_instances(self):
+        return self.plugin_manager.get_instances()
