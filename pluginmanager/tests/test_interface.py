@@ -1,4 +1,5 @@
 import unittest
+import tempfile
 from pluginmanager.interface import Interface
 from pluginmanager.iplugin import IPlugin
 
@@ -7,6 +8,18 @@ class TestInterface(unittest.TestCase):
     def setUp(self):
         self.test_obj = IPlugin()
         self.interface = Interface()
+
+    def test_collect_plugin_directories(self):
+        dir_names = []
+        dirs = []
+        with tempfile.TemporaryDirectory() as main_dir:
+            self.interface.set_plugin_directories(main_dir)
+            dir_names.append(main_dir)
+            with tempfile.TemporaryDirectory(dir=main_dir) as recursive_dir:
+                dir_names.append(recursive_dir)
+                dirs = self.interface.collect_plugin_directories(main_dir)
+        self.assertIn(dir_names[0], dirs)
+        self.assertIn(dir_names[1], dirs)
 
     def test_track_site_package_path(self):
         # TODO: better test method

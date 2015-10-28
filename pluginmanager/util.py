@@ -40,7 +40,9 @@ def get_filepaths_from_dir(dir_path):
 
 
 def return_list(object):
-    if not isinstance(object, list):
+    if isinstance(object, set):
+        return list(object)
+    elif not isinstance(object, list):
         return [object]
     else:
         return object

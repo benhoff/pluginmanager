@@ -21,7 +21,8 @@ class TestDirectoryManager(unittest.TestCase):
                          self.directory_manager.plugin_directories)
 
     def test_get_dir_iterator_recursive(self):
-        directories = self.directory_manager.get_directories()
+        dirs = self.directory_manager.get_directories()
+        directories = self.directory_manager.collect_directories(dirs)
         self.assertTrue(len(directories) > 1)
 
     def test_get_dir_iterator_not_recursive(self):

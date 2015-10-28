@@ -32,7 +32,7 @@ class Interface(object):
             directories = self.directory_manager.get_plugin_directories()
         # alias for pep8 reasons
         dir_manage = self.directory_manager
-        plugin_directories = dir_manage.collect_plugin_directories(directories)
+        plugin_directories = dir_manage.collect_directories(directories)
         return plugin_directories
 
     def collect_plugin_filepaths(self, directories=None):

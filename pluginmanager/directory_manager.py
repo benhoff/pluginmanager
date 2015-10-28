@@ -51,17 +51,21 @@ class DirectoryManager(object):
         for directory in directories:
             self.blacklisted_directories.remove(directory)
 
-    def get_directories(self):
-        self._plugin_dirs_to_absolute_paths()
+    def collect_directories(self, directories):
+        directories = util.return_list(directories)
         if not self.recursive:
-            return self.plugin_directories
-        # TODO: CLEANUP
+            return directories
+
         recursive_dirs = []
-        for dir in self.plugin_directories:
-            walk_iter = os.walk(dir, followlinks=True)
+        for dir_ in directories:
+            walk_iter = os.walk(dir_, followlinks=True)
             walk_iter = [w[0] for w in walk_iter]
             recursive_dirs.extend(walk_iter)
         return recursive_dirs
+
+    def get_directories(self):
+        self._plugin_dirs_to_absolute_paths()
+        return self.plugin_directories
 
     def _plugin_dirs_to_absolute_paths(self):
         # alias out to meet <80 character line pep req
