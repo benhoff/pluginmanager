@@ -44,7 +44,7 @@ class Interface(object):
     def load_modules(self, filepaths=None):
         if filepaths is None:
             filepaths = self.collect_plugin_filepaths()
-        loaded_modules = self.module_manager.collect_modules(filepaths)
+        loaded_modules = self.module_manager.load_modules(filepaths)
         return loaded_modules
 
     def collect_plugins(self, modules=None):

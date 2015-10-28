@@ -32,6 +32,15 @@ class TestInterface(unittest.TestCase):
             filepaths = self.interface.collect_plugin_filepaths(main_dir)
         self.assertIn(filename, filepaths)
 
+    def test_load_modules(self):
+        module = None
+        with tempfile.NamedTemporaryFile(suffix='.py') as file:
+            file.write(b'test=1')
+            file.seek(0)
+            module = self.interface.load_modules(file.name)
+        module = module.pop()
+        self.assertEqual(module.test, 1)
+
     def test_track_site_package_path(self):
         # TODO: better test method
         num_directories = len(self.interface.get_plugin_directories())
