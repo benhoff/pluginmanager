@@ -82,15 +82,6 @@ class Interface(object):
     def get_plugins(self):
         return self.plugin_manager.get_plugins()
 
-    def configure_plugins(self, config):
-        self.plugin_manager.configure_plugins(config)
-
-    def get_configuration_templates(self):
-        return self.plugin_manager.get_configuration_templates()
-
-    def check_configurations(self):
-        pass
-
     def add_plugin_directories(self, paths):
         self.directory_manager.add_directories(paths)
 
