@@ -31,7 +31,7 @@ Installation
     pip install git+https://github.com/benhoff/pluginmanager.git
 
 .. |Build Status| image:: https://travis-ci.org/benhoff/pluginmanager.svg?branch=master
-    :target: https://travis-ci.org/benhoff/simpleyapsy
+    :target: https://travis-ci.org/benhoff/pluginmanager
 .. |Coverage Status| image:: https://coveralls.io/repos/benhoff/pluginmanager/badge.svg?branch=master&service=github
     :target: https://coveralls.io/github/benhoff/pluginmanager?branch=master
 .. |Code Climate| image:: https://codeclimate.com/github/benhoff/pluginmanager/badges/gpa.svg

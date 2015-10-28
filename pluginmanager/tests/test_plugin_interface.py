@@ -86,6 +86,8 @@ class TestInterface(unittest.TestCase):
             setter(test_obj)
             self.assertIn(test_obj, getter())
             self.assertNotIn(self.test_obj, getter())
+        # TODO: make a proper test
+        self.assertTrue(self.interface.get_instances().pop())
 
     def test_set_plugins(self):
         self.interface.set_plugins(self.test_obj)
