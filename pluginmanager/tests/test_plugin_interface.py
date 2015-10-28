@@ -1,14 +1,14 @@
 import os
 import unittest
 import tempfile
-from pluginmanager.interface import Interface
+from pluginmanager.plugin_interface import PluginInterface
 from pluginmanager.iplugin import IPlugin
 
 
 class TestInterface(unittest.TestCase):
     def setUp(self):
         self.test_obj = IPlugin()
-        self.interface = Interface()
+        self.interface = PluginInterface()
 
     def test_collect_plugin_directories(self):
         dir_names = []

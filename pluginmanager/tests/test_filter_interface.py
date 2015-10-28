@@ -1,5 +1,5 @@
 import unittest
-from pluginmanager.interface import Interface
+from pluginmanager import PluginInterface
 
 
 class TestObj:
@@ -8,7 +8,7 @@ class TestObj:
 
 class TestFilterInterface(unittest.TestCase):
     def setUp(self):
-        interface = Interface()
+        interface = PluginInterface()
         self.interface = interface.get_filter_interface()
 
     def test_interface(self):

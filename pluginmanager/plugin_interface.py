@@ -7,7 +7,7 @@ from .blacklist_interface import BlacklistInterface
 from .filter_interface import FilterInterface
 
 
-class Interface(object):
+class PluginInterface(object):
     def __init__(self,
                  auto_manage_state=True,
                  **kwargs):
