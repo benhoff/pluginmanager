@@ -65,7 +65,11 @@ class ModuleManager(object):
         else:
             modules = manager_util.return_list(modules)
         for module in modules:
-            module_plugins = [item[1] for item in inspect.getmembers(module) if not isinstance(item[1], dict)]
+            module_plugins = [item[1]
+                              for item
+                              in inspect.getmembers(module)
+                              if not isinstance(item[1], dict)]
+
             module_plugins = self._filter_modules(module_plugins)
             plugins.extend(module_plugins)
         return plugins

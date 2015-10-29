@@ -107,8 +107,7 @@ class TestModuleManager(unittest.TestCase):
         self.module_manager.module_filters = []
         module, _ = self._load_modules()
         plugins = self.module_manager.collect_plugins(module)
-        plugins = [plugin[0] for plugin in plugins]
-        self.assertIn('PLUGINS', plugins)
+        self.assertIn(5.0, plugins)
 
     def test_load_modules(self):
         module, filename = self._load_modules()
