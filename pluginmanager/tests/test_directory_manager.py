@@ -1,4 +1,4 @@
-import os
+from os import path
 import unittest
 from pluginmanager.directory_manager import DirectoryManager
 
@@ -6,6 +6,7 @@ from pluginmanager.directory_manager import DirectoryManager
 class TestDirectoryManager(unittest.TestCase):
     def setUp(self):
         self.directory_manager = DirectoryManager()
+        self.directory_manager.set_directories(__file__)
 
     def test_add_plugin_directory(self):
         test_dir = 'my/plugin/dir'
@@ -21,8 +22,10 @@ class TestDirectoryManager(unittest.TestCase):
                          self.directory_manager.plugin_directories)
 
     def test_get_dir_iterator_recursive(self):
-        dirs = self.directory_manager.get_directories()
-        directories = self.directory_manager.collect_directories(dirs)
+        recursive_path = path.realpath(path.join(__file__, '..', '..'))
+        # alias for pep8
+        dir_manager = self.directory_manager
+        directories = dir_manager.collect_directories(recursive_path)
         self.assertTrue(len(directories) > 1)
 
     def test_get_dir_iterator_not_recursive(self):
@@ -34,10 +37,10 @@ class TestDirectoryManager(unittest.TestCase):
     def test_plugin_paths_to_absolute(self):
         self.directory_manager.set_directories('pluginmanager')
         plugin_dirs = self.directory_manager.plugin_directories
-        self.assertFalse(os.path.isabs(next(iter(plugin_dirs))))
+        self.assertFalse(path.isabs(next(iter(plugin_dirs))))
         self.directory_manager._plugin_dirs_to_absolute_paths()
         plugin_dirs = self.directory_manager.plugin_directories
-        self.assertTrue(os.path.isabs(plugin_dirs.pop()))
+        self.assertTrue(path.isabs(plugin_dirs.pop()))
 
 if __name__ == '__main__':
     unittest.main()
