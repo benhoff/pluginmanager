@@ -1,7 +1,7 @@
 import os
 import sys
 import inspect
-import importlib
+from .compat import reload, load_source
 
 from pluginmanager import util as manager_util
 
@@ -47,7 +47,7 @@ class ModuleManager(object):
 
     def reload_module(self, name):
         module = sys.modules[name]
-        importlib.reload(module)
+        reload(module)
 
     def _get_modules(self, names):
         loaded_modules = []
@@ -97,10 +97,8 @@ class ModuleManager(object):
             name = manager_util.get_module_name(filepath)
             plugin_module_name = manager_util.create_unique_module_name(name)
 
-            spec = importlib.util.spec_from_file_location(plugin_module_name,
-                                                          filepath)
             try:
-                module = spec.loader.load_module()
+                module = load_source(plugin_module_name, filepath)
                 self.loaded_modules.add(module.__name__)
                 modules.append(module)
             except ImportError:
