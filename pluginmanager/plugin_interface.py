@@ -58,17 +58,11 @@ class PluginInterface(object):
     def reload_modules(self, module_or_module_name):
         self.module_manager.reload_module(module_or_module_name)
 
-    def get_blacklist_interface(self, blacklist_class=None):
-        if blacklist_class is None:
-            blacklist_class = BlacklistInterface
-        blacklist_interface = blacklist_class(**self._managers)
-        return blacklist_interface
+    def get_blacklist_interface(self, blacklist_class=BlacklistInterface):
+        return blacklist_class(**self._managers)
 
-    def get_filter_interface(self, filter_class=None):
-        if filter_class is None:
-            filter_class = FilterInterface
-        filter_interface = filter_class(**self._managers)
-        return filter_interface
+    def get_filter_interface(self, filter_class=FilterInterface):
+        return filter_class(**self._managers)
 
     def set_plugins(self, plugins):
         self.plugin_manager.set_plugins(plugins)
