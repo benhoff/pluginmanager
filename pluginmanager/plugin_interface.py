@@ -2,6 +2,7 @@ from .directory_manager import DirectoryManager
 from .file_manager import FileManager
 from .module_manager import ModuleManager
 from .plugin_manager import PluginManager
+from .iplugin import IPlugin
 
 from .blacklist_interface import BlacklistInterface
 from .filter_interface import FilterInterface
@@ -106,5 +107,5 @@ class PluginInterface(object):
     def get_loaded_modules(self):
         return self.module_manager.get_loaded_modules()
 
-    def get_instances(self):
-        return self.plugin_manager.get_instances()
+    def get_instances(self, klasses=IPlugin):
+        return self.plugin_manager.get_instances(klasses)
