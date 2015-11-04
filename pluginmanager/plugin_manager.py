@@ -29,13 +29,15 @@ class PluginManager(object):
     def _get_instance(self, klasses):
         return [x for x in self.plugins if isinstance(x, klasses)]
 
-    def get_instances(self, filters_=IPlugin):
-        if isinstance(filters_, (list, tuple)):
-            return self._get_instance(filters_)
-        elif inspect.isclass(filters_):
-            return self._get_instance(filters_)
+    def get_instances(self, filter_function=IPlugin):
+        if isinstance(filter_function, (list, tuple)):
+            return self._get_instance(filter_function)
+        elif inspect.isclass(filter_function):
+            return self._get_instance(filter_function)
+        elif filter_function is None:
+            return self.plugins
         else:
-            return filters_(self.plugins)
+            return filter_function(self.plugins)
 
     def register_classes(self, classes):
         """

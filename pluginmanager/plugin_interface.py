@@ -74,8 +74,8 @@ class PluginInterface(object):
     def remove_plugins(self, plugins):
         self.plugin_manager.remove_plugins(plugins)
 
-    def get_plugins(self):
-        return self.plugin_manager.get_plugins()
+    def get_plugins(self, filter_function=None):
+        return self.plugin_manager.get_plugins(filter_function)
 
     def add_plugin_directories(self, paths):
         self.directory_manager.add_directories(paths)
@@ -107,5 +107,5 @@ class PluginInterface(object):
     def get_loaded_modules(self):
         return self.module_manager.get_loaded_modules()
 
-    def get_instances(self, filter_=IPlugin):
-        return self.plugin_manager.get_instances(filter_)
+    def get_instances(self, filter_function=IPlugin):
+        return self.plugin_manager.get_instances(filter_function)

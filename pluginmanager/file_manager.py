@@ -31,8 +31,11 @@ class FileManager(object):
         for file_filter in file_filters:
             self.file_filters.remove(file_filter)
 
-    def get_file_filters(self):
-        return self.file_filters
+    def get_file_filters(self, filter_function=None):
+        if filter_function is None:
+            return self.file_filters
+        else:
+            return filter_function(self.file_filters)
 
     def add_blacklisted_filepaths(self, filepaths):
         filepaths = set(util.return_list(filepaths))

@@ -25,8 +25,11 @@ class ModuleManager(object):
         module_filters = manager_util.return_list(module_filters)
         self.module_filters.extend(module_filters)
 
-    def get_module_filters(self):
-        return self.module_filters
+    def get_module_filters(self, filter_function=None):
+        if filter_function is None:
+            return self.module_filters
+        else:
+            return filter_function(self.module_filters)
 
     def remove_module_filters(self, module_filters):
         module_filters = manager_util.return_list(module_filters)
@@ -55,7 +58,7 @@ class ModuleManager(object):
             loaded_modules.append(sys.modules[name])
         return loaded_modules
 
-    def get_loaded_modules(self, names=None):
+    def get_loaded_modules(self):
         return self._get_modules(self.loaded_modules)
 
     def collect_plugins(self, modules=None):
