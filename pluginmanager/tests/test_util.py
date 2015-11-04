@@ -18,13 +18,13 @@ class TestUtil(unittest.TestCase):
         sys.modules[module_name] = None
         second_module_name = util.create_unique_module_name(name)
         self.assertNotEqual(module_name, second_module_name)
-        self.assertEqual(module_name, 'yapsy_plugin_test_0')
-        self.assertEqual(second_module_name, 'yapsy_plugin_test_1')
+        self.assertEqual(module_name, 'pluginmanager_plugin_test_0')
+        self.assertEqual(second_module_name, 'pluginmanager_plugin_test_1')
 
     def test_create_module_name_with_dict(self):
         name = {'name': 'test'}
         name = util.create_unique_module_name(name)
-        self.assertEqual(name, 'yapsy_plugin_test_0')
+        self.assertEqual(name, 'pluginmanager_plugin_test_0')
 
     def test_get_paths_from_dir(self):
         # TODO: make temp dir, make dir in temp dir and make file
