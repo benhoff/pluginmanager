@@ -26,8 +26,16 @@ class PluginManager(object):
         self.plugins = []
         self._instance_parser(plugins)
 
-    def get_instances(self, klasses=IPlugin):
+    def _get_instance(self, klasses):
         return [x for x in self.plugins if isinstance(x, klasses)]
+
+    def get_instances(self, filters_=IPlugin):
+        if isinstance(filters_, (list, tuple)):
+            return self._get_instance(filters_)
+        elif inspect.isclass(filters_):
+            return self._get_instance(filters_)
+        else:
+            return filters_(self.plugins)
 
     def register_classes(self, classes):
         """

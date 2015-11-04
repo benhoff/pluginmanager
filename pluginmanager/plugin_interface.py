@@ -107,5 +107,5 @@ class PluginInterface(object):
     def get_loaded_modules(self):
         return self.module_manager.get_loaded_modules()
 
-    def get_instances(self, klasses=IPlugin):
-        return self.plugin_manager.get_instances(klasses)
+    def get_instances(self, filter_=IPlugin):
+        return self.plugin_manager.get_instances(filter_)
