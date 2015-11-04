@@ -1,4 +1,3 @@
-import types
 import unittest
 
 from pluginmanager.module_filters import KeywordParser
@@ -10,9 +9,9 @@ class TestKeywordParser(unittest.TestCase):
 
     def test_get_plugin(self):
         keyword = self.module_filter.keywords[0]
-        test_module = types.ModuleType("TestModule")
         test_obj = type('', (), {})
-        set_plugins = [test_obj]
-        setattr(test_module, keyword, set_plugins)
-        plugins = self.module_filter.get_plugins(test_module)
+        plugins = [test_obj, 5]
+        names = [keyword, 'blah']
+        plugins = self.module_filter(plugins, names)
         self.assertIn(test_obj, plugins)
+        self.assertNotIn(5, plugins)

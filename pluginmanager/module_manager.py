@@ -65,20 +65,21 @@ class ModuleManager(object):
         else:
             modules = manager_util.return_list(modules)
         for module in modules:
-            module_plugins = [item[1]
+            module_plugins = [(item[1], item[0])
                               for item
                               in inspect.getmembers(module)
-                              if not isinstance(item[1], dict)]
+                              if item[1] and item[0] != '__builtins__']
+            module_plugins, names = zip(*module_plugins)
 
-            module_plugins = self._filter_modules(module_plugins)
+            module_plugins = self._filter_modules(module_plugins, names)
             plugins.extend(module_plugins)
         return plugins
 
-    def _filter_modules(self, plugins):
+    def _filter_modules(self, plugins, names):
         if self.module_filters:
             module_plugins = []
             for module_filter in self.module_filters:
-                module_plugins.extend(module_filter(plugins))
+                module_plugins.extend(module_filter(plugins, names))
             plugins = module_plugins
         return plugins
 
