@@ -18,7 +18,7 @@ def create_unique_module_name(plugin_info_or_name):
     else:
         name = plugin_info_or_name
 
-    module_template = 'yapsy_plugin_{}'.format(name)
+    module_template = 'pluginmanager_plugin_{}'.format(name)
     module_template += '_{number}'
     number = 0
     while True:
