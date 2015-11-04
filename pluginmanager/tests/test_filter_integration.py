@@ -5,6 +5,11 @@ import tempfile
 import pluginmanager
 
 
+class TestClass(pluginmanager.IPlugin):
+    def __init__(self):
+        super().__init__()
+
+
 class TestIntegration(unittest.TestCase):
     def setUp(self):
         self.interface = pluginmanager.PluginInterface()
@@ -38,12 +43,12 @@ class TestIntegration(unittest.TestCase):
 
     def test_module_filters(self):
         module = types.ModuleType('test')
-        plugin = pluginmanager.IPlugin()
-        module.plugin = plugin
+        module.plugin = pluginmanager.IPlugin
+        module.test_plugin = TestClass
         bogus = 'five'
         module.bogus = bogus
         subclass_parser = pluginmanager.module_filters.SubclassParser()
         self.filter_interface.set_module_filters(subclass_parser)
         contains_plugin = self.interface.collect_plugins(module)
-        self.assertIn(plugin, contains_plugin)
+        self.assertIn(TestClass, contains_plugin)
         self.assertNotIn(bogus, contains_plugin)

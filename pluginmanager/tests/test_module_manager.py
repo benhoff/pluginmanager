@@ -35,15 +35,15 @@ class TestModuleManager(unittest.TestCase):
         self.assertIn(test_filepaths[0], blacklisted)
 
     def test_filter_modules(self):
-        def filter_(plugins):
+        def filter_(plugins, *args):
             for plugin in plugins:
-                if isinstance(plugin, TestClass):
-                    plugin = [plugin]
-                    return plugin
+                if not isinstance(plugin, TestClass):
+                    plugins.remove(plugin)
+            return plugins
         self.module_manager.set_module_filters(filter_)
         instance = TestClass()
         plugins = [5.0, instance]
-        filtered = self.module_manager._filter_modules(plugins)
+        filtered = self.module_manager._filter_modules(plugins, [])
         self.assertIn(instance, filtered)
         self.assertNotIn(5.0, filtered)
 
