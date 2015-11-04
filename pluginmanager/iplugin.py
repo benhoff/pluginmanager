@@ -5,7 +5,7 @@ class IPlugin(metaclass=abc.ABCMeta):
     """
     Simple interface to be inherited when creating a plugin.
     """
-    CONFIG_TEMPLATE = {}
+    CONFIGURATION_TEMPLATE = {'shared': {}}
 
     def __init__(self):
         self.active = False
@@ -35,7 +35,7 @@ class IPlugin(metaclass=abc.ABCMeta):
         return {'LOGIN' : 'example@example.com', 'PASSWORD' : 'password'}
         Note: if this method returns None, the plugin won't be configured
         """
-        return self.CONFIG_TEMPLATE
+        return self.CONFIGURATION_TEMPLATE
 
     def check_configuration(self, configuration):
         config_template = self.get_configuration_template()

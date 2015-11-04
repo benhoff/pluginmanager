@@ -30,7 +30,7 @@ class TestIPlugin(unittest.TestCase):
         self.assertFalse(self.plugin.active)
 
     def test_check_configuration(self):
-        self.assertTrue(self.plugin.check_configuration({}))
+        self.assertTrue(self.plugin.check_configuration({'shared': None}))
 
     def test_configure(self):
         test_obj = TestObj()
