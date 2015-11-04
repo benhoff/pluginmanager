@@ -1,5 +1,12 @@
 import sys
 
+try:
+    from site import getsitepackages
+except ImportError:
+    # getsitepackages is broken with virtualenvs
+    # https://github.com/pypa/virtualenv/issues/355
+    from distutils.sysconfig import get_python_lib as getsitepackages
+
 _ver = sys.version_info
 
 is_py2 = (_ver[0] == 2)
