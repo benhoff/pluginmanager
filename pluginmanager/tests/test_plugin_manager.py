@@ -33,6 +33,14 @@ class TestPluginManager(unittest.TestCase):
         uniq = self.plugin_manager._unique_class(InstanceClass)
         self.assertFalse(uniq)
 
+    def test_register_class(self):
+        class TestClass:
+            pass
+
+        self.assertFalse(issubclass(TestClass, IPlugin))
+        self.plugin_manager.register_classes(TestClass)
+        self.assertTrue(issubclass(TestClass, IPlugin))
+
     def test_blacklist_plugins(self):
         self.plugin_manager.add_blacklisted_plugins(InstanceClass)
         blacklisted = self.plugin_manager.get_blacklisted_plugins()
