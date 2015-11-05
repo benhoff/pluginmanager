@@ -15,6 +15,19 @@ class TestInterface(unittest.TestCase):
         self.interface.file_manager.set_file_filters([])
         self.interface.module_manager.set_module_filters([])
 
+    def test_collect_plugins_no_args(self):
+        temp_dir = tempfile.TemporaryDirectory()
+        with open(os.path.join(temp_dir.name, 'a.py'), 'w+') as f:
+            f.write('import pluginmanager\n')
+            f.write('class T(pluginmanager.IPlugin):\n')
+            f.write("    name='red'\n")
+            f.write('    def __init__(self):\n')
+            f.write('       super().__init__()')
+        self.interface.set_plugin_directories(temp_dir.name)
+        plugin = self.interface.collect_plugins()[0]
+        temp_dir.cleanup()
+        self.assertEqual(plugin.name, 'red')
+
     def test_collect_plugin_directories(self):
         dir_names = []
         dirs = []
