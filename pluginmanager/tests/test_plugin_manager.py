@@ -7,6 +7,14 @@ class InstanceClass(IPlugin):
         super().__init__()
 
 
+def _test_filter(plugins):
+    result = []
+    for plugin in plugins:
+        if hasattr(plugin, 'name') and plugin.name == 'red':
+            result.append(plugin)
+    return result
+
+
 class TestPluginManager(unittest.TestCase):
     def setUp(self):
         self.instance = InstanceClass()
@@ -53,14 +61,7 @@ class TestPluginManager(unittest.TestCase):
         instance_2.name = 'red'
         self.plugin_manager.add_plugins(instance_2)
 
-        def _test_filter(plugins):
-            result = []
-            for plugin in plugins:
-                if hasattr(plugin, 'name') and plugin.name == 'red':
-                    result.append(plugin)
-            return result
         filtered_plugins = self.plugin_manager.get_plugins(_test_filter)
-        print(filtered_plugins)
         self.assertNotIn(self.instance, filtered_plugins)
         self.assertIn(instance_2, filtered_plugins)
 
@@ -70,6 +71,24 @@ class TestPluginManager(unittest.TestCase):
         plugins = self.plugin_manager.get_plugins()
         self.assertIn(instance_2, plugins)
         self.assertNotIn(self.instance, plugins)
+
+    def test_get_instances(self):
+        self.plugin_manager.unique_instances = False
+        instance_2 = InstanceClass()
+        instance_2.name = 'red'
+        self.plugin_manager.add_plugins((instance_2, 5.0))
+        instances = self.plugin_manager.get_instances((IPlugin, InstanceClass))
+        self.assertIn(instance_2, instances)
+        self.assertIn(self.instance, instances)
+        self.assertNotIn(5.0, instances)
+        filtered_instances = self.plugin_manager.get_instances(_test_filter)
+        self.assertIn(instance_2, filtered_instances)
+        self.assertNotIn(self.instance, filtered_instances)
+        self.assertNotIn(5.0, filtered_instances)
+        all_instances = self.plugin_manager.get_instances(None)
+        self.assertIn(self.instance, all_instances)
+        self.assertIn(instance_2, all_instances)
+        self.assertIn(5.0, all_instances)
 
     def test_activate_instances(self):
         self.plugin_manager.activate_plugins()
