@@ -4,7 +4,7 @@ from pluginmanager import PluginManager, IPlugin
 
 class InstanceClass(IPlugin):
     def __init__(self, active=False):
-        super().__init__
+        super().__init__()
 
 
 class TestPluginManager(unittest.TestCase):
@@ -46,6 +46,23 @@ class TestPluginManager(unittest.TestCase):
         self.plugin_manager.unique_instances = True
         self.plugin_manager._handle_class_instance(InstanceClass)
         self.assertTrue(len(self.plugin_manager.plugins) == num_plugins)
+
+    def test_get_plugins(self):
+        self.plugin_manager.unique_instances = False
+        instance_2 = InstanceClass()
+        instance_2.name = 'red'
+        self.plugin_manager.add_plugins(instance_2)
+
+        def _test_filter(plugins):
+            result = []
+            for plugin in plugins:
+                if hasattr(plugin, 'name') and plugin.name == 'red':
+                    result.append(plugin)
+            return result
+        filtered_plugins = self.plugin_manager.get_plugins(_test_filter)
+        print(filtered_plugins)
+        self.assertNotIn(self.instance, filtered_plugins)
+        self.assertIn(instance_2, filtered_plugins)
 
     def test_set_plugins(self):
         instance_2 = InstanceClass()
