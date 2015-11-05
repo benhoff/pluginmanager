@@ -7,7 +7,8 @@ class KeywordParser(object):
         self.keywords = keywords
 
     def __call__(self, plugins, names):
+        result = []
         for plugin, name in zip(plugins, names):
-            if name not in self.keywords:
-                plugins.remove(plugin)
-        return plugins
+            if name in self.keywords:
+                result.append(plugin)
+        return result
