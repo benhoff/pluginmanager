@@ -41,6 +41,13 @@ class TestPluginManager(unittest.TestCase):
         self.plugin_manager.register_classes(TestClass)
         self.assertTrue(issubclass(TestClass, IPlugin))
 
+    def test_class_in_blacklist(self):
+        self.plugin_manager.set_plugins([])
+        self.plugin_manager.add_blacklisted_plugins(InstanceClass)
+        self.plugin_manager._handle_object_instance(self.instance)
+        plugins = self.plugin_manager.get_plugins()
+        self.assertEqual(plugins, [])
+
     def test_blacklist_plugins(self):
         self.plugin_manager.add_blacklisted_plugins(InstanceClass)
         blacklisted = self.plugin_manager.get_blacklisted_plugins()
