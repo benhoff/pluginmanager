@@ -100,6 +100,20 @@ class TestInterface(unittest.TestCase):
         removed_filepaths = self.interface.get_plugin_filepaths()
         self.assertNotIn(filepath_2, removed_filepaths)
 
+    def test_add_get_set_dirs(self):
+        dir_1 = '/tmp/dir'
+        dir_2 = '/tmp/dir_2'
+        self.interface.add_plugin_directories(dir_1)
+        dirs = self.interface.get_plugin_directories()
+        self.assertIn(dir_1, dirs)
+        self.interface.set_plugin_directories(dir_2)
+        set_dirs = self.interface.get_plugin_directories()
+        self.assertIn(dir_2, set_dirs)
+        self.assertNotIn(dir_1, set_dirs)
+        self.interface.remove_plugin_directories(dir_2)
+        removed_dirs = self.interface.get_plugin_directories()
+        self.assertNotIn(dir_2, removed_dirs)
+
     def test_set_plugins(self):
         self.interface.set_plugins(self.test_obj)
         plugins = self.interface.get_plugins()
