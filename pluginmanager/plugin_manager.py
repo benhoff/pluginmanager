@@ -32,6 +32,9 @@ class PluginManager(object):
             if plugin in self.plugins:
                 self.plugins.remove(plugin)
 
+    def remove_instance(self, instances):
+        self.remove_plugins(instances)
+
     def _get_instance(self, klasses):
         return [x for x in self.plugins if isinstance(x, klasses)]
 
