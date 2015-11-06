@@ -71,15 +71,26 @@ class TestInterface(unittest.TestCase):
         new_num_dirs = len(self.interface.get_plugin_directories())
         self.assertTrue(new_num_dirs > num_directories)
 
+    def test_plugins(self):
+        plugin_1 = IPlugin()
+        plugin_2 = IPlugin()
+        self.interface.add_plugins([plugin_1])
+        plugins = self.interface.get_plugins()
+        self.assertIn(plugin_1, plugins)
+        self.interface.set_plugins(plugin_2)
+        set_plugins = self.interface.get_plugins()
+        self.assertIn(plugin_2, set_plugins)
+        self.assertNotIn(plugin_1, set_plugins)
+        self.interface.remove_plugins(plugin_2)
+        removed_plugins = self.interface.get_plugins()
+        self.assertNotIn(plugin_2, removed_plugins)
+
     def test_adders_getters_and_setters(self):
-        adders = ['add_plugin_filepaths',
-                  'add_plugins']
+        adders = ['add_plugin_filepaths']
 
-        getters = ['get_plugin_filepaths',
-                   'get_plugins']
+        getters = ['get_plugin_filepaths']
 
-        setters = ['set_plugin_filepaths',
-                   'set_plugins']
+        setters = ['set_plugin_filepaths']
 
         all_ = [adders, getters, setters]
         for index, value in enumerate(all_):
@@ -99,8 +110,6 @@ class TestInterface(unittest.TestCase):
             setter(test_obj)
             self.assertIn(test_obj, getter())
             self.assertNotIn(self.test_obj, getter())
-        # TODO: make a proper test
-        self.assertTrue(self.interface.get_instances().pop())
 
     def test_set_plugins(self):
         self.interface.set_plugins(self.test_obj)

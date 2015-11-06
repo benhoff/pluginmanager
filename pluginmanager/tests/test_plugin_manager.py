@@ -87,6 +87,11 @@ class TestPluginManager(unittest.TestCase):
         self.assertIn(instance_2, plugins)
         self.assertNotIn(self.instance, plugins)
 
+    def test_remove_plugin(self):
+        self.plugin_manager.remove_plugins(self.instance)
+        plugins = self.plugin_manager.get_plugins()
+        self.assertNotIn(self.instance, plugins)
+
     def test_get_instances(self):
         self.plugin_manager.unique_instances = False
         instance_2 = InstanceClass()
