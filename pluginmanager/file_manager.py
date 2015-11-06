@@ -22,6 +22,12 @@ class FileManager(object):
         filepaths = set(util.return_list(filepaths))
         self.plugin_files = filepaths
 
+    def remove_plugin_filepaths(self, filepaths):
+        filepaths = set(util.return_list(filepaths))
+        for filepath in filepaths:
+            if filepath in self.plugin_files:
+                self.plugin_files.remove(filepath)
+
     def set_file_filters(self, file_filters):
         file_filters = util.return_list(file_filters)
         self.file_filters = file_filters

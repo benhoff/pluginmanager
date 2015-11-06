@@ -85,31 +85,19 @@ class TestInterface(unittest.TestCase):
         removed_plugins = self.interface.get_plugins()
         self.assertNotIn(plugin_2, removed_plugins)
 
-    def test_adders_getters_and_setters(self):
-        adders = ['add_plugin_filepaths']
-
-        getters = ['get_plugin_filepaths']
-
-        setters = ['set_plugin_filepaths']
-
-        all_ = [adders, getters, setters]
-        for index, value in enumerate(all_):
-            all_[index] = [getattr(self.interface, name) for name in value]
-        adders, getters, setters = all_
-        test_obj = IPlugin()
-        for index, (adder, getter, setter) in enumerate(zip(adders,
-                                                            getters,
-                                                            setters)):
-            adder(self.test_obj)
-            self.assertIn(self.test_obj,
-                          getter(),
-                          '{} not found in {} from {}'.format(self.test_obj,
-                                                              getter(),
-                                                              adder))
-
-            setter(test_obj)
-            self.assertIn(test_obj, getter())
-            self.assertNotIn(self.test_obj, getter())
+    def test_add_plugin_filepaths(self):
+        filepath_1 = '/tmp/a.py'
+        filepath_2 = '/tmp/b.py'
+        self.interface.add_plugin_filepaths(filepath_1)
+        filepaths = self.interface.get_plugin_filepaths()
+        self.assertIn(filepath_1, filepaths)
+        self.interface.set_plugin_filepaths(filepath_2)
+        set_filepaths = self.interface.get_plugin_filepaths()
+        self.assertIn(filepath_2, set_filepaths)
+        self.assertNotIn(filepath_1, set_filepaths)
+        self.interface.remove_plugin_filepaths(filepath_2)
+        removed_filepaths = self.interface.get_plugin_filepaths()
+        self.assertNotIn(filepath_2, removed_filepaths)
 
     def test_set_plugins(self):
         self.interface.set_plugins(self.test_obj)
