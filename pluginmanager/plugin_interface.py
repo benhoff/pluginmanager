@@ -56,9 +56,6 @@ class PluginInterface(object):
             self.add_plugins(plugins)
         return plugins
 
-    def reload_modules(self, module_or_module_name):
-        self.module_manager.reload_module(module_or_module_name)
-
     def get_blacklist_interface(self, blacklist_class=BlacklistInterface):
         return blacklist_class(**self._managers)
 
