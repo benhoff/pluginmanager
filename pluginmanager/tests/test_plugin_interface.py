@@ -1,4 +1,5 @@
 import os
+import sys
 import types
 import unittest
 import tempfile
@@ -103,3 +104,11 @@ class TestInterface(unittest.TestCase):
         self.interface.set_plugins(self.test_obj)
         plugins = self.interface.get_plugins()
         self.assertIn(self.test_obj, plugins)
+
+    def test_add_get_modules(self):
+        module_name = 'test_module_type'
+        test_module = types.ModuleType(module_name)
+        sys.modules[module_name] = test_module
+        self.interface.add_to_loaded_modules(test_module)
+        loaded_modules = self.interface.get_loaded_modules()
+        self.assertIn(test_module, loaded_modules)
