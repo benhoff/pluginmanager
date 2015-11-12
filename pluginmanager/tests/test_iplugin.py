@@ -35,7 +35,7 @@ class TestIPlugin(unittest.TestCase):
     def test_configure(self):
         test_obj = TestObj()
         self.plugin.configure(test_obj)
-        self.assertEqual(self.plugin.config, test_obj)
+        self.assertEqual(self.plugin.configuration, test_obj)
 
     def test_name(self):
         self.assertEqual(self.plugin.name, 'IPlugin')
