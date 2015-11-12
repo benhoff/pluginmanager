@@ -37,29 +37,25 @@ Installation
 Custom Plugins
 --------------
 
-The quickstart will only work if you subclass `IPlugin` for your custom plugins (or register your custom class with `IPlugin`, or use the 'get_plugins' method on `PluginInterface`.)
+The quickstart will only work if you subclass `IPlugin` for your custom plugins (or register your custom class with `IPlugin`)
 
 ::
 
     import pluginmanager
+
     class MyCustomPlugin(pluginmanager.IPlugin):
-        pass
+        def __init__(self):
+            self.name = 'custom_name'
+            super().__init__()
 
-`IPlugin` comes with three instance variables: active: bool, configuration: dict, name: str
 
-and one class variable: CONFIGURATION_TEMPLATE: dict
-
-At the very least, you should give your custom implementations a 'name'. If a name is not given and the parent class initializer is called, a name will be written to the instance if the attribute doesn't exist. FYI.
-
-IPlugin has 5 methods: activate, deactivate, get_configuration_template, check_configuration, and configure
-
-Reimplement (or not) as needed.
-
-If the default implementation of IPlugin doesn't fit your needs, register your class as subclass of IPlugin.
+If the default implementation of IPlugin doesn't fit your needs (it has five default methods, three instance variables, and a class variable), register your class as subclass of IPlugin.
 
 ::
 
     IPlugin.register(YourClassHere)
+    
+If this still isn't custom enough, or you need functions, look into using the `get_plugins` method on `PluginInterface` instead, with a custom filter on the `ModuleManager`.
 
 Architecture
 ------------
