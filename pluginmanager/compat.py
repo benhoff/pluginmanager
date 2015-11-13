@@ -11,7 +11,6 @@ if is_py2:
 if is_py3:
     if _ver[1] >= 4:
         # flake8: noqa
-        from importlib import reload
         import importlib
 
         def load_source(name, file_path):
@@ -21,6 +20,5 @@ if is_py3:
             return module
     else:
         # flake8: noqa
-        from imp import reload
         import imp
         load_source = imp.load_source

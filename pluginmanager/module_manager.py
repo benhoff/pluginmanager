@@ -1,7 +1,7 @@
 import os
 import sys
 import inspect
-from .compat import reload, load_source
+from .compat import load_source
 
 from pluginmanager import util as manager_util
 
@@ -44,10 +44,6 @@ class ModuleManager(object):
 
     def get_blacklisted_filepaths(self):
         return self.blacklisted_filepaths
-
-    def reload_module(self, name):
-        module = sys.modules[name]
-        reload(module)
 
     def _get_modules(self, names):
         loaded_modules = []
