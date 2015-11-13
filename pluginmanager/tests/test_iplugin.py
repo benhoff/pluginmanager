@@ -30,12 +30,12 @@ class TestIPlugin(unittest.TestCase):
         self.assertFalse(self.plugin.active)
 
     def test_check_configuration(self):
-        self.assertTrue(self.plugin.check_configuration({}))
+        self.assertTrue(self.plugin.check_configuration({'shared': None}))
 
     def test_configure(self):
         test_obj = TestObj()
         self.plugin.configure(test_obj)
-        self.assertEqual(self.plugin.config, test_obj)
+        self.assertEqual(self.plugin.configuration, test_obj)
 
     def test_name(self):
         self.assertEqual(self.plugin.name, 'IPlugin')

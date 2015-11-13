@@ -26,8 +26,27 @@ class PluginManager(object):
         self.plugins = []
         self._instance_parser(plugins)
 
-    def get_instances(self, klasses=IPlugin):
+    def remove_plugins(self, plugins):
+        plugins = util.return_list(plugins)
+        for plugin in plugins:
+            if plugin in self.plugins:
+                self.plugins.remove(plugin)
+
+    def remove_instance(self, instances):
+        self.remove_plugins(instances)
+
+    def _get_instance(self, klasses):
         return [x for x in self.plugins if isinstance(x, klasses)]
+
+    def get_instances(self, filter_function=IPlugin):
+        if isinstance(filter_function, (list, tuple)):
+            return self._get_instance(filter_function)
+        elif inspect.isclass(filter_function):
+            return self._get_instance(filter_function)
+        elif filter_function is None:
+            return self.plugins
+        else:
+            return filter_function(self.plugins)
 
     def register_classes(self, classes):
         """

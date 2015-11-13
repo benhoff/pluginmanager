@@ -1,4 +1,3 @@
-import types
 import unittest
 from pluginmanager import IPlugin
 from pluginmanager.module_filters import SubclassParser
@@ -13,9 +12,7 @@ class TestSubclassParser(unittest.TestCase):
         self.parser = SubclassParser()
 
     def test_get_plugins(self):
-        test_module = types.ModuleType("TestModule")
-        test_module.IPlugin = IPlugin
-        test_module.Subclass = Subclass
-        plugins = self.parser.get_plugins(test_module)
+        plugins = [IPlugin(), 4, IPlugin, Subclass]
+        plugins = self.parser(plugins)
         self.assertIn(Subclass, plugins)
-        self.assertNotIn(IPlugin, plugins)
+        self.assertNotIn(4, plugins)

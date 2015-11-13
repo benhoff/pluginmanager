@@ -25,8 +25,11 @@ class ModuleManager(object):
         module_filters = manager_util.return_list(module_filters)
         self.module_filters.extend(module_filters)
 
-    def get_module_filters(self):
-        return self.module_filters
+    def get_module_filters(self, filter_function=None):
+        if filter_function is None:
+            return self.module_filters
+        else:
+            return filter_function(self.module_filters)
 
     def remove_module_filters(self, module_filters):
         module_filters = manager_util.return_list(module_filters)
@@ -51,7 +54,14 @@ class ModuleManager(object):
             loaded_modules.append(sys.modules[name])
         return loaded_modules
 
-    def get_loaded_modules(self, names=None):
+    def add_to_loaded_modules(self, modules):
+        modules = set(manager_util.return_list(modules))
+        for module in modules:
+            if not isinstance(module, str):
+                module = module.__name__
+            self.loaded_modules.add(module)
+
+    def get_loaded_modules(self):
         return self._get_modules(self.loaded_modules)
 
     def collect_plugins(self, modules=None):
@@ -61,20 +71,21 @@ class ModuleManager(object):
         else:
             modules = manager_util.return_list(modules)
         for module in modules:
-            module_plugins = [item[1]
+            module_plugins = [(item[1], item[0])
                               for item
                               in inspect.getmembers(module)
-                              if not isinstance(item[1], dict)]
+                              if item[1] and item[0] != '__builtins__']
+            module_plugins, names = zip(*module_plugins)
 
-            module_plugins = self._filter_modules(module_plugins)
+            module_plugins = self._filter_modules(module_plugins, names)
             plugins.extend(module_plugins)
         return plugins
 
-    def _filter_modules(self, plugins):
+    def _filter_modules(self, plugins, names):
         if self.module_filters:
             module_plugins = []
             for module_filter in self.module_filters:
-                module_plugins.extend(module_filter(plugins))
+                module_plugins.extend(module_filter(plugins, names))
             plugins = module_plugins
         return plugins
 

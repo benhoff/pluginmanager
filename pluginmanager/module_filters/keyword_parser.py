@@ -1,4 +1,3 @@
-import inspect
 from pluginmanager import util
 
 
@@ -7,12 +6,9 @@ class KeywordParser(object):
         keywords = util.return_list(keywords)
         self.keywords = keywords
 
-    def get_plugins(self, module):
-        plugins = []
-        module_members = inspect.getmembers(module)
-
-        for name, value in module_members:
+    def __call__(self, plugins, names):
+        result = []
+        for plugin, name in zip(plugins, names):
             if name in self.keywords:
-                plugins.extend(value)
-
-        return plugins
+                result.append(plugin)
+        return result

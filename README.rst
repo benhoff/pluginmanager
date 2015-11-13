@@ -5,6 +5,11 @@ pluginmanager
 
 python plugin management, simplified.
 
+Library under development and contains rough edges/unfinished functionality. While not anticipated, API may be subject to changes.
+
+Quickstart
+----------
+
 ::
 
     from pluginmanager import PluginInterface
@@ -15,7 +20,6 @@ python plugin management, simplified.
 
     plugins = plugin_interface.get_instances()
 
-Library currently under heavy development and may not be ready for use
 
 Installation
 ------------
@@ -29,6 +33,29 @@ Installation
 ::
 
     pip install git+https://github.com/benhoff/pluginmanager.git
+    
+Custom Plugins
+--------------
+
+The quickstart will only work if you subclass `IPlugin` for your custom plugins (or register your custom class with `IPlugin`)
+
+::
+
+    import pluginmanager
+
+    class MyCustomPlugin(pluginmanager.IPlugin):
+        def __init__(self):
+            self.name = 'custom_name'
+            super().__init__()
+
+
+If the default implementation of IPlugin doesn't fit your needs (it has five default methods, three instance variables, and a class variable), register your class as subclass of IPlugin.
+
+::
+
+    IPlugin.register(YourClassHere)
+    
+If this still isn't custom enough, or you need functions, look into using the `get_plugins` method on `PluginInterface` instead, with a custom filter on the `ModuleManager`.
 
 Architecture
 ------------

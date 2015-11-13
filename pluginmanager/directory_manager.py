@@ -1,10 +1,5 @@
 import os
-try:
-    from site import getsitepackages
-except ImportError:
-    # getsitepackages is broken with virtualenvs
-    # https://github.com/pypa/virtualenv/issues/355
-    from distutils.sysconfig import get_python_lib as getsitepackages
+from .compat import getsitepackages
 
 from pluginmanager import util
 
@@ -31,6 +26,12 @@ class DirectoryManager(object):
         paths = util.return_list(paths)
         self.plugin_directories = set(paths)
 
+    def remove_directories(self, paths):
+        paths = set(util.return_list(paths))
+        for path in paths:
+            if path in self.plugin_directories:
+                self.plugin_directories.remove(path)
+
     def add_site_packages_paths(self):
         self.add_directories(getsitepackages())
 
@@ -51,15 +52,22 @@ class DirectoryManager(object):
         for directory in directories:
             self.blacklisted_directories.remove(directory)
 
+    def _remove_blacklisted(self, directories):
+        for dir_ in directories:
+            if dir_ in self.blacklisted_directories:
+                directories.remove(dir_)
+        return directories
+
     def collect_directories(self, directories):
         directories = util.return_list(directories)
         if not self.recursive:
-            return directories
+            return self._remove_blacklisted(directories)
 
         recursive_dirs = []
         for dir_ in directories:
             walk_iter = os.walk(dir_, followlinks=True)
             walk_iter = [w[0] for w in walk_iter]
+            walk_iter = self._remove_blacklisted(walk_iter)
             recursive_dirs.extend(walk_iter)
         return recursive_dirs
 

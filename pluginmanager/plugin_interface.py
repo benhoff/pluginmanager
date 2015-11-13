@@ -30,7 +30,7 @@ class PluginInterface(object):
 
     def collect_plugin_directories(self, directories=None):
         if directories is None:
-            directories = self.directory_manager.get_plugin_directories()
+            directories = self.get_plugin_directories()
         # alias for pep8 reasons
         dir_manage = self.directory_manager
         plugin_directories = dir_manage.collect_directories(directories)
@@ -56,9 +56,6 @@ class PluginInterface(object):
             self.add_plugins(plugins)
         return plugins
 
-    def reload_modules(self, module_or_module_name):
-        self.module_manager.reload_module(module_or_module_name)
-
     def get_blacklist_interface(self, blacklist_class=BlacklistInterface):
         return blacklist_class(**self._managers)
 
@@ -74,8 +71,8 @@ class PluginInterface(object):
     def remove_plugins(self, plugins):
         self.plugin_manager.remove_plugins(plugins)
 
-    def get_plugins(self):
-        return self.plugin_manager.get_plugins()
+    def get_plugins(self, filter_function=None):
+        return self.plugin_manager.get_plugins(filter_function)
 
     def add_plugin_directories(self, paths):
         self.directory_manager.add_directories(paths)
@@ -107,5 +104,5 @@ class PluginInterface(object):
     def get_loaded_modules(self):
         return self.module_manager.get_loaded_modules()
 
-    def get_instances(self, klasses=IPlugin):
-        return self.plugin_manager.get_instances(klasses)
+    def get_instances(self, filter_function=IPlugin):
+        return self.plugin_manager.get_instances(filter_function)
