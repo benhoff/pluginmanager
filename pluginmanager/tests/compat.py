@@ -1,14 +1,13 @@
-from pluginmanager.compat import is_py2, is_py3
-if is_py3:
-    import tempfile
+from pluginmanager.compat import is_py2
+import tempfile
+
 
 if is_py2:
     # need to backport `tempfile.TemporaryDirectory`
-    import weakref as _weakref
     import shutil as _shutil
     import warnings as _warnings
-    import tempfile
     from tempfile import mkdtemp
+    FILE_ERROR = OSError
 
     class TemporaryDirectory(object):
         """Create and return a temporary directory.  This has the same
@@ -37,8 +36,9 @@ if is_py2:
             return self.name
 
         def __del__(self):
-            try: 
-                self._cleanup(self.name, warn_message="Implicitly cleaning up {!r}".format(self))
+            try:
+                self._cleanup(self.name,
+                              warn_message="Implicitly cleaning up {!r}".format(self))  # noqa
             except (OSError, NameError):
                 pass
 
