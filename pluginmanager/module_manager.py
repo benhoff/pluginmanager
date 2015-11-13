@@ -58,6 +58,13 @@ class ModuleManager(object):
             loaded_modules.append(sys.modules[name])
         return loaded_modules
 
+    def add_to_loaded_modules(self, modules):
+        modules = set(manager_util.return_list(modules))
+        for module in modules:
+            if not isinstance(module, str):
+                module = module.__name__
+            self.loaded_modules.add(module)
+
     def get_loaded_modules(self):
         return self._get_modules(self.loaded_modules)
 

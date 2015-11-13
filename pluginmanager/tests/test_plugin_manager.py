@@ -4,7 +4,15 @@ from pluginmanager import PluginManager, IPlugin
 
 class InstanceClass(IPlugin):
     def __init__(self, active=False):
-        super().__init__
+        super().__init__()
+
+
+def _test_filter(plugins):
+    result = []
+    for plugin in plugins:
+        if hasattr(plugin, 'name') and plugin.name == 'red':
+            result.append(plugin)
+    return result
 
 
 class TestPluginManager(unittest.TestCase):
@@ -24,6 +32,21 @@ class TestPluginManager(unittest.TestCase):
         self.assertTrue(len(instances) > 2)
         uniq = self.plugin_manager._unique_class(InstanceClass)
         self.assertFalse(uniq)
+
+    def test_register_class(self):
+        class TestClass:
+            pass
+
+        self.assertFalse(issubclass(TestClass, IPlugin))
+        self.plugin_manager.register_classes(TestClass)
+        self.assertTrue(issubclass(TestClass, IPlugin))
+
+    def test_class_in_blacklist(self):
+        self.plugin_manager.set_plugins([])
+        self.plugin_manager.add_blacklisted_plugins(InstanceClass)
+        self.plugin_manager._handle_object_instance(self.instance)
+        plugins = self.plugin_manager.get_plugins()
+        self.assertEqual(plugins, [])
 
     def test_blacklist_plugins(self):
         self.plugin_manager.add_blacklisted_plugins(InstanceClass)
@@ -47,12 +70,45 @@ class TestPluginManager(unittest.TestCase):
         self.plugin_manager._handle_class_instance(InstanceClass)
         self.assertTrue(len(self.plugin_manager.plugins) == num_plugins)
 
+    def test_get_plugins(self):
+        self.plugin_manager.unique_instances = False
+        instance_2 = InstanceClass()
+        instance_2.name = 'red'
+        self.plugin_manager.add_plugins(instance_2)
+
+        filtered_plugins = self.plugin_manager.get_plugins(_test_filter)
+        self.assertNotIn(self.instance, filtered_plugins)
+        self.assertIn(instance_2, filtered_plugins)
+
     def test_set_plugins(self):
         instance_2 = InstanceClass()
         self.plugin_manager.set_plugins(instance_2)
         plugins = self.plugin_manager.get_plugins()
         self.assertIn(instance_2, plugins)
         self.assertNotIn(self.instance, plugins)
+
+    def test_remove_plugin(self):
+        self.plugin_manager.remove_plugins(self.instance)
+        plugins = self.plugin_manager.get_plugins()
+        self.assertNotIn(self.instance, plugins)
+
+    def test_get_instances(self):
+        self.plugin_manager.unique_instances = False
+        instance_2 = InstanceClass()
+        instance_2.name = 'red'
+        self.plugin_manager.add_plugins((instance_2, 5.0))
+        instances = self.plugin_manager.get_instances((IPlugin, InstanceClass))
+        self.assertIn(instance_2, instances)
+        self.assertIn(self.instance, instances)
+        self.assertNotIn(5.0, instances)
+        filtered_instances = self.plugin_manager.get_instances(_test_filter)
+        self.assertIn(instance_2, filtered_instances)
+        self.assertNotIn(self.instance, filtered_instances)
+        self.assertNotIn(5.0, filtered_instances)
+        all_instances = self.plugin_manager.get_instances(None)
+        self.assertIn(self.instance, all_instances)
+        self.assertIn(instance_2, all_instances)
+        self.assertIn(5.0, all_instances)
 
     def test_activate_instances(self):
         self.plugin_manager.activate_plugins()

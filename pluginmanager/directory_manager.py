@@ -26,6 +26,12 @@ class DirectoryManager(object):
         paths = util.return_list(paths)
         self.plugin_directories = set(paths)
 
+    def remove_directories(self, paths):
+        paths = set(util.return_list(paths))
+        for path in paths:
+            if path in self.plugin_directories:
+                self.plugin_directories.remove(path)
+
     def add_site_packages_paths(self):
         self.add_directories(getsitepackages())
 

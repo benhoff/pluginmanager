@@ -42,6 +42,8 @@ def get_filepaths_from_dir(dir_path):
 def return_list(object):
     if isinstance(object, set):
         return list(object)
+    elif isinstance(object, tuple):
+        return list(object)
     elif not isinstance(object, list):
         return [object]
     else:

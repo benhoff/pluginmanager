@@ -30,7 +30,7 @@ class PluginInterface(object):
 
     def collect_plugin_directories(self, directories=None):
         if directories is None:
-            directories = self.directory_manager.get_plugin_directories()
+            directories = self.get_plugin_directories()
         # alias for pep8 reasons
         dir_manage = self.directory_manager
         plugin_directories = dir_manage.collect_directories(directories)
@@ -55,9 +55,6 @@ class PluginInterface(object):
         if self.managing_state:
             self.add_plugins(plugins)
         return plugins
-
-    def reload_modules(self, module_or_module_name):
-        self.module_manager.reload_module(module_or_module_name)
 
     def get_blacklist_interface(self, blacklist_class=BlacklistInterface):
         return blacklist_class(**self._managers)

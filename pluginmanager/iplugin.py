@@ -10,7 +10,7 @@ class IPlugin(with_metaclass(abc.ABCMeta)):
 
     def __init__(self):
         self.active = False
-        self.config = None
+        self.configuration = None
         try:
             getattr(self, 'name')
         except AttributeError:
@@ -49,4 +49,4 @@ class IPlugin(with_metaclass(abc.ABCMeta)):
         return True
 
     def configure(self, configuration):
-        self.config = configuration
+        self.configuration = configuration
