@@ -2,7 +2,7 @@ import os
 import sys
 import types
 import unittest
-import tempfile
+from .compat import tempfile
 from pluginmanager.plugin_interface import PluginInterface
 from pluginmanager.iplugin import IPlugin
 

@@ -1,6 +1,6 @@
 import os
 import unittest
-import tempfile
+from pluginmanager.tests.compat import tempfile
 import builtins
 # Work around for python 3.2
 FILE_ERROR = getattr(builtins,

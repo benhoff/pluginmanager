@@ -1,5 +1,5 @@
 import unittest
-import tempfile
+from .compat import tempfile
 from os import path
 from pluginmanager.directory_manager import DirectoryManager
 

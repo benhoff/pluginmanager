@@ -1,7 +1,7 @@
 import os
 import types
 import unittest
-import tempfile
+from .compat import tempfile
 import pluginmanager
 
 
