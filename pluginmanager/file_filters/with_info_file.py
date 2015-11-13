@@ -26,20 +26,22 @@ class WithInfoFileFilter(object):
         extensions = util.return_list(extensions)
         self.extensions.extend(extensions)
 
-    def get_info_and_filepaths(self, dir_path):
-        plugin_information = self.get_plugin_infos(dir_path)
-        plugin_filepaths = self.get_plugin_filepaths(dir_path,
+    def __call__(self, filepaths):
+        return self.get_plugin_filepaths(filepaths)
+
+    def get_info_and_filepaths(self, filepaths):
+        plugin_information = self.get_plugin_infos(filepaths)
+        plugin_filepaths = self.get_plugin_filepaths(filepaths,
                                                      plugin_information)
 
         return plugin_information, plugin_filepaths
 
-    def get_plugin_filepaths(self, dir_path, plugin_infos=None):
+    def get_plugin_filepaths(self, filepaths, plugin_infos=None):
         # Enforce uniqueness of filepaths in `PluginLocator`
         plugin_filepaths = set()
         # if we've already got the infos list, get plugin filepath from those
-        # else parse through the dir_path
         if plugin_infos is None:
-            plugin_infos = self.get_plugin_infos(dir_path)
+            plugin_infos = self.get_plugin_infos(filepaths)
 
         for plugin_info in plugin_infos:
             path = plugin_info['path']
@@ -59,9 +61,8 @@ class WithInfoFileFilter(object):
                 break
         return plugin_valid
 
-    def get_plugin_infos(self, dir_path):
+    def get_plugin_infos(self, filepaths):
         plugin_infos = []
-        filepaths = util.get_filepaths_from_dir(dir_path)
 
         config_parser = ConfigParser()
         config_filepaths = config_parser.read(filepaths)
@@ -72,15 +73,14 @@ class WithInfoFileFilter(object):
 
                 with open(config_filepath) as f:
                     config_parser.read_file(f)
-                    config_dict = self._parse_config_details(config_parser,
-                                                             dir_path)
+                    config_dict = self._parse_config_details(config_parser)
 
                 if self._valid_config(config_dict):
                     plugin_infos.append(config_dict)
 
         return plugin_infos
 
-    def _parse_config_details(self, config_parser, dir_path):
+    def _parse_config_details(self, config_parser):
         config_dict = {}
         # get all data out of config_parser
         config_dict.update(config_parser)
@@ -89,8 +89,7 @@ class WithInfoFileFilter(object):
         core_config = config_dict.pop("Core")
 
         # change and store the relative path in Module to absolute
-        relative_path = core_config.pop('Module')
-        path = os.path.join(dir_path, relative_path)
+        path = core_config.pop('Module')
 
         if os.path.isfile(path + '.py'):
             path += '.py'
