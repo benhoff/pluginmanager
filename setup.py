@@ -8,7 +8,7 @@ with open(os.path.join(directory, 'README.rst')) as f:
     long_description = f.read()
 setup(
     name="pluginmanager",
-    version='0.1.1',
+    version='0.1.2',
     description='Python Plugin Management, simplified',
     long_description=long_description,
     url='https://github.com/benhoff/pluginmanager',
@@ -17,6 +17,8 @@ setup(
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
+        'Programming Language :: Python :: 2',
+        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.2',
         'Programming Language :: Python :: 3.3',
