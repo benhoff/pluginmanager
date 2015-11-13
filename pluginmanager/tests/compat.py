@@ -27,7 +27,7 @@ if is_py2:
         @classmethod
         def _cleanup(cls, name, warn_message):
             _shutil.rmtree(name)
-            _warnings.warn(warn_message, ResourceWarning)
+            _warnings.warn(warn_message)
 
         def __repr__(self):
             return "<{} {!r}>".format(self.__class__.__name__, self.name)
