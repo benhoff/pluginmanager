@@ -7,7 +7,7 @@ import pluginmanager
 
 class TestClass(pluginmanager.IPlugin):
     def __init__(self):
-        super().__init__()
+        super(TestClass, self).__init__()
 
 
 class TestIntegration(unittest.TestCase):
