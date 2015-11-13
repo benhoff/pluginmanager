@@ -16,8 +16,8 @@ class FilterInterface(object):
     def add_file_filters(self, file_filters):
         self.file_manager.add_file_filters(file_filters)
 
-    def get_file_filters(self):
-        return self.file_manager.get_file_filters()
+    def get_file_filters(self, file_function=None):
+        return self.file_manager.get_file_filters(file_function)
 
     def remove_file_filters(self, file_filters):
         self.file_manager.remove_file_filters(file_filters)
@@ -28,8 +28,8 @@ class FilterInterface(object):
     def add_module_filters(self, module_filters):
         self.module_manager.add_module_filters(module_filters)
 
-    def get_module_filters(self):
-        return self.module_manager.get_module_filters()
+    def get_module_filters(self, filter_function=None):
+        return self.module_manager.get_module_filters(filter_function)
 
     def remove_module_filters(self, module_filters):
         self.module_manager.remove_module_filters(module_filters)
