@@ -2,7 +2,7 @@ import os
 import sys
 import types
 import unittest
-import tempfile
+from .compat import tempfile
 from pluginmanager.plugin_interface import PluginInterface
 from pluginmanager.iplugin import IPlugin
 
@@ -23,7 +23,7 @@ class TestInterface(unittest.TestCase):
             f.write('class T(pluginmanager.IPlugin):\n')
             f.write("    name='red'\n")
             f.write('    def __init__(self):\n')
-            f.write('       super().__init__()')
+            f.write('       super(T, self).__init__()')
         self.interface.set_plugin_directories(temp_dir.name)
         plugin = self.interface.collect_plugins()[0]
         temp_dir.cleanup()

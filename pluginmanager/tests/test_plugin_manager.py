@@ -4,7 +4,7 @@ from pluginmanager import PluginManager, IPlugin
 
 class InstanceClass(IPlugin):
     def __init__(self, active=False):
-        super().__init__()
+        super(InstanceClass, self).__init__()
 
 
 def _test_filter(plugins):

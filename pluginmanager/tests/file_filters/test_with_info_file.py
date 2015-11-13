@@ -1,11 +1,7 @@
 import os
 import unittest
-import tempfile
-import builtins
-# Work around for python 3.2
-FILE_ERROR = getattr(builtins,
-                     "FileNotFoundError",
-                     getattr(builtins, "OSError"))
+from pluginmanager.tests.compat import tempfile
+from pluginmanager.compat import FILE_ERROR, ConfigParser
 
 from pluginmanager.file_filters import WithInfoFileFilter
 
@@ -42,12 +38,10 @@ class TestWithInfoFileGetter(unittest.TestCase):
 
             plugin_file = open(file_template.format('yapsy-plugin'), 'w+')
             open(file_template.format('py'), 'a').close()
-            yapsy_contents = """
-            [Core]\n
-            Name = Test\n
-            Module = {}\n""".format(self._plugin_file_name[:-3])
+            name = self._plugin_file_name[:-3]
+            contents = """[Core]\nName = Test\nModule = {}\n""".format(name)
 
-            plugin_file.write(yapsy_contents)
+            plugin_file.write(contents)
             plugin_file.close()
             info = self.file_filter.get_plugin_infos(test_dir)
             files = self.file_filter.get_plugin_filepaths(test_dir)
@@ -66,14 +60,15 @@ class TestWithInfoFileGetter(unittest.TestCase):
     def test_parse_config_details(self):
         dir_path = os.path.dirname(__file__)
         base, dir_name = os.path.split(dir_path)
-        config = {"Core": {"Module": dir_name}}
+        parser = ConfigParser()
+        parser.read_dict({"Core": {"Module": dir_name}})
         self.assertRaises(FILE_ERROR,
                           self.file_filter._parse_config_details,
-                          config,
+                          parser,
                           'invalid/dir')
 
-        config = {"Core": {"Module": dir_name, "Name": 'test'}}
-        config = self.file_filter._parse_config_details(config, base)
+        parser.read_dict({"Core": {"Module": dir_name, "Name": 'test'}})
+        config = self.file_filter._parse_config_details(parser, base)
         dir_path = os.path.join(dir_path, '__init__.py')
         self.assertTrue(config['path'] == dir_path)
 
