@@ -5,21 +5,10 @@ pluginmanager
 
 python plugin management, simplified.
 
-Library under development and contains rough edges/unfinished functionality. While not anticipated, API may be subject to changes.
 
-Quickstart
-----------
+Repo: https://github.com/benhoff/pluginmanager
 
-::
-
-    from pluginmanager import PluginInterface
-
-    plugin_interface = PluginInterface()
-    plugin_interface.set_plugin_directories('my/fancy/plugin/path')
-    plugin_interface.collect_plugins()
-
-    plugins = plugin_interface.get_instances()
-
+Library under development. Contains rough edges/unfinished functionality. API subject to changes.
 
 Installation
 ------------
@@ -33,11 +22,24 @@ Installation
 ::
 
     pip install git+https://github.com/benhoff/pluginmanager.git
-    
+ 
+Quickstart
+----------
+
+::
+
+    from pluginmanager import PluginInterface
+
+    plugin_interface = PluginInterface()
+    plugin_interface.set_plugin_directories('my/fancy/plugin/path')
+    plugin_interface.collect_plugins()
+
+    plugins = plugin_interface.get_instances()
+   
 Custom Plugins
 --------------
 
-The quickstart will only work if you subclass `IPlugin` for your custom plugins (or register your custom class with `IPlugin`)
+The quickstart will only work if you subclass `IPlugin` for your custom plugins or register your custom class with `IPlugin`
 
 ::
 
@@ -49,13 +51,67 @@ The quickstart will only work if you subclass `IPlugin` for your custom plugins 
             super().__init__()
 
 
-If the default implementation of IPlugin doesn't fit your needs (it has five default methods, three instance variables, and a class variable), register your class as subclass of IPlugin.
+Register your class as subclass of IPlugin.
 
 ::
 
-    IPlugin.register(YourClassHere)
+    import pluginmanager
     
-If this still isn't custom enough, or you need functions, look into using the `get_plugins` method on `PluginInterface` instead, with a custom filter on the `ModuleManager`.
+    pluginmanager.IPlugin.register(YourClassHere)
+
+Add Plugins Manually
+--------------------
+
+::
+
+    import pluginmanager
+    
+    plugin_interface = pluginmanager.PluginInterface()
+    plugin_interface.add_plugins(YourCustomClassHere)
+    
+    plugins = plugin_interface.get_instances()
+
+pluginmanager is defaulted to automatically instantiate UNIQUE classes. The automatic instantiation and uniqueness constraint can be changed.
+
+Alternatively, add instances. Note that the uniqueness behavior is still enforced for instances.
+
+::
+
+    import pluginmanager
+    
+    plugin_interface = pluginmanager.PluginInterface()
+    plugin_interface.add_plugins(your_instance_here)
+    
+    plugins = plugin_interface.get_instances()
+
+Filter Instances
+----------------
+
+Not interested in getting every instance? You can pass in a class to get back just instances of a class
+
+::
+
+    import pluginmanager
+    
+    plugin_interface = pluginmanager.PluginInterface()
+    plugin_interface.set_plugin_directories('my/fancy/plugin/path')
+    plugin_interface.collect_plugins()
+    
+    all_instances_of_class = plugin_interface.get_instances(MyPluginClass)
+
+Alternatively, create and pass in your own custom filters.
+
+::
+
+    def custom_filter(plugins):
+        result = []
+        for plugin in plugins:
+            if plugin.name == 'interesting name':
+                result.append(plugin)
+        return result
+    
+    filtered_plugins = plugin_interface.get_instances(custom_filter)
+
 
 Architecture
 ------------
