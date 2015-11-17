@@ -13,7 +13,6 @@ class TestClass(pluginmanager.IPlugin):
 class TestIntegration(unittest.TestCase):
     def setUp(self):
         self.interface = pluginmanager.PluginInterface()
-        self.filter_interface = self.interface.get_filter_interface()
 
     def test_file_filters(self):
         bogus_file = str()
@@ -24,7 +23,7 @@ class TestIntegration(unittest.TestCase):
         temp_dir = tempfile.TemporaryDirectory()
         dir_name = temp_dir.name
         filename_filter = pluginmanager.file_filters.FilenameFileFilter()
-        self.filter_interface.set_file_filters(filename_filter)
+        self.interface.set_file_filters(filename_filter)
         init = os.path.join(dir_name, '__init__.py')
         bogus_file = os.path.join(dir_name, 'bogus.py')
         blue_file = os.path.join(dir_name, 'blue.py')
@@ -33,7 +32,7 @@ class TestIntegration(unittest.TestCase):
         open(blue_file, 'a+').close()
         contains_init = self.interface.collect_plugin_filepaths(dir_name)
         regex = pluginmanager.file_filters.MatchingRegexFileFilter('blue.py')
-        self.filter_interface.set_file_filters(regex)
+        self.interface.set_file_filters(regex)
         contains_blue = self.interface.collect_plugin_filepaths(dir_name)
         temp_dir.cleanup()
         self.assertIn(init, contains_init)
@@ -48,7 +47,7 @@ class TestIntegration(unittest.TestCase):
         bogus = 'five'
         module.bogus = bogus
         subclass_parser = pluginmanager.module_filters.SubclassParser()
-        self.filter_interface.set_module_filters(subclass_parser)
+        self.interface.set_module_filters(subclass_parser)
         contains_plugin = self.interface.collect_plugins(module)
         self.assertIn(TestClass, contains_plugin)
         self.assertNotIn(bogus, contains_plugin)
