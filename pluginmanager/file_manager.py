@@ -15,15 +15,13 @@ class FileManager(object):
         self.blacklisted_filepaths = set()
 
     def add_plugin_filepaths(self, filepaths):
-        filepaths = set(util.return_list(filepaths))
-        self.plugin_files.update(filepaths)
+        self.plugin_files.update(util.return_set(filepaths))
 
     def set_plugin_filepaths(self, filepaths):
-        filepaths = set(util.return_list(filepaths))
-        self.plugin_files = filepaths
+        self.plugin_files = util.return_set(filepaths)
 
     def remove_plugin_filepaths(self, filepaths):
-        filepaths = set(util.return_list(filepaths))
+        filepaths = util.return_set(filepaths)
         for filepath in filepaths:
             if filepath in self.plugin_files:
                 self.plugin_files.remove(filepath)
@@ -44,11 +42,11 @@ class FileManager(object):
             return filter_function(self.file_filters)
 
     def add_blacklisted_filepaths(self, filepaths):
-        filepaths = set(util.return_list(filepaths))
+        filepaths = util.return_set(filepaths)
         self.blacklisted_filepaths.update(filepaths)
 
     def set_blacklisted_filepaths(self, filepaths):
-        filepaths = set(util.return_list(filepaths))
+        filepaths = util.return_set(filepaths)
         self.blacklisted_filepaths = filepaths
 
     def remove_blacklisted_filepaths(self, filepaths):
