@@ -17,6 +17,7 @@ def remove_from_list(list, remove_items):
         if remove in list:
             list.remove(remove)
 
+
 def remove_from_set(set, remove_items):
     set = return_set(set)
     remove_items = return_set(remove_items)
