@@ -1,7 +1,7 @@
 import os
 import sys
 import unittest
-import tempfile
+from .compat import tempfile
 from pluginmanager.module_manager import ModuleManager
 
 

@@ -1,7 +1,8 @@
 import abc
+from .compat import with_metaclass
 
 
-class IPlugin(metaclass=abc.ABCMeta):
+class IPlugin(with_metaclass(abc.ABCMeta)):
     """
     Simple interface to be inherited when creating a plugin.
     """

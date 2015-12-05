@@ -2,7 +2,7 @@ import os
 import sys
 import types
 import unittest
-import tempfile
+from .compat import tempfile
 from pluginmanager.plugin_interface import PluginInterface
 from pluginmanager.iplugin import IPlugin
 
@@ -23,7 +23,7 @@ class TestInterface(unittest.TestCase):
             f.write('class T(pluginmanager.IPlugin):\n')
             f.write("    name='red'\n")
             f.write('    def __init__(self):\n')
-            f.write('       super().__init__()')
+            f.write('       super(T, self).__init__()')
         self.interface.set_plugin_directories(temp_dir.name)
         plugin = self.interface.collect_plugins()[0]
         temp_dir.cleanup()
@@ -126,3 +126,85 @@ class TestInterface(unittest.TestCase):
         self.interface.add_to_loaded_modules(test_module)
         loaded_modules = self.interface.get_loaded_modules()
         self.assertIn(test_module, loaded_modules)
+
+    def test_interface(self):
+        template = '{}_blacklisted_{}'
+        methods = ['directories', 'filepaths', 'plugins']
+        get_func = lambda attr: getattr(self.interface, attr)
+
+        adders = [get_func(template.format('add',
+                                           method)) for method in methods]
+
+        setters = [get_func(template.format('set',
+                                            method)) for method in methods]
+
+        getters = [get_func(template.format('get',
+                                            method)) for method in methods]
+
+        removers = [get_func(template.format('remove',
+                                             method)) for method in methods]
+        instance = object()
+        second_instance = object()
+        for adder, setter, getter, remover in zip(adders, setters,
+                                                  getters, removers):
+
+            adder(instance)
+            self.assertIn(instance, getter())
+            setter(second_instance)
+            self.assertIn(second_instance, getter())
+            self.assertNotIn(instance, getter())
+            remover(second_instance)
+            self.assertNotIn(second_instance, getter())
+    """
+    def test_add_plugin_directories(self):
+        added_dir = 'pluginmanager'
+        self.interface.add_plugin_directories(added_dir)
+        directories = self.interface.get_plugin_directories()
+        self.assertIn(added_dir, directories)
+
+    def test_set_plugin_directories(self):
+        preset_dir = self.interface.get_plugin_directories().pop()
+        set_dir = 'pluginmanager'
+        self.interface.set_plugin_directories(set_dir)
+        directories = self.interface.get_plugin_directories()
+        self.assertIn(set_dir, directories)
+        self.assertNotIn(preset_dir, directories)
+    """
+
+    def test_set_blacklist_filepath(self):
+        filepath = 'test/dir'
+        self.interface.set_blacklisted_filepaths(filepath)
+        blacklisted = self.interface.get_blacklisted_filepaths()
+        self.assertIn(filepath, blacklisted)
+
+    def test_test_interface(self):
+        # all methods in interface follow this pattern
+        template = '{}_{}_filters'
+        # currently the only two filters supported are file and module
+        filters = ['file', 'module']
+        # set up a function to get the actual method calls
+        get_func = lambda attr: getattr(self.interface, attr)
+        # list comprhensions, our function, and filters to get all the methods
+        adders = [get_func(template.format('add',
+                                           filter_)) for filter_ in filters]
+
+        setters = [get_func(template.format('set',
+                                            filter_)) for filter_ in filters]
+
+        getters = [get_func(template.format('get',
+                                            filter_)) for filter_ in filters]
+
+        removers = [get_func(template.format('remove',
+                                             filter_)) for filter_ in filters]
+        instance = object()
+        second_instance = object()
+        for adder, setter, getter, remover in zip(adders, setters,
+                                                  getters, removers):
+
+            adder(instance)
+            self.assertIn(instance, getter())
+            setter(second_instance)
+            self.assertIn(second_instance, getter())
+            self.assertNotIn(instance, getter())
+            remover(second_instance)
+            self.assertNotIn(second_instance, getter())

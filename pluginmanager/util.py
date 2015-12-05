@@ -48,3 +48,12 @@ def return_list(object):
         return [object]
     else:
         return object
+
+
+def return_set(object):
+    if isinstance(object, set):
+        return object
+    elif isinstance(object, (list, tuple)):
+        return set(object)
+    else:
+        return set([object])
