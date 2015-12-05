@@ -23,10 +23,7 @@ class DirectoryManager(object):
         self.plugin_directories = util.return_set(paths)
 
     def remove_directories(self, paths):
-        paths = util.return_set(paths)
-        for path in paths:
-            if path in self.plugin_directories:
-                self.plugin_directories.remove(path)
+        util.remove_from_set(self.plugin_directories, paths) 
 
     def add_site_packages_paths(self):
         self.add_directories(getsitepackages())
@@ -41,14 +38,10 @@ class DirectoryManager(object):
         return self.blacklisted_directories
 
     def remove_blacklisted_directories(self, directories):
-        directories = util.return_set(directories)
-        for directory in directories:
-            self.blacklisted_directories.remove(directory)
+        util.remove_from_set(self.blacklisted_directories, directories)
 
     def _remove_blacklisted(self, directories):
-        for dir_ in directories:
-            if dir_ in self.blacklisted_directories:
-                directories.remove(dir_)
+        util.remove_from_list(directories, self.blacklisted_directories)
         return directories
 
     def collect_directories(self, directories):

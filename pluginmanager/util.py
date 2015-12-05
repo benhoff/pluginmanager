@@ -10,6 +10,21 @@ def get_module_name(filepath):
     return name
 
 
+def remove_from_list(list, remove_items):
+    list = return_list(list)
+    remove_items = return_list(remove_items)
+    for remove in remove_items:
+        if remove in list:
+            list.remove(remove)
+
+def remove_from_set(set, remove_items):
+    set = return_set(set)
+    remove_items = return_set(remove_items)
+    for item in remove_items:
+        if item in set:
+            set.remove(item)
+
+
 def create_unique_module_name(plugin_info_or_name):
     # get name
     # check to see if dict, else assume filepath
