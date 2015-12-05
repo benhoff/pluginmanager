@@ -21,10 +21,8 @@ if is_py3:
         import importlib
 
         def load_source(name, file_path):
-            spec = importlib.util.spec_from_file_location(name,
-                                                          file_path)
-            module = spec.loader.load_module()
-            return module
+            loader = importlib.machinery.SourceFileLoader(name, file_path)
+            return loader.load_module()
     else:
         # flake8: noqa
         import imp
