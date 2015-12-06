@@ -15,10 +15,8 @@ class TestWithInfoFileGetter(unittest.TestCase):
                                      self._plugin_file_name)
 
         open(file_template.format('py'), 'a').close()
-        yapsy_contents = """
-        [Core]\n
-        Name = Test\n
-        Module = {}\n""".format(self._plugin_file_name[:-3])
+        p = self._plugin_file_name[:-3]
+        yapsy_contents = """[Core]\nName = Test\nModule = {}\n""".format(p)
 
         plugin_file = open(file_template.format('yapsy-plugin'), 'w+')
         plugin_file.write(yapsy_contents)
