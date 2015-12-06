@@ -2,18 +2,44 @@ import os
 import unittest
 import tempfile
 import builtins
-# Work around for python 3.2
+from pluginmanager.file_filters import WithInfoFileFilter
+from pluginmanager import util
+
 FILE_ERROR = getattr(builtins,
                      "FileNotFoundError",
                      getattr(builtins, "OSError"))
-
-from pluginmanager.file_filters import WithInfoFileFilter
 
 
 class TestWithInfoFileGetter(unittest.TestCase):
     def setUp(self):
         self.file_filter = WithInfoFileFilter()
         self._plugin_file_name = 'plugin.{}'
+        self.tempdir = tempfile.TemporaryDirectory()
+        file_template = os.path.join(self.tempdir.name,
+                                     self._plugin_file_name)
+
+        open(file_template.format('py'), 'a').close()
+        yapsy_contents = """
+        [Core]\n
+        Name = Test\n
+        Module = {}\n""".format(self._plugin_file_name[:-3])
+
+        plugin_file = open(file_template.format('yapsy-plugin'), 'w+')
+        plugin_file.write(yapsy_contents)
+        plugin_file.close()
+        self.plugin_filepaths = util.get_filepaths_from_dir(self.tempdir.name)
+
+    def tearDown(self):
+        self.tempdir.cleanup()
+
+    def test_callable(self):
+        filepaths = self.file_filter(self.plugin_filepaths)
+        valid = False
+        for filepath in filepaths:
+            if os.path.basename(filepath) == 'plugin.py':
+                valid = True
+                break
+        self.assertTrue(valid)
 
     def test_set_file_extension(self):
         test_extension = 'test'
@@ -35,46 +61,33 @@ class TestWithInfoFileGetter(unittest.TestCase):
         self.assertTrue(valid_filepath)
         self.assertFalse(unvalid_filepath)
 
-    def _create_tempfiles(self):
-        with tempfile.TemporaryDirectory() as test_dir:
-            file_template = os.path.join(test_dir,
-                                         self._plugin_file_name)
-
-            plugin_file = open(file_template.format('yapsy-plugin'), 'w+')
-            open(file_template.format('py'), 'a').close()
-            yapsy_contents = """
-            [Core]\n
-            Name = Test\n
-            Module = {}\n""".format(self._plugin_file_name[:-3])
-
-            plugin_file.write(yapsy_contents)
-            plugin_file.close()
-            info = self.file_filter.get_plugin_infos(test_dir)
-            files = self.file_filter.get_plugin_filepaths(test_dir)
-        return info, files
-
     def test_get_plugin_info(self):
-        info, _ = self._create_tempfiles()
-        self.assertNotEqual(info, [])
+        plugin_infos = self.file_filter.get_plugin_infos(self.plugin_filepaths)
+        plugin_infos = plugin_infos.pop()
+        self.assertIn('name', plugin_infos)
+        self.assertEqual(plugin_infos['name'], 'Test')
 
     def test_get_plugin_filepath(self):
-        _, files = self._create_tempfiles()
+        f = self.file_filter.get_plugin_filepaths
+        plugin_filepaths = f(self.plugin_filepaths)
         file_name = self._plugin_file_name.format('py')
-        python_file = os.path.basename(files.pop())
+        python_file = os.path.basename(plugin_filepaths.pop())
         self.assertEqual(file_name, python_file)
 
     def test_parse_config_details(self):
-        dir_path = os.path.dirname(__file__)
-        base, dir_name = os.path.split(dir_path)
-        config = {"Core": {"Module": dir_name}}
+        base, dir_name = os.path.split(self.tempdir.name)
+        config = {"Core": {"Module": base, "Name": 'blah'}}
+        dir_path = os.path.join(base, '__init__.py')
+        if os.path.isfile(dir_path):
+            os.remove(dir_path)
+
         self.assertRaises(FILE_ERROR,
                           self.file_filter._parse_config_details,
                           config,
-                          'invalid/dir')
-
-        config = {"Core": {"Module": dir_name, "Name": 'test'}}
+                          base)
+        open(dir_path, 'a').close()
+        config = {"Core": {"Module": base, "Name": 'test'}}
         config = self.file_filter._parse_config_details(config, base)
-        dir_path = os.path.join(dir_path, '__init__.py')
         self.assertTrue(config['path'] == dir_path)
 
     def test_empty_dirs(self):

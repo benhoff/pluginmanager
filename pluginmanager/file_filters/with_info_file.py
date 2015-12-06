@@ -15,8 +15,8 @@ class WithInfoFileFilter(object):
     Only gets files that have configuration files ending with specific
     extensions, nominally 'yapsy-plugin'
     """
-    def __init__(self, extensions=["yapsy-plugin"]):
-        self.extensions = extensions
+    def __init__(self, extensions='yapsy-plugin'):
+        self.extensions = util.return_list(extensions)
 
     def set_file_extensions(self, extensions):
         extensions = util.return_list(extensions)
@@ -69,18 +69,20 @@ class WithInfoFileFilter(object):
 
         for config_filepath in config_filepaths:
             if self.plugin_valid(config_filepath):
+                dir_path, _ = os.path.split(config_filepath)
                 config_dict = {}
 
                 with open(config_filepath) as f:
                     config_parser.read_file(f)
-                    config_dict = self._parse_config_details(config_parser)
+                    config_dict = self._parse_config_details(config_parser,
+                                                             dir_path)
 
                 if self._valid_config(config_dict):
                     plugin_infos.append(config_dict)
 
         return plugin_infos
 
-    def _parse_config_details(self, config_parser):
+    def _parse_config_details(self, config_parser, directory):
         config_dict = {}
         # get all data out of config_parser
         config_dict.update(config_parser)
@@ -90,6 +92,7 @@ class WithInfoFileFilter(object):
 
         # change and store the relative path in Module to absolute
         path = core_config.pop('Module')
+        path = os.path.join(directory, path)
 
         if os.path.isfile(path + '.py'):
             path += '.py'
