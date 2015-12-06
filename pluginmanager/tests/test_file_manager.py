@@ -1,6 +1,6 @@
 import os
 import unittest
-import tempfile
+from .compat import tempfile
 from pluginmanager.file_manager import FileManager
 
 

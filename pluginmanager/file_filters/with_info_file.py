@@ -1,13 +1,8 @@
-import builtins
-import os
-from configparser import ConfigParser
-from pluginmanager import util
-from . import PLUGIN_FORBIDDEN_NAME
 
-# Work around for python 3.2
-FILE_ERROR = getattr(builtins,
-                     "FileNotFoundError",
-                     getattr(builtins, "OSError"))
+import os
+from pluginmanager import util
+from pluginmanager.compat import ConfigParser, FILE_ERROR
+from . import PLUGIN_FORBIDDEN_NAME
 
 
 class WithInfoFileFilter(object):
@@ -82,17 +77,16 @@ class WithInfoFileFilter(object):
 
         return plugin_infos
 
-    def _parse_config_details(self, config_parser, directory):
-        config_dict = {}
+    def _parse_config_details(self, config_parser, dir_path):
         # get all data out of config_parser
-        config_dict.update(config_parser)
+        config_dict = {s: {k: v for k, v in config_parser.items(s)} for s in config_parser.sections()}  # noqa
 
         # now remove and parse data stored in "Core" key
         core_config = config_dict.pop("Core")
 
         # change and store the relative path in Module to absolute
-        path = core_config.pop('Module')
-        path = os.path.join(directory, path)
+        relative_path = core_config.pop('module')
+        path = os.path.join(dir_path, relative_path)
 
         if os.path.isfile(path + '.py'):
             path += '.py'
@@ -105,7 +99,7 @@ class WithInfoFileFilter(object):
         config_dict['path'] = path
 
         # grab and store the name, strip whitespace
-        config_dict['name'] = core_config["Name"].strip()
+        config_dict['name'] = core_config["name"].strip()
         return config_dict
 
     def _valid_config(self, config):

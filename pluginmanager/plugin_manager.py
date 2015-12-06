@@ -27,10 +27,7 @@ class PluginManager(object):
         self._instance_parser(plugins)
 
     def remove_plugins(self, plugins):
-        plugins = util.return_list(plugins)
-        for plugin in plugins:
-            if plugin in self.plugins:
-                self.plugins.remove(plugin)
+        util.remove_from_list(self.plugins, plugins)
 
     def remove_instance(self, instances):
         self.remove_plugins(instances)
@@ -109,6 +106,4 @@ class PluginManager(object):
         return self.blacklisted_plugins
 
     def remove_blacklisted_plugins(self, plugins):
-        plugins = util.return_list(plugins)
-        for plugin in plugins:
-            self.blacklisted_plugins.remove(plugin)
+        util.remove_from_list(self.blacklisted_plugins, plugins)

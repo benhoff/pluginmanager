@@ -11,55 +11,42 @@ class DirectoryManager(object):
 
         if plugin_directories == set():
             plugin_directories = set()
-            plugin_directories.add(os.path.dirname(__file__))
 
         self.plugin_directories = plugin_directories
         self.blacklisted_directories = set()
         self.recursive = recursive
 
     def add_directories(self, paths):
-        paths = util.return_list(paths)
-        unique_paths = set.union(set(paths), set(self.plugin_directories))
-        self.plugin_directories = unique_paths
+        self.plugin_directories.update(util.return_set(paths))
 
     def set_directories(self, paths):
-        paths = util.return_list(paths)
-        self.plugin_directories = set(paths)
+        self.plugin_directories = util.return_set(paths)
 
     def remove_directories(self, paths):
-        paths = set(util.return_list(paths))
-        for path in paths:
-            if path in self.plugin_directories:
-                self.plugin_directories.remove(path)
+        util.remove_from_set(self.plugin_directories, paths)
 
     def add_site_packages_paths(self):
         self.add_directories(getsitepackages())
 
     def add_blacklisted_directories(self, directories):
-        directories = set(util.return_list(directories))
-        unique = set.union(directories, self.blacklisted_directories)
-        self.blacklisted_directories = unique
+        self.blacklisted_directories.update(util.return_set(directories))
 
     def set_blacklisted_directories(self, directories):
-        directories = set(util.return_list(directories))
-        self.blacklisted_directories = directories
+        self.blacklisted_directories = util.return_set(directories)
 
     def get_blacklisted_directories(self):
         return self.blacklisted_directories
 
     def remove_blacklisted_directories(self, directories):
-        directories = util.return_list(directories)
-        for directory in directories:
-            self.blacklisted_directories.remove(directory)
+        util.remove_from_set(self.blacklisted_directories, directories)
 
     def _remove_blacklisted(self, directories):
-        for dir_ in directories:
-            if dir_ in self.blacklisted_directories:
-                directories.remove(dir_)
+        util.remove_from_list(directories, self.blacklisted_directories)
         return directories
 
     def collect_directories(self, directories):
-        directories = util.return_list(directories)
+        directories = util.return_set(directories)
+
         if not self.recursive:
             return self._remove_blacklisted(directories)
 
@@ -78,6 +65,6 @@ class DirectoryManager(object):
     def _plugin_dirs_to_absolute_paths(self):
         # alias out to meet <80 character line pep req
         abspath = os.path.abspath
-        self.plugin_directories = [abspath(x) for x in self.plugin_directories]
+        dirs = [abspath(x) for x in self.plugin_directories]
         # casting to set removes dups, casting back to list for type
-        self.plugin_directories = set(self.plugin_directories)
+        self.plugin_directories = util.return_set(dirs)

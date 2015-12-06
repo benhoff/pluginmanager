@@ -1,13 +1,9 @@
 import os
 import unittest
-import tempfile
-import builtins
-from pluginmanager.file_filters import WithInfoFileFilter
 from pluginmanager import util
-
-FILE_ERROR = getattr(builtins,
-                     "FileNotFoundError",
-                     getattr(builtins, "OSError"))
+from pluginmanager.file_filters import WithInfoFileFilter
+from pluginmanager.tests.compat import tempfile
+from pluginmanager.compat import FILE_ERROR, ConfigParser
 
 
 class TestWithInfoFileGetter(unittest.TestCase):
@@ -76,7 +72,8 @@ class TestWithInfoFileGetter(unittest.TestCase):
 
     def test_parse_config_details(self):
         base, dir_name = os.path.split(self.tempdir.name)
-        config = {"Core": {"Module": base, "Name": 'blah'}}
+        config = ConfigParser()
+        config.read_dict({"Core": {"Module": base, "Name": 'blah'}})
         dir_path = os.path.join(base, '__init__.py')
         if os.path.isfile(dir_path):
             os.remove(dir_path)
@@ -86,7 +83,7 @@ class TestWithInfoFileGetter(unittest.TestCase):
                           config,
                           base)
         open(dir_path, 'a').close()
-        config = {"Core": {"Module": base, "Name": 'test'}}
+        config.read_dict({"Core": {"Module": base, "Name": 'test'}})
         config = self.file_filter._parse_config_details(config, base)
         self.assertTrue(config['path'] == dir_path)
 

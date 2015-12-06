@@ -32,9 +32,7 @@ class ModuleManager(object):
             return filter_function(self.module_filters)
 
     def remove_module_filters(self, module_filters):
-        module_filters = manager_util.return_list(module_filters)
-        for module_filter in module_filters:
-            self.module_filters.remove(module_filter)
+        manager_util.remove_from_list(self.module_filters, module_filters)
 
     def add_blacklisted_filepaths(self, filepaths):
         filepaths = set(manager_util.return_list(filepaths))
