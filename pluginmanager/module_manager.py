@@ -1,5 +1,6 @@
 import os
 import sys
+import logging
 import inspect
 from .compat import load_source
 
@@ -107,7 +108,9 @@ class ModuleManager(object):
                 self.loaded_modules.add(module.__name__)
                 modules.append(module)
             except ImportError:
-                pass
+                exc_info = sys.exc_info()
+                logging.error("Unable to import plugin: {}".format(filepath, exc_info))
+                self.processed_filepaths['error'] = filepath
 
             self.processed_filepaths[module.__name__] = filepath
 
