@@ -1,5 +1,6 @@
 from pluginmanager import util
 
+
 class NameFilter(object):
     def __init__(self, names=None):
         self.names = util.return_list(names)

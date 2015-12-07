@@ -1,5 +1,4 @@
-from .by_name import by_name
-from .activated import activated
-from .deactivated import deactivated
+from .by_name import NameFilter
+from .active import ActiveFilter
 
-__all__ = ['by_name', 'activated', 'deactivated']
+__all__ = ['NameFilter', 'ActiveFilter']

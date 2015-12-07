@@ -1,5 +1,5 @@
 import unittest
-from pluginmanager.plugin_filters import by_name
+from pluginmanager.plugin_filters import NameFilter
 
 
 class NameClass:
@@ -12,6 +12,7 @@ class TestByName(unittest.TestCase):
         test_name = NameClass('test')
         bogus_name = NameClass('bogus')
         plugins = [test_name, bogus_name]
-        plugins = by_name(plugins, 'test')
+        filter_ = NameFilter('test')
+        plugins = filter_(plugins)
         self.assertIn(test_name, plugins)
         self.assertNotIn(bogus_name, plugins)
