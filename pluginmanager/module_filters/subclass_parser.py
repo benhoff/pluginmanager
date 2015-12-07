@@ -1,10 +1,11 @@
 import inspect
+from pluginmanager import util
 from pluginmanager.iplugin import IPlugin
 
 
 class SubclassParser(object):
     def __init__(self, klass=IPlugin):
-        self.klass = klass
+        self.klass = tuple(util.return_list(klass))
 
     def __call__(self, plugins, *args):
         result = []
