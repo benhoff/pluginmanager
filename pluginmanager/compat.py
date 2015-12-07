@@ -44,24 +44,8 @@ if is_py2:
     from ConfigParser import ConfigParser
     def read_file(parser, source):
         return parser.readfp(source)
-    def read_dict(self, dictionary, source='<dict>'):
-        elements_added = set()
-        for section, keys in dictionary.items():
-            section = str(section)
-            try:
-                self.add_section(section)
-            except:
-                pass
-            elements_added.add(section)
-            for key, value in keys.items():
-                key = self.optionxform(str(key))
-                if value is not None:
-                    value = str(value)
-                elements_added.add((section, key))
-                self.set(section, key, value)
 
     ConfigParser.read_file = read_file
-    ConfigParser.read_dict = read_dict
 
 if is_py3:
     import builtins
