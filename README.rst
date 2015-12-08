@@ -14,17 +14,20 @@ Installation
 ------------
 
 ::
+
     pip install pluginmanager
 
 -or-
 
 ::
+
     pip install git+https://github.com/benhoff/pluginmanager.git
  
 Quickstart
 ----------
 
 ::
+
     from pluginmanager import PluginInterface
 
     plugin_interface = PluginInterface()
@@ -39,6 +42,7 @@ Custom Plugins
 The quickstart will only work if you subclass `IPlugin` for your custom plugins.
 
 ::
+
     import pluginmanager
 
     class MyCustomPlugin(pluginmanager.IPlugin):
@@ -49,6 +53,7 @@ The quickstart will only work if you subclass `IPlugin` for your custom plugins.
 Or register your class as subclass of IPlugin.
 
 ::
+
     import pluginmanager
     
     pluginmanager.IPlugin.register(YourClassHere)
@@ -58,6 +63,7 @@ Add Plugins Manually
 Add classes.
 
 ::
+
     import pluginmanager
     
     plugin_interface = pluginmanager.PluginInterface()
@@ -68,6 +74,7 @@ Add classes.
 Alternatively, add instances.
 
 ::
+
     import pluginmanager
     
     plugin_interface = pluginmanager.PluginInterface()
@@ -80,6 +87,7 @@ pluginmanager is defaulted to automatically instantiate unique instances.
 Disable automatic instantiation.
 
 ::
+
     import pluginmanager
     
     plugin_interface = pluginmanager.PluginInterface()
@@ -90,6 +98,7 @@ Disable automatic instantiation.
 Disable uniquness (Only one instance of class per pluginmanager)
 
 ::
+
     import pluginmanager
     
     plugin_interface = pluginmanager.PluginInterface()
@@ -103,6 +112,7 @@ Filter Instances
 Pass in a class to get back just the instances of a class
 
 ::
+
     import pluginmanager
     
     plugin_interface = pluginmanager.PluginInterface()
@@ -114,6 +124,7 @@ Pass in a class to get back just the instances of a class
 Alternatively, create and pass in your own custom filters.
 
 ::
+
     def custom_filter(plugins):
         result = []
         for plugin in plugins:
