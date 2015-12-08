@@ -115,7 +115,6 @@ class ModuleManager(object):
 
                 # self.processed_filepaths['error'] = filepath
 
-
         return modules
 
     def _process_filepath(self, filepath):
