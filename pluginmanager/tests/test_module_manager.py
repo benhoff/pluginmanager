@@ -25,6 +25,13 @@ class TestModuleManager(unittest.TestCase):
         self.module_manager.add_module_filters(test_obj)
         self.assertIn(test_obj, self.module_manager.module_filters)
 
+    def test_failing_module(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            filepath = os.path.join(temp_dir, 'fail.py')
+            with open(filepath, 'w+') as f:
+                f.write('blue=5/nred=')
+            self.module_manager.load_modules(filepath)
+
     def test_add_blacklisted_filepaths(self):
         test_filepath = 'fancy/dir'
         self.module_manager.add_blacklisted_filepaths(test_filepath)

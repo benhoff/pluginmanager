@@ -107,12 +107,14 @@ class ModuleManager(object):
                 module = load_source(plugin_module_name, filepath)
                 self.loaded_modules.add(module.__name__)
                 modules.append(module)
-            except ImportError:
+                self.processed_filepaths[module.__name__] = filepath
+            except Exception:
                 exc_info = sys.exc_info()
-                logging.error("Unable to import plugin: {}".format(filepath, exc_info))
-                self.processed_filepaths['error'] = filepath
+                logging.error(msg="Unable to import {}".format(filepath),
+                              exc_info=exc_info)
 
-            self.processed_filepaths[module.__name__] = filepath
+                # self.processed_filepaths['error'] = filepath
+
 
         return modules
 
