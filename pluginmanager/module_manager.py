@@ -1,5 +1,6 @@
 import os
 import sys
+import logging
 import inspect
 from .compat import load_source
 
@@ -12,10 +13,13 @@ class ModuleManager(object):
                  blacklisted_filepaths=set()):
 
         module_filters = manager_util.return_list(module_filters)
+
         self.loaded_modules = set()
         self.processed_filepaths = {}
         self.module_filters = module_filters
         self.blacklisted_filepaths = blacklisted_filepaths
+        self._log = logging.getLogger(__name__)
+        self._error_string = 'pluginmanager unable to import {}\n'
 
     def set_module_filters(self, module_filters):
         module_filters = manager_util.return_list(module_filters)
@@ -106,10 +110,13 @@ class ModuleManager(object):
                 module = load_source(plugin_module_name, filepath)
                 self.loaded_modules.add(module.__name__)
                 modules.append(module)
-            except ImportError:
-                pass
+                self.processed_filepaths[module.__name__] = filepath
+            except Exception:
+                exc_info = sys.exc_info()
+                self._log.error(msg=self._error_string.format(filepath),
+                                exc_info=exc_info)
 
-            self.processed_filepaths[module.__name__] = filepath
+                # self.processed_filepaths['error'] = filepath
 
         return modules
 
