@@ -13,10 +13,13 @@ class ModuleManager(object):
                  blacklisted_filepaths=set()):
 
         module_filters = manager_util.return_list(module_filters)
+
         self.loaded_modules = set()
         self.processed_filepaths = {}
         self.module_filters = module_filters
         self.blacklisted_filepaths = blacklisted_filepaths
+        self._log = logging.getLogger(__name__)
+        self._error_string = 'pluginmanager unable to import {}\n'
 
     def set_module_filters(self, module_filters):
         module_filters = manager_util.return_list(module_filters)
@@ -110,8 +113,8 @@ class ModuleManager(object):
                 self.processed_filepaths[module.__name__] = filepath
             except Exception:
                 exc_info = sys.exc_info()
-                logging.error(msg="Unable to import {}".format(filepath),
-                              exc_info=exc_info)
+                self._log.error(msg=self._error_string.format(filepath),
+                                exc_info=exc_info)
 
                 # self.processed_filepaths['error'] = filepath
 
