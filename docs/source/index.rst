@@ -3,7 +3,7 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-.. testsetup::
+.. testsetup:: *
     import os
     import sys
     _dir_path = os.path.dirname(__file__)
@@ -17,8 +17,7 @@
         f.write('from pluginmanager import IPlugin\nclass Test(IPlugin):\n    pass')
 
 .. testoutput::
-    
-    this should fail
+
 
 pluginmanager
 =============
@@ -44,9 +43,8 @@ Installation
 Quickstart
 ----------
 
-.. testcode::
-    import os
-    print(os.getcwd(), sys.paths)
+.. testcode:: quickstart
+
     from pluginmanager import PluginInterface
 
     plugin_interface = PluginInterface()
@@ -56,7 +54,7 @@ Quickstart
     plugins = plugin_interface.get_instances()
     print(plugins)
 
-.. testoutput::
+.. testoutput:: quickstart 
 
     this should fail.
 
