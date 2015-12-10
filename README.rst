@@ -6,7 +6,7 @@ pluginmanager
 python plugin management, simplified.
 
 
-Repo: https://github.com/benhoff/pluginmanager
+https://github.com/benhoff/pluginmanager
 
 Library under development. Contains rough edges/unfinished functionality. API subject to changes.
 
@@ -39,7 +39,7 @@ Quickstart
 Custom Plugins
 --------------
 
-The quickstart will only work if you subclass `IPlugin` for your custom plugins or register your custom class with `IPlugin`
+The quickstart will only work if you subclass `IPlugin` for your custom plugins.
 
 ::
 
@@ -50,8 +50,7 @@ The quickstart will only work if you subclass `IPlugin` for your custom plugins 
             self.name = 'custom_name'
             super().__init__()
 
-
-Register your class as subclass of IPlugin.
+Or register your class as subclass of IPlugin.
 
 ::
 
@@ -61,6 +60,7 @@ Register your class as subclass of IPlugin.
 
 Add Plugins Manually
 --------------------
+Add classes.
 
 ::
 
@@ -71,9 +71,7 @@ Add Plugins Manually
     
     plugins = plugin_interface.get_instances()
 
-pluginmanager is defaulted to automatically instantiate UNIQUE classes. The automatic instantiation and uniqueness constraint can be changed.
-
-Alternatively, add instances. Note that the uniqueness behavior is still enforced for instances.
+Alternatively, add instances.
 
 ::
 
@@ -84,10 +82,34 @@ Alternatively, add instances. Note that the uniqueness behavior is still enforce
     
     plugins = plugin_interface.get_instances()
 
+pluginmanager is defaulted to automatically instantiate unique instances. 
+
+Disable automatic instantiation.
+
+::
+
+    import pluginmanager
+    
+    plugin_interface = pluginmanager.PluginInterface()
+    plugin_manager = plugin_interface.plugin_manager
+
+    plugin_manager.instantiate_classes = False
+
+Disable uniquness (Only one instance of class per pluginmanager)
+
+::
+
+    import pluginmanager
+    
+    plugin_interface = pluginmanager.PluginInterface()
+    plugin_manager = plugin_interface.plugin_manager
+
+    plugin_manager.unique_instances = False
+
 Filter Instances
 ----------------
 
-Not interested in getting every instance? You can pass in a class to get back just instances of a class
+Pass in a class to get back just the instances of a class
 
 ::
 
@@ -112,6 +134,16 @@ Alternatively, create and pass in your own custom filters.
     
     filtered_plugins = plugin_interface.get_instances(custom_filter)
 
+    class FilterWithState(object):
+        def __init__(self, name):
+            self.stored_name = name 
+
+        def __call__(self, plugins):
+            result = []
+            for plugin in plugins:
+                if plugin.name == self.stored_name:
+                    result.append(plugin)
+            return result
 
 Architecture
 ------------
@@ -121,11 +153,10 @@ pluginmanager was designed to be as extensible as possible while also being easy
 :Managers: extended or replaced
 :Filters: implementation specific
 
-Interfaces
+Interface
 ----------
-Interfaces were used to provide a simple programmer interface while maintaining the ability to separate out the concerns of the implementation. The main interface is the PluginInterface, which is designed to be as stateless as possible, and have interjectable options, where applicable.
-
-PluginInterface provides the cability to instantiate two other interfaces, the BlacklistInterface and FilterInterface. These interfaces provide universal access to the blacklisting (selectively implemented) and filtering APIs respectively. 
+An interface was used to provide a simple programmer interface while maintaining the ability to separate out the concerns of the implementation. The main interface is the PluginInterface. PluginInterface is designed to be as stateless as possible, and have interjectable options where applicable.
+ 
 
 Managers
 --------
@@ -142,7 +173,7 @@ Filters
 Filters are designed to offer implementation-level extensiblity.
 Want to only return only files start with "plugin"? Create a filter for it. Or use some of the provided filters to provide the desired implementation.
 
-NOTE: Final implementation of filters and how they interact with the library is currently a WIP and should be considered unstable.
+All filters are callable.
 
 .. |Build Status| image:: https://travis-ci.org/benhoff/pluginmanager.svg?branch=master
     :target: https://travis-ci.org/benhoff/pluginmanager
