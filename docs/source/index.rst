@@ -90,22 +90,121 @@ Add classes.
     plugin_interface.add_plugins(CustomClass)
     
     plugins = plugin_interface.get_instances()
-    print(plugins) # doctest +SKIP
+    print(plugins) # doctest: +SKIP
 
 .. testoutput:: manual_plugins
+    :hide:
     
     [<CustomClass object at 0x...]
 
 Alternatively, add instances.
+
+.. testcode:: manual_plugins
+
+    import pluginmanager
+
+    class CustomClass(pluginmanager.IPlugin):
+        pass
+
+    custom_class_instance = CustomClass()
+    
+    plugin_interface = pluginmanager.PluginInterface()
+    plugin_interface.add_plugins(custom_class_instance)
+    
+    plugins = plugin_interface.get_instances()
+    print(plugins) # doctest: +SKIP
+
+.. testoutput:: manual_plugins
+    :hide:
+
+    [<CustomClass object at 0x...]
+    
+pluginmanager is defaulted to automatically instantiate unique instances. Disable automatic instantiation.
 
 ::
 
     import pluginmanager
     
     plugin_interface = pluginmanager.PluginInterface()
-    plugin_interface.add_plugins(your_instance_here)
+    plugin_manager = plugin_interface.plugin_manager
+
+    plugin_manager.instantiate_classes = False
+
+Disable uniqueness (Only one instance of class per pluginmanager)
+
+::
+
+    import pluginmanager
     
-    plugins = plugin_interface.get_instances()
+    plugin_interface = pluginmanager.PluginInterface()
+    plugin_manager = plugin_interface.plugin_manager
+
+    plugin_manager.unique_instances = False
+
+Filter Instances
+----------------
+
+Pass in a class to get back just the instances of a class
+
+.. testcode:: filter_instances
+
+    import pluginmanager
+
+    class MyPluginClass(pluginmanager.IPlugin):
+        pass
+    
+    plugin_interface = pluginmanager.PluginInterface()
+    plugin_interface.add_plugins(MyPluginClass)
+    
+    all_instances_of_class = plugin_interface.get_instances(MyPluginClass)
+    print(all_instances_of_class) # doctest: +SKIP
+
+.. testoutput:: filter_instances
+    :hide:
+
+    [<MyPluginClass object at 0x...]
+
+Alternatively, create and pass in your own custom filters.
+
+.. testcode:: filter_instances
+    # create a custom plugin class
+    class MyPluginClass(pluginmanager.IPlugin):
+        def __init__(self):
+            self.name = 'MyPluginClass'
+    
+    # create a custom filter
+    class NameFilter(object):
+        def __init__(self, name):
+            self.stored_name = name 
+
+        def __call__(self, plugins):
+            result = []
+            for plugin in plugins:
+                if plugin.name == self.stored_name:
+                    result.append(plugin)
+            return result
+
+    # create an instance of our custom filter
+    mypluginclass_name_filter = NameFilter('MyPluginClass')
+
+    plugin_interface = pluginmanager.PluginInterface()
+    filtered_plugins = plugin_interface.get_instances(mypluginclass_name_filter)
+    print(filtered_plugins) # doctest: +SKIP
+
+.. testoutput:: filter_instances
+    :hide:
+
+    [<MyPluginClass object at 0x...]
+
+::
+
+    def custom_filter(plugins):
+        result = []
+        for plugin in plugins:
+            if plugin.name == 'interesting name':
+                result.append(plugin)
+        return result
+
 .. toctree::
    :maxdepth: 2
 
