@@ -18,8 +18,6 @@ import os
 import shlex
 from os import path
 root = path.realpath(path.join(path.dirname(__file__), '..', '..'))
-sys.path.insert(0, root)
-
 
 doctest_path = [root]
 doctest_global_setup = "import pluginmanager"

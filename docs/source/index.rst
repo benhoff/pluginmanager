@@ -46,12 +46,66 @@ Quickstart
     plugin_interface.collect_plugins() # doctest: +SKIP
 
     plugins = plugin_interface.get_instances()
-    print(plugins)
+    print(plugins) # doctest: +SKIP
 
-.. testoutput:: quickstart 
+.. testoutput:: quickstart
+    :options: +ELLIPSIS
 
-    this should fail.
+    [<pluginmanager_plugin_test_0.Test object at 0x...]
 
+Custom Plugins
+--------------
+
+The quickstart will only work if you subclass `IPlugin` for your custom plugins.
+
+::
+
+    import pluginmanager
+
+    class MyCustomPlugin(pluginmanager.IPlugin):
+        def __init__(self):
+            self.name = 'custom_name'
+            super().__init__()
+
+Or register your class as subclass of IPlugin.
+
+::
+
+    import pluginmanager
+    
+    pluginmanager.IPlugin.register(YourClassHere)
+
+Add Plugins Manually
+--------------------
+Add classes.
+
+.. testcode:: manual_plugins
+
+    import pluginmanager
+
+    class CustomClass(pluginmanager.IPlugin):
+        pass
+    
+    plugin_interface = pluginmanager.PluginInterface()
+    plugin_interface.add_plugins(CustomClass)
+    
+    plugins = plugin_interface.get_instances()
+    print(plugins) # doctest +SKIP
+
+.. testoutput:: manual_plugins
+    
+    [<CustomClass object at 0x...]
+
+Alternatively, add instances.
+
+::
+
+    import pluginmanager
+    
+    plugin_interface = pluginmanager.PluginInterface()
+    plugin_interface.add_plugins(your_instance_here)
+    
+    plugins = plugin_interface.get_instances()
 .. toctree::
    :maxdepth: 2
 
