@@ -15,6 +15,7 @@ python:
 # command to install dependencies
 install:
   - pip install flake8
+  - pip install sphinx
   - pip install coverage
   - pip install python-coveralls
 
@@ -22,6 +23,7 @@ install:
 script: 
   - coverage run -m unittest discover
   - flake8 pluginmanager
+  - if [[ $TRAVIS_PYTHON_VERSION == '2.7' || $TRAVIS_PYTHON_VERSION == '3.5' ]]; then make -C docs doctest; fi
   
 after_success:
   - coverage report
