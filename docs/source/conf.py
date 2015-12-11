@@ -18,9 +18,11 @@ import os
 import shlex
 from os import path
 root = path.realpath(path.join(path.dirname(__file__), '..', '..'))
-print(root)
 sys.path.insert(0, root)
-import pluginmanager
+
+
+doctest_path = [root]
+doctest_global_setup = "import pluginmanager"
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the

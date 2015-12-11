@@ -3,21 +3,15 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-.. testsetup:: *
+.. testsetup:: quickstart
+
     import os
-    import sys
-    _dir_path = os.path.dirname(__file__)
-    _pluginmanager_path = os.path.realpath(os.path.join(_dir_path, '..', '..'))
-    sys.paths.append(_pluginmanager_path)
-    from pluginmanger.tests.compat import tempfile
+    from pluginmanager.tests.compat import tempfile
     tempdirectory = tempfile.TemporaryDirectory()
     plugin_directory_path = tempdirectory.name
     path = os.path.join(tempdirectory.name, 'test.py')
     with open(path, 'w+') as f:
         f.write('from pluginmanager import IPlugin\nclass Test(IPlugin):\n    pass')
-
-.. testoutput::
-
 
 pluginmanager
 =============
@@ -80,5 +74,5 @@ Indices and tables
     
 
 .. testcleanup::
-    tempfirectory.cleanup()
+    tempdirectory.cleanup()
 
