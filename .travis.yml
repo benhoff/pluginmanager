@@ -15,7 +15,7 @@ python:
 matrix:
   include:
     - os: linux
-      env: PYTHON_VERSION=3.5
+      python: 3.5
       env: TEST_MODE='doctest'
 
   allow_failures:
