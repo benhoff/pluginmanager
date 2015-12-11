@@ -12,13 +12,11 @@ python:
   - "pypy"
   - "pypy3"
 
+env:
+  - TEST_MODE='doctest'
 matrix:
-    include:
-        - os: linux
-          env: TEST_MODE='doctest'
-
-    allow_failures:
-        - env: TEST_MODE='doctest'
+  allow_failures:
+    - env: TEST_MODE='doctest'
 
 # command to install dependencies
 install:
