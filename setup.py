@@ -33,6 +33,6 @@ setup(
     author_email='beohoff@gmail.com',
     packages= find_packages(exclude=['docs', 'tests']),
     extras_require={
-        'dev': ['flake8']
+        'dev': ['flake8', 'sphinx']
     },
 )
