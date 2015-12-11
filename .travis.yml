@@ -12,9 +12,12 @@ python:
   - "pypy"
   - "pypy3"
 
-env:
-  - TEST_MODE='doctest'
 matrix:
+  include:
+    - os: linux
+      env: PYTHON_VERSION=3.5
+      env: TEST_MODE='doctest'
+
   allow_failures:
     - env: TEST_MODE='doctest'
 
