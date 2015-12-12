@@ -49,6 +49,7 @@ Quickstart
     print(plugins) # doctest: +SKIP
 
 .. testoutput:: quickstart
+    :hide:
     :options: +ELLIPSIS
 
     [<pluginmanager_plugin_test_0.Test object at 0x...]
@@ -72,7 +73,7 @@ Or register your class as subclass of IPlugin.
 ::
 
     import pluginmanager
-    
+
     pluginmanager.IPlugin.register(YourClassHere)
 
 Add Plugins Manually
@@ -85,16 +86,16 @@ Add classes.
 
     class CustomClass(pluginmanager.IPlugin):
         pass
-    
+
     plugin_interface = pluginmanager.PluginInterface()
     plugin_interface.add_plugins(CustomClass)
-    
+
     plugins = plugin_interface.get_instances()
     print(plugins) # doctest: +SKIP
 
 .. testoutput:: manual_plugins
     :hide:
-    
+
     [<CustomClass object at 0x...]
 
 Alternatively, add instances.
@@ -107,10 +108,10 @@ Alternatively, add instances.
         pass
 
     custom_class_instance = CustomClass()
-    
+
     plugin_interface = pluginmanager.PluginInterface()
     plugin_interface.add_plugins(custom_class_instance)
-    
+
     plugins = plugin_interface.get_instances()
     print(plugins) # doctest: +SKIP
 
@@ -118,13 +119,13 @@ Alternatively, add instances.
     :hide:
 
     [<CustomClass object at 0x...]
-    
+
 pluginmanager is defaulted to automatically instantiate unique instances. Disable automatic instantiation.
 
 ::
 
     import pluginmanager
-    
+
     plugin_interface = pluginmanager.PluginInterface()
     plugin_manager = plugin_interface.plugin_manager
 
@@ -135,7 +136,7 @@ Disable uniqueness (Only one instance of class per pluginmanager)
 ::
 
     import pluginmanager
-    
+
     plugin_interface = pluginmanager.PluginInterface()
     plugin_manager = plugin_interface.plugin_manager
 
@@ -152,10 +153,10 @@ Pass in a class to get back just the instances of a class
 
     class MyPluginClass(pluginmanager.IPlugin):
         pass
-    
+
     plugin_interface = pluginmanager.PluginInterface()
     plugin_interface.add_plugins(MyPluginClass)
-    
+
     all_instances_of_class = plugin_interface.get_instances(MyPluginClass)
     print(all_instances_of_class) # doctest: +SKIP
 
@@ -164,14 +165,15 @@ Pass in a class to get back just the instances of a class
 
     [<MyPluginClass object at 0x...]
 
-Alternatively, create and pass in your own custom filters.
+Alternatively, create and pass in your own custom filters. Either make a class based filter
 
 .. testcode:: filter_instances
+
     # create a custom plugin class
-    class MyPluginClass(pluginmanager.IPlugin):
-        def __init__(self):
-            self.name = 'MyPluginClass'
-    
+    class Plugin(pluginmanager.IPlugin):
+        def __init__(self, name):
+            self.name = name
+
     # create a custom filter
     class NameFilter(object):
         def __init__(self, name):
@@ -185,18 +187,23 @@ Alternatively, create and pass in your own custom filters.
             return result
 
     # create an instance of our custom filter
-    mypluginclass_name_filter = NameFilter('MyPluginClass')
+    mypluginclass_name_filter = NameFilter('good plugin')
 
     plugin_interface = pluginmanager.PluginInterface()
+    plugin_interface.add_plugins([Plugin('good plugin'), 
+                                  Plugin('bad plugin')])
+
     filtered_plugins = plugin_interface.get_instances(mypluginclass_name_filter)
-    print(filtered_plugins) # doctest: +SKIP
+    print(filtered_plugins[0].name) # doctest: +SKIP
 
 .. testoutput:: filter_instances
     :hide:
 
-    [<MyPluginClass object at 0x...]
+    good plugin
 
-::
+Or make a function based filter
+
+.. testcode:: filter_instances
 
     def custom_filter(plugins):
         result = []
@@ -204,6 +211,10 @@ Alternatively, create and pass in your own custom filters.
             if plugin.name == 'interesting name':
                 result.append(plugin)
         return result
+
+.. testoutput:: filter_instances
+
+    This should fail
 
 .. toctree::
    :maxdepth: 2
