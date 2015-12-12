@@ -7,10 +7,11 @@ from pluginmanager import util
 class DirectoryManager(object):
     def __init__(self,
                  plugin_directories=set(),
-                 recursive=True):
+                 recursive=True,
+                 blacklisted_directories=set()):
 
         self.plugin_directories = util.return_set(plugin_directories)
-        self.blacklisted_directories = set()
+        self.blacklisted_directories = util.return_set(blacklisted_directories) 
         self.recursive = recursive
 
     def collect_directories(self, directories):
