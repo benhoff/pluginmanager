@@ -12,9 +12,19 @@ python:
   - "pypy"
   - "pypy3"
 
+matrix:
+  include:
+    - os: linux
+      python: 3.5
+      env: TEST_MODE='doctest'
+
+  allow_failures:
+    - env: TEST_MODE='doctest'
+
 # command to install dependencies
 install:
   - pip install flake8
+  - if [[ $TEST_MODE == 'doctest' ]]; then pip install sphinx; fi
   - pip install coverage
   - pip install python-coveralls
 
@@ -22,6 +32,7 @@ install:
 script: 
   - coverage run -m unittest discover
   - flake8 pluginmanager
+  - if [[ $TEST_MODE == 'doctest' ]]; then make -C docs doctest; fi
   
 after_success:
   - coverage report
