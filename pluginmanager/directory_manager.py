@@ -9,19 +9,44 @@ class DirectoryManager(object):
                  plugin_directories=set(),
                  recursive=True):
 
-        if plugin_directories == set():
-            plugin_directories = set()
-
-        self.plugin_directories = plugin_directories
+        self.plugin_directories = util.return_set(plugin_directories)
         self.blacklisted_directories = set()
         self.recursive = recursive
+
+    def collect_directories(self, directories):
+        """
+        Helper method to return all the directories.
+
+        If `self.recursive` is set to `True` this will iterate through and
+        return all of the directories and subdirectories.
+
+        if `self.recursive` is set to `False` this will return the directories
+        passed in
+
+        `directories` may be either a single object or an iterable. recommend
+        passing in absolute paths instead of relative
+
+        The object returned is a set() object
+        """
+        directories = util.return_set(directories)
+
+        if not self.recursive:
+            return self._remove_blacklisted(directories)
+
+        recursive_dirs = []
+        for dir_ in directories:
+            walk_iter = os.walk(dir_, followlinks=True)
+            walk_iter = [w[0] for w in walk_iter]
+            walk_iter = self._remove_blacklisted(walk_iter)
+            recursive_dirs.extend(walk_iter)
+        return recursive_dirs
 
     def add_directories(self, paths):
         """
         Add a directory to the plugin directories.
 
-        `paths` may be either a single object or a iterable (with the exception of
-        dicts). Paths can be realitve paths but can/will be converted into 
+        `paths` may be either a single object or a iterable (with the exception
+        of dicts). Paths can be realitve paths but can/will be converted into 
         absolute paths.
 
         Note that the method `collect_directories` does not natively rely on this
@@ -90,20 +115,6 @@ class DirectoryManager(object):
     def _remove_blacklisted(self, directories):
         util.remove_from_list(directories, self.blacklisted_directories)
         return directories
-
-    def collect_directories(self, directories):
-        directories = util.return_set(directories)
-
-        if not self.recursive:
-            return self._remove_blacklisted(directories)
-
-        recursive_dirs = []
-        for dir_ in directories:
-            walk_iter = os.walk(dir_, followlinks=True)
-            walk_iter = [w[0] for w in walk_iter]
-            walk_iter = self._remove_blacklisted(walk_iter)
-            recursive_dirs.extend(walk_iter)
-        return recursive_dirs
 
     def get_directories(self):
         self._plugin_dirs_to_absolute_paths()
