@@ -17,21 +17,68 @@ class DirectoryManager(object):
         self.recursive = recursive
 
     def add_directories(self, paths):
+        """
+        Add a directory to the plugin directories.
+
+        `paths` may be either a single object or a iterable (with the exception of
+        dicts). Paths can be realitve paths but can/will be converted into 
+        absolute paths.
+
+        Note that the method `collect_directories` does not natively rely on this
+        internal storage when the method is called but must be passed in explicitly
+        """
         self.plugin_directories.update(util.return_set(paths))
 
     def set_directories(self, paths):
+        """
+        Set the directories. This will delete the previous state stored in 
+        `self.plugin_directories
+
+        `paths` may be either a signle object or an iterable (with the exception of
+        dict). Paths can be realitve paths but can/will be converted into 
+        absolute paths.
+        """
         self.plugin_directories = util.return_set(paths)
 
     def remove_directories(self, paths):
+        """
+        Removes any paths in the internal storage. Note that depending on how
+        the state, somee paths may be relative, some may be absolute. If
+        you plan on using this method, recommend that all paths passed to this
+        member be passed in as absolute paths for consistency.`
+
+        `paths` may be a single object or an iterable.
+        """
         util.remove_from_set(self.plugin_directories, paths)
 
     def add_site_packages_paths(self):
+        """
+        A helper method to add all of the site packages tracked by python
+        to the directories tracked internally.
+
+        Note that if using a virtualenv there is an outstanding bug with the
+        method used here. While there is a hackish workaround, when using a 
+        virutalenv this method WILL NOT track every single path tracked by python
+        """
         self.add_directories(getsitepackages())
 
     def add_blacklisted_directories(self, directories):
+        """
+        Add a directory to be blacklisted. Blacklisted paths will not be returned
+        or serached recursively when calling the `collect_directories` method
+        
+        directories may be a single instance or an iterable. Recommend passing
+        in absolute paths
+        """
+        # TODO: check if blacklisted directories are converted into
+        # absolute paths or not?
         self.blacklisted_directories.update(util.return_set(directories))
 
     def set_blacklisted_directories(self, directories):
+        """
+        Add a directory to be blacklisted. Blacklisted paths will not be returned
+        or serached recursively when calling the `collect_directories` method
+        """
         self.blacklisted_directories = util.return_set(directories)
 
     def get_blacklisted_directories(self):
