@@ -6,7 +6,9 @@ pluginmanager
 python plugin management, simplified.
 
 
-https://github.com/benhoff/pluginmanager
+`Documentation <http://pluginmanager.readthedocs.org/en/latest/>`_
+
+`Source Code <https://github.com/benhoff/pluginmanager>`_
 
 Library under development. Contains rough edges/unfinished functionality. API subject to changes.
 
