@@ -1,6 +1,7 @@
 import os
 import sys
 import logging
+logging.basicConfig()
 import inspect
 from .compat import load_source
 
