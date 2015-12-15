@@ -46,7 +46,7 @@ Quickstart
     plugin_interface.collect_plugins() # doctest: +SKIP
 
     plugins = plugin_interface.get_instances()
-    print(plugins) # doctest: +SKIP
+    print(plugins) # doctest: +SKIP +HIDE
 
 .. testoutput:: quickstart
     :hide:
@@ -205,16 +205,30 @@ Or make a function based filter
 
 .. testcode:: filter_instances
 
+    # create a custom plugin class
+    class Plugin(pluginmanager.IPlugin):
+        def __init__(self, name):
+            self.name = name
+
+    # create a function based filter
     def custom_filter(plugins):
         result = []
         for plugin in plugins:
-            if plugin.name == 'interesting name':
+            if plugin.name == 'good plugin':
                 result.append(plugin)
         return result
 
-.. testoutput:: filter_instances
+    plugin_interface = pluginmanager.PluginInterface()
+    plugin_interface.add_plugins([Plugin('good plugin'), 
+                                  Plugin('bad plugin')])
 
-    This should fail
+    filtered_plugins = plugin_interface.get_instances(mypluginclass_name_filter)
+    print(filtered_plugins[0].name)
+
+.. testoutput:: filter_instances
+    :hide:
+
+    good plugin
 
 .. toctree::
    :maxdepth: 2
