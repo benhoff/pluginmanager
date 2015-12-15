@@ -10,13 +10,13 @@ class TestDirectoryManager(unittest.TestCase):
         self.directory_manager.set_directories(__file__)
 
     def test_add_plugin_directory(self):
-        test_dir = 'my/plugin/dir'
+        test_dir = '/my/plugin/dir'
         self.directory_manager.add_directories(test_dir)
         self.assertIn(test_dir, self.directory_manager.plugin_directories)
 
     def test_set_plugin_directory(self):
         current_dirs = self.directory_manager.plugin_directories.pop()
-        test_dir = 'my/plugin/dir'
+        test_dir = '/my/plugin/dir'
         self.directory_manager.set_directories(test_dir)
         self.assertIn(test_dir, self.directory_manager.plugin_directories)
         self.assertNotIn(current_dirs,
@@ -47,13 +47,6 @@ class TestDirectoryManager(unittest.TestCase):
         directories = self.directory_manager.get_directories()
         self.assertEqual(len(directories), 1)
 
-    def test_plugin_paths_to_absolute(self):
-        self.directory_manager.set_directories('pluginmanager')
-        plugin_dirs = self.directory_manager.plugin_directories
-        self.assertFalse(path.isabs(next(iter(plugin_dirs))))
-        self.directory_manager._plugin_dirs_to_absolute_paths()
-        plugin_dirs = self.directory_manager.plugin_directories
-        self.assertTrue(path.isabs(plugin_dirs.pop()))
 
 if __name__ == '__main__':
     unittest.main()

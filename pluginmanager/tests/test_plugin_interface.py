@@ -129,7 +129,7 @@ class TestInterface(unittest.TestCase):
 
     def test_interface(self):
         template = '{}_blacklisted_{}'
-        methods = ['directories', 'filepaths', 'plugins']
+        methods = ['filepaths', 'plugins']
         get_func = lambda attr: getattr(self.interface, attr)
 
         adders = [get_func(template.format('add',
