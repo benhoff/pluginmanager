@@ -33,13 +33,25 @@ class DirectoryManager(object):
     from the internal state and promote reuse at the Interface level.
     """
     def __init__(self,
-                 plugin_directories=set(),
+                 plugin_directories=None,
                  recursive=True,
-                 blacklisted_directories=set()):
+                 blacklisted_directories=None):
+        """
+        `recursive` is used to control whether directories are searched
+        recursviely or not
+
+        `plugin_directories` may be a single directories or an iterable.
+
+        `blacklisted_directories` may be a single directory or an iterable
+        """
 
         self.recursive = recursive
         self.plugin_directories = None
         self.blacklisted_directories = None
+        if plugin_directories is None:
+            plugin_directories = set()
+        if blacklisted_directories is None:
+            blacklisted_directories = set()
 
         self.set_directories(plugin_directories)
         self.set_blacklisted_directories(blacklisted_directories)
@@ -95,7 +107,7 @@ class DirectoryManager(object):
         `directories` can contain relative paths but will be
         converted into absolute paths.
         """
-        self.plugin_directories = _to_absolute_paths(paths)
+        self.plugin_directories = _to_absolute_paths(directories)
 
     def remove_directories(self, directories):
         """
@@ -128,8 +140,9 @@ class DirectoryManager(object):
         be returned or searched recursively when calling the
         `collect_directories` method.
 
-        `directories` may be a single instance or an iterable. Recommend passing
-        in absolute paths, but method will try to convert to absolute paths.
+        `directories` may be a single instance or an iterable. Recommend
+        passing in absolute paths, but method will try to convert to absolute
+        paths.
         """
         absolute_paths = _to_absolute_paths(directories)
         self.blacklisted_directories.update(absolute_paths)

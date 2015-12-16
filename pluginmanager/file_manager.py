@@ -3,11 +3,14 @@ from pluginmanager import util
 
 class FileManager(object):
     """
-    Holds onto and locates the filepaths of plugins using a set of getters
-    to determine what files actually corresponds to plugins.
+    `FileManager` manages the file filter state and is responible for applying
+    the file filters to the filepaths gotten from the
     """
     def __init__(self,
-                 file_filters=[]):
+                 file_filters=None):
+
+        if file_filters is None:
+            file_filters = []
 
         file_filters = util.return_list(file_filters)
         self.file_filters = file_filters
