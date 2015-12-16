@@ -5,23 +5,20 @@ from .compat import tempfile
 from pluginmanager.module_manager import ModuleManager
 
 
-class TestClass:
-    pass
-
-
 class TestModuleManager(unittest.TestCase):
     def setUp(self):
         self.module_manager = ModuleManager()
 
     def test_set_module_filters(self):
-        test_obj = TestClass()
-        previous_module = self.module_manager.module_filters[0]
+        previous_module = object()
+        self.module_manager.add_module_filters(previous_module)
+        test_obj = object()
         self.module_manager.set_module_filters(test_obj)
         self.assertIn(test_obj, self.module_manager.module_filters)
         self.assertNotIn(previous_module, self.module_manager.module_filters)
 
     def test_add_module_filter(self):
-        test_obj = TestClass()
+        test_obj = object()
         self.module_manager.add_module_filters(test_obj)
         self.assertIn(test_obj, self.module_manager.module_filters)
 
@@ -44,15 +41,15 @@ class TestModuleManager(unittest.TestCase):
     def test_filter_modules(self):
         def filter_(plugins, *args):
             for plugin in plugins:
-                if not isinstance(plugin, TestClass):
+                if not isinstance(plugin, float):
                     plugins.remove(plugin)
             return plugins
         self.module_manager.set_module_filters(filter_)
-        instance = TestClass()
+        instance = object()
         plugins = [5.0, instance]
         filtered = self.module_manager._filter_modules(plugins, [])
-        self.assertIn(instance, filtered)
-        self.assertNotIn(5.0, filtered)
+        self.assertNotIn(instance, filtered)
+        self.assertIn(5.0, filtered)
 
     def test_set_blacklist_filepaths(self):
         removed_dir = 'test/dir'

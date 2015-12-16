@@ -10,9 +10,12 @@ from pluginmanager import util as manager_util
 
 class ModuleManager(object):
     def __init__(self,
-                 module_filters=[],
-                 blacklisted_filepaths=set()):
-
+                 module_filters=None,
+                 blacklisted_filepaths=None):
+        if module_filters is None:
+            module_filters = []
+        if blacklisted_filepaths is None:
+            blacklisted_filepaths = set()
         module_filters = manager_util.return_list(module_filters)
 
         self.loaded_modules = set()
