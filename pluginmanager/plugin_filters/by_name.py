@@ -3,6 +3,8 @@ from pluginmanager import util
 
 class NameFilter(object):
     def __init__(self, names=None):
+        if names is None:
+            names = []
         self.names = util.return_list(names)
 
     def __call__(self, plugins):

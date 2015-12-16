@@ -3,7 +3,7 @@ from pluginmanager import util
 
 
 class FilenameFileFilter(object):
-    def __init__(self, filenames=['__init__.py']):
+    def __init__(self, filenames='__init__.py'):
         filenames = util.return_list(filenames)
         self.filenames = filenames
 
