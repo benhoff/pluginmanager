@@ -3,9 +3,6 @@ pluginmanager
 
 |Build Status| |Coverage Status| |Code Climate|
 
-python plugin management, simplified.
-
-
 `Documentation <http://pluginmanager.readthedocs.org/en/latest/>`_
 
 `Source Code <https://github.com/benhoff/pluginmanager>`_
