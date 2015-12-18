@@ -7,15 +7,21 @@ class FileManager(object):
     the file filters to the filepaths gotten from the
     """
     def __init__(self,
-                 file_filters=None):
+                 file_filters=None,
+                 plugin_files=None,
+                 blacklisted_filepaths=None):
 
         if file_filters is None:
             file_filters = []
+        if plugin_files is None:
+            plugin_files = set()
+        if blacklisted_filepaths is None:
+            blacklisted_filepaths = set()
 
         file_filters = util.return_list(file_filters)
         self.file_filters = file_filters
-        self.plugin_files = set()
-        self.blacklisted_filepaths = set()
+        self.plugin_files = plugin_files
+        self.blacklisted_filepaths = blacklisted_filepaths
 
     def add_plugin_filepaths(self, filepaths):
         self.plugin_files.update(util.return_set(filepaths))
