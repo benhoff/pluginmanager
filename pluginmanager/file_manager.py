@@ -3,13 +3,23 @@ from pluginmanager import util
 
 class FileManager(object):
     """
-    `FileManager` manages the file filter state and is responible for applying
-    the file filters to the filepaths gotten from the
+    `FileManager` manages the file filter state and is responible for collecting
+    filepaths given a list of directories and applying the file filters to the
+    collected filepaths
     """
     def __init__(self,
                  file_filters=None,
                  plugin_files=None,
                  blacklisted_filepaths=None):
+        """
+        `FileFilters` are callable filters. Each filter must take in a 
+        set of filepaths and return back a set of filepaths. 
+        `FileFilters` can be a single object or an iterable
+
+        `plugin_files` are known plugin filepaths that can be stored
+        in `FileManager`. Note that filepaths stored in the plugin filepaths
+        are not automatically added when calling the `collect_
+        """
 
         if file_filters is None:
             file_filters = []
