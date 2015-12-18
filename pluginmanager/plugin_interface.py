@@ -17,10 +17,6 @@ class PluginInterface(object):
         self.file_manager = kwargs.get('file_manager', FileManager())
         self.module_manager = kwargs.get('module_manager', ModuleManager())
         self.plugin_manager = kwargs.get('plugin_manager', PluginManager())
-        self._managers = {'directory_manager': self.directory_manager,
-                          'file_manager': self.file_manager,
-                          'module_manager': self.module_manager,
-                          'plugin_manager': self.plugin_manager}
 
     def track_site_package_paths(self):
         return self.directory_manager.add_site_packages_paths()
