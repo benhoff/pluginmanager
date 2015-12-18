@@ -65,8 +65,8 @@ class PluginInterface(object):
     def get_plugins(self, filter_function=None):
         return self.plugin_manager.get_plugins(filter_function)
 
-    def add_plugin_directories(self, paths):
-        self.directory_manager.add_directories(paths)
+    def add_plugin_directories(self, paths, except_blacklisted=True):
+        self.directory_manager.add_directories(paths, except_blacklisted)
 
     def get_plugin_directories(self):
         return self.directory_manager.get_directories()
@@ -74,8 +74,8 @@ class PluginInterface(object):
     def remove_plugin_directories(self, paths):
         self.directory_manager.remove_directories(paths)
 
-    def set_plugin_directories(self, paths):
-        self.directory_manager.set_directories(paths)
+    def set_plugin_directories(self, paths, except_blacklisted=True):
+        self.directory_manager.set_directories(paths, except_blacklisted)
 
     def add_plugin_filepaths(self, filepaths):
         self.file_manager.add_plugin_filepaths(filepaths)
@@ -122,14 +122,22 @@ class PluginInterface(object):
     def set_module_filters(self, module_filters):
         self.module_manager.set_module_filters(module_filters)
 
-    def add_blacklisted_directories(self, directories):
-        self.directory_manager.add_blacklisted_directories(directories)
+    def add_blacklisted_directories(self,
+                                    directories,
+                                    rm_black_dirs_from_stored_dirs=True):
+
+        add_black_dirs = self.directory_manager.add_blacklisted_directories
+        add_black_dirs(directories, rm_black_dirs_from_stored_dirs)
 
     def get_blacklisted_directories(self):
         return self.directory_manager.get_blacklisted_directories()
 
-    def set_blacklisted_directories(self, directories):
-        self.directory_manager.set_blacklisted_directories(directories)
+    def set_blacklisted_directories(self,
+                                    directories,
+                                    rm_black_dirs_from_stored_dirs=True):
+
+        set_black_dirs = self.directory_manager.set_blacklisted_directories
+        set_black_dirs(directories, rm_black_dirs_from_stored_dirs)
 
     def remove_blacklisted_directories(self, directories):
         self.directory_manager.remove_blacklisted_directories(directories)
