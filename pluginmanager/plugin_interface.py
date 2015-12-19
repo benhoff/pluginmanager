@@ -61,8 +61,8 @@ class PluginInterface(object):
     def get_plugins(self, filter_function=None):
         return self.plugin_manager.get_plugins(filter_function)
 
-    def add_plugin_directories(self, paths):
-        self.directory_manager.add_directories(paths)
+    def add_plugin_directories(self, paths, except_blacklisted=True):
+        self.directory_manager.add_directories(paths, except_blacklisted)
 
     def get_plugin_directories(self):
         return self.directory_manager.get_directories()
@@ -70,8 +70,8 @@ class PluginInterface(object):
     def remove_plugin_directories(self, paths):
         self.directory_manager.remove_directories(paths)
 
-    def set_plugin_directories(self, paths):
-        self.directory_manager.set_directories(paths)
+    def set_plugin_directories(self, paths, except_blacklisted=True):
+        self.directory_manager.set_directories(paths, except_blacklisted)
 
     def add_plugin_filepaths(self, filepaths):
         self.file_manager.add_plugin_filepaths(filepaths)
