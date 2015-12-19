@@ -2,6 +2,18 @@ import os
 import sys
 
 
+def to_absolute_paths(paths):
+    """
+    helper method to change `paths` to absolute paths.
+    Returns a `set` object
+    `paths` can be either a single object or iterable
+    """
+    abspath = os.path.abspath
+    paths = return_set(paths)
+    absolute_paths = {abspath(x) for x in paths}
+    return absolute_paths
+
+
 def get_module_name(filepath):
     if filepath.endswith('__init__.py'):
         name = os.path.basename(os.path.dirname(filepath))

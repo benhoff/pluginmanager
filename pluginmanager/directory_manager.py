@@ -4,18 +4,6 @@ from .compat import getsitepackages
 from pluginmanager import util
 
 
-def _to_absolute_paths(paths):
-    """
-    helper method to change `paths` to absolute paths.
-    Returns a `set` object
-    `paths` can be either a single object or iterable
-    """
-    abspath = os.path.abspath
-    paths = util.return_set(paths)
-    absolute_paths = {abspath(x) for x in paths}
-    return absolute_paths
-
-
 class DirectoryManager(object):
     """
     `DirectoryManager` manages the recursive search state and can
@@ -72,7 +60,7 @@ class DirectoryManager(object):
         will attempt to convert `directories` to absolute paths if they are not
         already.
         """
-        directories = _to_absolute_paths(directories)
+        directories = util.to_absolute_paths(directories)
 
         if not self.recursive:
             return self._remove_blacklisted(directories)
@@ -94,7 +82,7 @@ class DirectoryManager(object):
         `directories` can be relative paths, but will be converted into
         absolute paths.
         """
-        self.plugin_directories.update(_to_absolute_paths(directories))
+        self.plugin_directories.update(util.to_absolute_paths(directories))
 
     def set_directories(self, directories):
         """
@@ -107,7 +95,7 @@ class DirectoryManager(object):
         `directories` can contain relative paths but will be
         converted into absolute paths.
         """
-        self.plugin_directories = _to_absolute_paths(directories)
+        self.plugin_directories = util.to_absolute_paths(directories)
 
     def remove_directories(self, directories):
         """
@@ -119,7 +107,7 @@ class DirectoryManager(object):
         attemmpt to convert all paths to absolute if they are not already.
 
         """
-        directories = _to_absolute_paths(directories)
+        directories = util.to_absolute_paths(directories)
         util.remove_from_set(self.plugin_directories, directories)
 
     def add_site_packages_paths(self):
@@ -144,7 +132,7 @@ class DirectoryManager(object):
         passing in absolute paths, but method will try to convert to absolute
         paths.
         """
-        absolute_paths = _to_absolute_paths(directories)
+        absolute_paths = util.to_absolute_paths(directories)
         self.blacklisted_directories.update(absolute_paths)
 
     def set_blacklisted_directories(self, directories):
@@ -159,7 +147,7 @@ class DirectoryManager(object):
         `directories` may be a single instance or an iterable. Recommend
         passing in absolute paths. Method will try to convert to absolute path.
         """
-        absolute_paths = _to_absolute_paths(directories)
+        absolute_paths = util.to_absolute_paths(directories)
         self.blacklisted_directories = util.return_set(absolute_paths)
 
     def get_blacklisted_directories(self):
@@ -178,7 +166,7 @@ class DirectoryManager(object):
         passing in absolute paths. Method will try to convert to an absolute
         path if it is not already.
         """
-        directories = _to_absolute_paths(directories)
+        directories = util.to_absolute_paths(directories)
         util.remove_from_set(self.blacklisted_directories, directories)
 
     def _remove_blacklisted(self, directories):
@@ -188,7 +176,7 @@ class DirectoryManager(object):
 
         Called from the `collect_directories` method.
         """
-        directories = _to_absolute_paths(directories)
+        directories = util.to_absolute_paths(directories)
         util.remove_from_set(directories, self.blacklisted_directories)
         return directories
 

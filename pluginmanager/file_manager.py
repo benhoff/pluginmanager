@@ -5,12 +5,16 @@ class FileManager(object):
     """
     `FileManager` manages the file filter state and is responible for collecting
     filepaths given a list of directories and applying the file filters to the
-    collected filepaths
+    collected filepaths.
+
+    `FileManager` can also optionally manage the plugin filepath state.
+    pluginmanager does NOT automatically do this however.
     """
     def __init__(self,
                  file_filters=None,
                  plugin_files=None,
                  blacklisted_filepaths=None):
+
         """
         `FileFilters` are callable filters. Each filter must take in a 
         set of filepaths and return back a set of filepaths. 
@@ -18,7 +22,10 @@ class FileManager(object):
 
         `plugin_files` are known plugin filepaths that can be stored
         in `FileManager`. Note that filepaths stored in the plugin filepaths
-        are not automatically added when calling the `collect_
+        are NOT automatically added when calling the `collect_filepaths`
+        method.
+
+        `blacklisted_filepaths`
         """
 
         if file_filters is None:
@@ -28,10 +35,9 @@ class FileManager(object):
         if blacklisted_filepaths is None:
             blacklisted_filepaths = set()
 
-        file_filters = util.return_list(file_filters)
-        self.file_filters = file_filters
-        self.plugin_files = plugin_files
-        self.blacklisted_filepaths = blacklisted_filepaths
+        self.file_filters = util.return_list(file_filters)
+        self.plugin_files = util.return_set(plugin_files)
+        self.blacklisted_filepaths = util.return_set(blacklisted_filepaths)
 
     def collect_filepaths(self, directories):
         """
