@@ -118,14 +118,22 @@ class PluginInterface(object):
     def set_module_filters(self, module_filters):
         self.module_manager.set_module_filters(module_filters)
 
-    def add_blacklisted_directories(self, directories):
-        self.directory_manager.add_blacklisted_directories(directories)
+    def add_blacklisted_directories(self,
+                                    directories,
+                                    rm_black_dirs_from_stored_dirs=True):
+
+        add_black_dirs = self.directory_manager.add_blacklisted_directories
+        add_black_dirs(directories, rm_black_dirs_from_stored_dirs)
 
     def get_blacklisted_directories(self):
         return self.directory_manager.get_blacklisted_directories()
 
-    def set_blacklisted_directories(self, directories):
-        self.directory_manager.set_blacklisted_directories(directories)
+    def set_blacklisted_directories(self,
+                                    directories,
+                                    rm_black_dirs_from_stored_dirs=True):
+
+        set_black_dirs = self.directory_manager.set_blacklisted_directories
+        set_black_dirs(directories, rm_black_dirs_from_stored_dirs)
 
     def remove_blacklisted_directories(self, directories):
         self.directory_manager.remove_blacklisted_directories(directories)

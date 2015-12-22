@@ -29,6 +29,8 @@ def remove_from_list(list, remove_items):
         if remove in list:
             list.remove(remove)
 
+    return list
+
 
 def remove_from_set(set, remove_items):
     set = return_set(set)
@@ -36,6 +38,8 @@ def remove_from_set(set, remove_items):
     for item in remove_items:
         if item in set:
             set.remove(item)
+
+    return set
 
 
 def create_unique_module_name(plugin_info_or_name):

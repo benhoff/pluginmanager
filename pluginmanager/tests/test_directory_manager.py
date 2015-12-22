@@ -29,6 +29,16 @@ class TestDirectoryManager(unittest.TestCase):
         directories = dir_manager.collect_directories(recursive_path)
         self.assertTrue(len(directories) > 1)
 
+    def test_not_recursive_collect_directories(self):
+        test_path = path.abspath(path.dirname(__file__))
+        collect_dirs = self.directory_manager.collect_directories
+        recursive_paths = collect_dirs(test_path)
+        self.directory_manager.recursive = False
+        non_recursive_paths = collect_dirs(test_path)
+
+        self.assertNotEqual(recursive_paths, non_recursive_paths)
+        self.assertGreater(recursive_paths, non_recursive_paths)
+
     def test_blacklist_directories(self):
         temp_dir = tempfile.TemporaryDirectory()
         second_temp_dir = tempfile.TemporaryDirectory(dir=temp_dir.name)

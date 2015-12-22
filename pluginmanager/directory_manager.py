@@ -65,15 +65,16 @@ class DirectoryManager(object):
         if not self.recursive:
             return self._remove_blacklisted(directories)
 
-        recursive_dirs = []
+        recursive_dirs = set()
         for dir_ in directories:
             walk_iter = os.walk(dir_, followlinks=True)
             walk_iter = [w[0] for w in walk_iter]
+            walk_iter = util.to_absolute_paths(walk_iter)
             walk_iter = self._remove_blacklisted(walk_iter)
-            recursive_dirs.extend(walk_iter)
+            recursive_dirs.update(walk_iter)
         return recursive_dirs
 
-    def add_directories(self, directories):
+    def add_directories(self, directories, except_blacklisted=True):
         """
         Adds `directories` to the set of plugin directories.
 
@@ -81,10 +82,17 @@ class DirectoryManager(object):
 
         `directories` can be relative paths, but will be converted into
         absolute paths.
-        """
-        self.plugin_directories.update(util.to_absolute_paths(directories))
 
-    def set_directories(self, directories):
+        if `except_blacklisted` is `True` all `directories` in
+        `self.blacklisted_directories` will be removed
+        """
+        directories = util.to_absolute_paths(directories)
+        if except_blacklisted:
+            directories = self._remove_blacklisted(directories)
+
+        self.plugin_directories.update(directories)
+
+    def set_directories(self, directories, except_blacklisted=True):
         """
         Sets the plugin directories to `directories`. This will delete
         the previous state stored in `self.plugin_directories` in favor
@@ -94,8 +102,15 @@ class DirectoryManager(object):
 
         `directories` can contain relative paths but will be
         converted into absolute paths.
+
+        if `except_blacklisted` is `True` all `directories` in
+        `self.blacklisted_directories` will be removed
         """
-        self.plugin_directories = util.to_absolute_paths(directories)
+        directories = util.to_absolute_paths(directories)
+        if except_blacklisted:
+            directories = self._remove_blacklisted(directories)
+
+        self.plugin_directories = directories
 
     def remove_directories(self, directories):
         """
@@ -108,9 +123,10 @@ class DirectoryManager(object):
 
         """
         directories = util.to_absolute_paths(directories)
-        util.remove_from_set(self.plugin_directories, directories)
+        self.plugin_directories = util.remove_from_set(self.plugin_directories,
+                                                       directories)
 
-    def add_site_packages_paths(self):
+    def add_site_packages_paths(self, except_blacklisted=True):
         """
         A helper method to add all of the site packages tracked by python
         to the set of plugin directories.
@@ -120,9 +136,16 @@ class DirectoryManager(object):
         virutalenv this method WILL NOT track every single path tracked by
         python. See: https://github.com/pypa/virtualenv/issues/355
         """
-        self.add_directories(getsitepackages())
+        site_packages = getsitepackages()
+        if except_blacklisted:
+            site_packages = self._remove_blacklisted(site_packages)
 
-    def add_blacklisted_directories(self, directories):
+        self.add_directories(site_packages)
+
+    def add_blacklisted_directories(self,
+                                    directories,
+                                    remove_from_stored_directories=True):
+
         """
         Adds `directories` to be blacklisted. Blacklisted directories will not
         be returned or searched recursively when calling the
@@ -131,11 +154,20 @@ class DirectoryManager(object):
         `directories` may be a single instance or an iterable. Recommend
         passing in absolute paths, but method will try to convert to absolute
         paths.
+
+        If `remove_from_stored_directories` is true, all `directories`
+        will be removed from `self.plugin_directories`
         """
         absolute_paths = util.to_absolute_paths(directories)
         self.blacklisted_directories.update(absolute_paths)
+        if remove_from_stored_directories:
+            plug_dirs = self.plugin_directories
+            plug_dirs = util.remove_from_set(plug_dirs,
+                                             directories)
 
-    def set_blacklisted_directories(self, directories):
+    def set_blacklisted_directories(self,
+                                    directories,
+                                    remove_from_stored_directories=True):
         """
         Sets the `directories` to be blacklisted. Blacklisted directories will
         not be returned or searched recursively when calling
@@ -149,6 +181,10 @@ class DirectoryManager(object):
         """
         absolute_paths = util.to_absolute_paths(directories)
         self.blacklisted_directories = util.return_set(absolute_paths)
+        if remove_from_stored_directories:
+            plug_dirs = self.plugin_directories
+            plug_dirs = util.remove_from_set(plug_dirs,
+                                             directories)
 
     def get_blacklisted_directories(self):
         """
@@ -167,7 +203,8 @@ class DirectoryManager(object):
         path if it is not already.
         """
         directories = util.to_absolute_paths(directories)
-        util.remove_from_set(self.blacklisted_directories, directories)
+        black_dirs = self.blacklisted_directories
+        black_dirs = util.remove_from_set(black_dirs, directories)
 
     def _remove_blacklisted(self, directories):
         """
@@ -177,7 +214,9 @@ class DirectoryManager(object):
         Called from the `collect_directories` method.
         """
         directories = util.to_absolute_paths(directories)
-        util.remove_from_set(directories, self.blacklisted_directories)
+        directories = util.remove_from_set(directories,
+                                           self.blacklisted_directories)
+
         return directories
 
     def get_directories(self):

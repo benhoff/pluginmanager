@@ -111,7 +111,7 @@ class FileManager(object):
         `filepaths` can be a single object or an iterable.
         """
         filepaths = util.to_absolute_paths(filepaths)
-        util.remove_from_set(self.plugin_files, filepaths)
+        self.plugin_files = util.remove_from_set(self.plugin_files, filepaths)
 
     def get_plugin_filepaths(self):
         """
@@ -124,7 +124,8 @@ class FileManager(object):
         self.file_filters = file_filters
 
     def remove_file_filters(self, file_filters):
-        util.remove_from_list(self.file_filters, file_filters)
+        self.file_filters = util.remove_from_list(self.file_filters,
+                                                  file_filters)
 
     def get_file_filters(self, filter_function=None):
         if filter_function is None:
@@ -136,16 +137,19 @@ class FileManager(object):
         filepaths = util.return_set(filepaths)
         self.blacklisted_filepaths.update(filepaths)
         if remove_from_stored:
-            util.remove_from_set(self.plugin_files, filepaths)
+            self.blacklisted_filepaths = util.remove_from_set(self.plugin_files,
+                                                              filepaths)
 
     def set_blacklisted_filepaths(self, filepaths, remove_from_stored=True):
         filepaths = util.return_set(filepaths)
         self.blacklisted_filepaths = filepaths
         if remove_from_stored:
-            util.remove_from_set(self.plugin_files, filepaths)
+            self.plugin_files = util.remove_from_set(self.plugin_files,
+                                                     filepaths)
 
     def remove_blacklisted_filepaths(self, filepaths):
-        util.remove_from_set(self.blacklisted_filepaths, filepaths)
+        black_paths = self.blacklisted_filepaths
+        black_paths = util.remove_from_set(black_paths, filepaths)
 
     def get_blacklisted_filepaths(self):
         return self.blacklisted_filepaths
@@ -155,7 +159,7 @@ class FileManager(object):
         self.file_filters.extend(file_filters)
 
     def _remove_blacklisted(self, filepaths):
-        util.remove_from_set(filepaths, self.blacklisted_filepaths)
+        filepaths = util.remove_from_set(filepaths, self.blacklisted_filepaths)
         return filepaths
 
     def _filter_filepaths(self, filepaths):

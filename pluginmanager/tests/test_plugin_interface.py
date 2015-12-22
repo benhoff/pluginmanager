@@ -100,6 +100,19 @@ class TestInterface(unittest.TestCase):
         removed_filepaths = self.interface.get_plugin_filepaths()
         self.assertNotIn(filepath_2, removed_filepaths)
 
+    def test_blacklisted_directories(self):
+        path_1 = '/tmp/dir_1'
+        path_2 = '/tmp/dir_2'
+        self.interface.add_blacklisted_directories(path_1)
+        stored_paths = self.interface.get_blacklisted_directories()
+        self.assertIn(path_1, stored_paths)
+        self.interface.set_blacklisted_directories(path_2)
+        set_paths = self.interface.get_blacklisted_directories()
+        self.assertIn(path_2, set_paths)
+        self.interface.remove_blacklisted_directories(path_2)
+        rm_paths = self.interface.get_blacklisted_directories()
+        self.assertNotIn(path_2, rm_paths)
+
     def test_add_get_set_dirs(self):
         dir_1 = '/tmp/dir'
         dir_2 = '/tmp/dir_2'
