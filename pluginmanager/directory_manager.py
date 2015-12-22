@@ -77,13 +77,13 @@ class DirectoryManager(object):
         if not self.recursive:
             return self._remove_blacklisted(directories)
 
-        recursive_dirs = []
+        recursive_dirs = set()
         for dir_ in directories:
             walk_iter = os.walk(dir_, followlinks=True)
             walk_iter = [w[0] for w in walk_iter]
             walk_iter = _to_absolute_paths(walk_iter)
             walk_iter = self._remove_blacklisted(walk_iter)
-            recursive_dirs.extend(walk_iter)
+            recursive_dirs.update(walk_iter)
         return recursive_dirs
 
     def add_directories(self, directories, except_blacklisted=True):
