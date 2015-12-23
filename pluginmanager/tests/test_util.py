@@ -26,7 +26,6 @@ class TestUtil(unittest.TestCase):
         name = util.create_unique_module_name(name)
         self.assertEqual(name, 'pluginmanager_plugin_test_0')
 
-
     def test_remove_from_set(self):
         obj_1 = object()
         obj_2 = object()
@@ -41,7 +40,7 @@ class TestUtil(unittest.TestCase):
         obj_1 = object()
         obj_2 = object()
         test_set = [obj_1, obj_2]
-        remove_set = [obj_2,]
+        remove_set = [obj_2, ]
 
         result_set = util.remove_from_list(test_set, remove_set)
         self.assertIn(obj_1, result_set)
