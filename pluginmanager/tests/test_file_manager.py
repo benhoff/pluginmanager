@@ -25,6 +25,7 @@ class TestFileManager(unittest.TestCase):
     def test_get_file_filters(self):
         obj_1 = object()
         obj_2 = object()
+
         def test_filter(file_filters):
             for f in file_filters:
                 if f == obj_1:
@@ -34,7 +35,6 @@ class TestFileManager(unittest.TestCase):
         result = self.file_manager.get_file_filters(test_filter)
         self.assertIn(obj_1, result)
         self.assertNotIn(obj_2, result)
-
 
     def test_collect_filepaths(self):
         self.file_manager.file_filters = []
