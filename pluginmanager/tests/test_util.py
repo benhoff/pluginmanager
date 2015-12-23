@@ -26,10 +26,27 @@ class TestUtil(unittest.TestCase):
         name = util.create_unique_module_name(name)
         self.assertEqual(name, 'pluginmanager_plugin_test_0')
 
-    def test_get_paths_from_dir(self):
-        # TODO: make temp dir, make dir in temp dir and make file
-        # in temp dir. see if can get file and dir
-        pass
+
+    def test_remove_from_set(self):
+        obj_1 = object()
+        obj_2 = object()
+        test_set = set((obj_1, obj_2))
+        remove_set = set((obj_2,))
+
+        result_set = util.remove_from_set(test_set, remove_set)
+        self.assertIn(obj_1, result_set)
+        self.assertNotIn(obj_2, result_set)
+
+    def test_remove_from_list(self):
+        obj_1 = object()
+        obj_2 = object()
+        test_set = [obj_1, obj_2]
+        remove_set = [obj_2,]
+
+        result_set = util.remove_from_list(test_set, remove_set)
+        self.assertIn(obj_1, result_set)
+        self.assertNotIn(obj_2, result_set)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -1,5 +1,6 @@
 import os
 import sys
+import logging
 import unittest
 from .compat import tempfile
 from pluginmanager.module_manager import ModuleManager
@@ -23,11 +24,18 @@ class TestModuleManager(unittest.TestCase):
         self.assertIn(test_obj, self.module_manager.module_filters)
 
     def test_failing_module(self):
+        """
+        This tests that a failing import does not stop the program
+        Currently, logging is disabled to prevent noise in the logs.
+        Should change it to expect the log. Should.
+        """
+        logging.disable(logging.CRITICAL)
         with tempfile.TemporaryDirectory() as temp_dir:
             filepath = os.path.join(temp_dir, 'fail.py')
             with open(filepath, 'w+') as f:
                 f.write('blue=5/nred=')
             self.module_manager.load_modules(filepath)
+        logging.disable(logging.NOTSET)
 
     def test_add_blacklisted_filepaths(self):
         test_filepath = 'fancy/dir'

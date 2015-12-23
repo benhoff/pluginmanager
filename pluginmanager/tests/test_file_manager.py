@@ -52,7 +52,6 @@ class TestFileManager(unittest.TestCase):
         self.assertNotIn('dir/test', filtered_filepaths)
 
     def test_blacklist_filepaths(self):
-        self.file_manager.set_file_filters([])
         temp_dir = tempfile.TemporaryDirectory()
         file_template = os.path.join(temp_dir.name, '{}.py')
         norm_file = file_template.format('norm')
