@@ -5,5 +5,5 @@ from .module_manager import ModuleManager
 from .plugin_manager import PluginManager
 from .plugin_interface import PluginInterface
 
-__all__ = ["IPlugin", "DirectoryManager","FileManager",
+__all__ = ["IPlugin", "DirectoryManager", "FileManager",
            "ModuleManager", "PluginManager", "PluginInterface"]
