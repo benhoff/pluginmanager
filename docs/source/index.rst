@@ -233,6 +233,8 @@ Or make a function based filter
 .. toctree::
    :maxdepth: 2
 
+   code_ref/index.rst
+
 
 
 Indices and tables
