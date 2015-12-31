@@ -9,28 +9,24 @@ from pluginmanager import util as manager_util
 
 
 class ModuleManager(object):
-    def __init__(self,
-                 module_filters=None,
-                 blacklisted_filepaths=None):
+    def __init__(self, module_filters=None):
         if module_filters is None:
             module_filters = []
-        if blacklisted_filepaths is None:
-            blacklisted_filepaths = set()
         module_filters = manager_util.return_list(module_filters)
 
         self.loaded_modules = set()
         self.processed_filepaths = {}
         self.module_filters = module_filters
-        self.blacklisted_filepaths = blacklisted_filepaths
         self._log = logging.getLogger(__name__)
         self._error_string = 'pluginmanager unable to import {}\n'
 
     def set_module_filters(self, module_filters):
         """
         Sets the internal module filters to `module_filters`
-        May be a single object or an iterable.
+        `module_filters` may be a single object or an iterable.
 
-        Module Filters must be a callable object.
+        Every module filters must be a callable and take in
+        a list of plugins and their associated names.
         """
         module_filters = manager_util.return_list(module_filters)
         self.module_filters = module_filters
@@ -40,7 +36,8 @@ class ModuleManager(object):
         Adds `module_filters` to the internal module filters.
         May be a single object or an iterable.
 
-        Module Filters must be a callable object.
+        Every module filters must be a callable and take in
+        a list of plugins and their associated names.
         """
         module_filters = manager_util.return_list(module_filters)
         self.module_filters.extend(module_filters)
@@ -65,38 +62,45 @@ class ModuleManager(object):
         the function passes on silently.
 
         `module_filters` may be a single object or an iterable.
-
         """
         manager_util.remove_from_list(self.module_filters, module_filters)
 
-    def add_blacklisted_filepaths(self, filepaths):
-        filepaths = manager_util.to_absolute_paths(filepaths)
-        self.blacklisted_filepaths.update(filepaths)
-
-    def set_blacklisted_filepaths(self, filepaths):
-        filepaths = manager_util.to_absolute_paths(filepaths)
-        self.blacklisted_filepaths = filepaths
-
-    def get_blacklisted_filepaths(self):
-        return self.blacklisted_filepaths
-
     def _get_modules(self, names):
+        """
+        An internal method that gets the `names` from sys.modules and returns
+        them as a list
+        """
         loaded_modules = []
         for name in names:
             loaded_modules.append(sys.modules[name])
         return loaded_modules
 
     def add_to_loaded_modules(self, modules):
-        modules = set(manager_util.return_list(modules))
+        """
+        Manually add in `modules` to be tracked by the module manager.
+
+        `moduels` may be a single object or an iterable.
+        """
+        modules = manager_util.return_set(modules)
         for module in modules:
             if not isinstance(module, str):
                 module = module.__name__
             self.loaded_modules.add(module)
 
     def get_loaded_modules(self):
+        """
+        Returns all modules loaded by this instance.
+        """
         return self._get_modules(self.loaded_modules)
 
     def collect_plugins(self, modules=None):
+        """
+        Collects all the plugins from `modules`.
+        If modules is None, collects the plugins from the loaded modules.
+
+        All plugins are passed through the module filters, if any are any,
+        and returned as a list.
+        """
         plugins = []
         if modules is None:
             modules = self.get_loaded_modules()
@@ -114,17 +118,31 @@ class ModuleManager(object):
         return plugins
 
     def _filter_modules(self, plugins, names):
+        """
+        Internal helper method to parse all of the plugins and names
+        through each of the module filters
+        """
         if self.module_filters:
-            module_plugins = []
+            module_plugins = set()
             for module_filter in self.module_filters:
-                module_plugins.extend(module_filter(plugins, names))
+                module_plugins.update(module_filter(plugins, names))
             plugins = module_plugins
         return plugins
 
     def load_modules(self, filepaths):
+        """
+        Loads the modules from their `filepaths`. A filepath may be
+        a directory filepath if there is an `__init__.py` file in the
+        directory.
+
+        If a filepath errors, the exception will be caught and logged
+        in the logger.
+
+        Returns a list of modules.
+        """
         # removes filepaths from processed if they are not in sys.modules
-        self._update_internal_state()
-        filepaths = manager_util.return_list(filepaths)
+        self._update_loaded_modules()
+        filepaths = manager_util.return_set(filepaths)
 
         modules = []
         for filepath in filepaths:
@@ -146,11 +164,13 @@ class ModuleManager(object):
                 self._log.error(msg=self._error_string.format(filepath),
                                 exc_info=exc_info)
 
-                # self.processed_filepaths['error'] = filepath
-
         return modules
 
     def _process_filepath(self, filepath):
+        """
+        processes the filepath by checking if it is a directory or not
+        and adding `.py` if not present.
+        """
         if (os.path.isdir(filepath) and
                 os.path.isfile(os.path.join(filepath, '__init__.py'))):
 
@@ -161,14 +181,19 @@ class ModuleManager(object):
         return filepath
 
     def _valid_filepath(self, filepath):
+        """
+        checks to see if the filepath has already been processed
+        """
         valid = True
-        if (filepath in self.blacklisted_filepaths or
-                filepath in self.processed_filepaths.values()):
+        if filepath in self.processed_filepaths.values():
             valid = False
 
         return valid
 
-    def _update_internal_state(self):
+    def _update_loaded_modules(self):
+        """
+        Updates the loaded modules by checking if they are still in sys.modules
+        """
         system_modules = sys.modules.keys()
         for module in list(self.loaded_modules):
             if module not in system_modules:
