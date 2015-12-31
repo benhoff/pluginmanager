@@ -26,29 +26,55 @@ class ModuleManager(object):
         self._error_string = 'pluginmanager unable to import {}\n'
 
     def set_module_filters(self, module_filters):
+        """
+        Sets the internal module filters to `module_filters`
+        May be a single object or an iterable.
+
+        Module Filters must be a callable object.
+        """
         module_filters = manager_util.return_list(module_filters)
         self.module_filters = module_filters
 
     def add_module_filters(self, module_filters):
+        """
+        Adds `module_filters` to the internal module filters.
+        May be a single object or an iterable.
+
+        Module Filters must be a callable object.
+        """
         module_filters = manager_util.return_list(module_filters)
         self.module_filters.extend(module_filters)
 
     def get_module_filters(self, filter_function=None):
+        """
+        Gets the internal module filters. Returns a list object.
+
+        If supplied, the `filter_function` should take in a single
+        list argument and return back a list. `filter_function` is
+        designed to given the option for a custom filter on the module filters.
+        """
         if filter_function is None:
             return self.module_filters
         else:
             return filter_function(self.module_filters)
 
     def remove_module_filters(self, module_filters):
+        """
+        Removes `module_filters` from the internal module filters.
+        If the filters are not found in the internal representation,
+        the function passes on silently.
+
+        `module_filters` may be a single object or an iterable.
+
+        """
         manager_util.remove_from_list(self.module_filters, module_filters)
 
     def add_blacklisted_filepaths(self, filepaths):
-        filepaths = set(manager_util.return_list(filepaths))
+        filepaths = manager_util.to_absolute_paths(filepaths)
         self.blacklisted_filepaths.update(filepaths)
 
     def set_blacklisted_filepaths(self, filepaths):
-        filepaths = manager_util.return_list(filepaths)
-        filepaths = set(filepaths)
+        filepaths = manager_util.to_absolute_paths(filepaths)
         self.blacklisted_filepaths = filepaths
 
     def get_blacklisted_filepaths(self):
