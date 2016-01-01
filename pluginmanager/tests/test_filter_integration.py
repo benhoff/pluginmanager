@@ -47,7 +47,7 @@ class TestIntegration(unittest.TestCase):
         bogus = 'five'
         module.bogus = bogus
         subclass_parser = pluginmanager.module_filters.SubclassParser()
-        self.interface.set_module_filters(subclass_parser)
+        self.interface.set_module_plugin_filters(subclass_parser)
         contains_plugin = self.interface.collect_plugins(module)
         self.assertIn(TestClass, contains_plugin)
         self.assertNotIn(bogus, contains_plugin)

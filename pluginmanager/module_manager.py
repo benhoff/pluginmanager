@@ -9,40 +9,62 @@ from pluginmanager import util as manager_util
 
 
 class ModuleManager(object):
-    def __init__(self, module_filters=None):
-        if module_filters is None:
-            module_filters = []
-        module_filters = manager_util.return_list(module_filters)
+    """
+    `ModuleManager` manages the module filter state and is responsible for
+    both loading the modules from source code and collecting the plugins
+    from each of the modules.
+
+    `ModuleManager` can also optionally manage modules explicitly through
+    the use of the add/get/set loaded modules methods. The default
+    implementation is hardwired to use the tracked loaded modules if no
+    modules are passed into the `collect_plugins` method.
+    """
+    def __init__(self, module_plugin_filters=None):
+        """
+        `module_plugin_filters` are callable filters. Each filter must take
+        in a list of plugins and a list of plugin names in the form of:
+
+        ::
+
+            def my_module_plugin_filter(plugins: list, plugin_names: list):
+                pass
+
+        `module_plugin_filters` should return a list of the plugins and may
+        be either a single object or an iterable.
+        """
+        if module_plugin_filters is None:
+            module_plugin_filters = []
+        module_plugin_filters = manager_util.return_list(module_plugin_filters)
 
         self.loaded_modules = set()
         self.processed_filepaths = {}
-        self.module_filters = module_filters
+        self.module_plugin_filters = module_plugin_filters
         self._log = logging.getLogger(__name__)
         self._error_string = 'pluginmanager unable to import {}\n'
 
-    def set_module_filters(self, module_filters):
+    def set_module_plugin_filters(self, module_plugin_filters):
         """
-        Sets the internal module filters to `module_filters`
-        `module_filters` may be a single object or an iterable.
+        Sets the internal module filters to `module_plugin_filters`
+        `module_plugin_filters` may be a single object or an iterable.
 
         Every module filters must be a callable and take in
         a list of plugins and their associated names.
         """
-        module_filters = manager_util.return_list(module_filters)
-        self.module_filters = module_filters
+        module_plugin_filters = manager_util.return_list(module_plugin_filters)
+        self.module_plugin_filters = module_plugin_filters
 
-    def add_module_filters(self, module_filters):
+    def add_module_plugin_filters(self, module_plugin_filters):
         """
-        Adds `module_filters` to the internal module filters.
+        Adds `module_plugin_filters` to the internal module filters.
         May be a single object or an iterable.
 
         Every module filters must be a callable and take in
         a list of plugins and their associated names.
         """
-        module_filters = manager_util.return_list(module_filters)
-        self.module_filters.extend(module_filters)
+        module_plugin_filters = manager_util.return_list(module_plugin_filters)
+        self.module_plugin_filters.extend(module_plugin_filters)
 
-    def get_module_filters(self, filter_function=None):
+    def get_module_plugin_filters(self, filter_function=None):
         """
         Gets the internal module filters. Returns a list object.
 
@@ -51,19 +73,20 @@ class ModuleManager(object):
         designed to given the option for a custom filter on the module filters.
         """
         if filter_function is None:
-            return self.module_filters
+            return self.module_plugin_filters
         else:
-            return filter_function(self.module_filters)
+            return filter_function(self.module_plugin_filters)
 
-    def remove_module_filters(self, module_filters):
+    def remove_module_plugin_filters(self, module_plugin_filters):
         """
-        Removes `module_filters` from the internal module filters.
+        Removes `module_plugin_filters` from the internal module filters.
         If the filters are not found in the internal representation,
         the function passes on silently.
 
-        `module_filters` may be a single object or an iterable.
+        `module_plugin_filters` may be a single object or an iterable.
         """
-        manager_util.remove_from_list(self.module_filters, module_filters)
+        manager_util.remove_from_list(self.module_plugin_filters,
+                                      module_plugin_filters)
 
     def _get_modules(self, names):
         """
@@ -122,9 +145,9 @@ class ModuleManager(object):
         Internal helper method to parse all of the plugins and names
         through each of the module filters
         """
-        if self.module_filters:
+        if self.module_plugin_filters:
             module_plugins = set()
-            for module_filter in self.module_filters:
+            for module_filter in self.module_plugin_filters:
                 module_plugins.update(module_filter(plugins, names))
             plugins = module_plugins
         return plugins

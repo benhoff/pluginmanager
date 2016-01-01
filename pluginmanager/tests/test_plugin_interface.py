@@ -12,10 +12,6 @@ class TestInterface(unittest.TestCase):
         self.test_obj = IPlugin()
         self.interface = PluginInterface()
 
-        # fixes weird state issues on my machine
-        self.interface.file_manager.set_file_filters([])
-        self.interface.module_manager.set_module_filters([])
-
     def test_collect_plugins_no_args(self):
         temp_dir = tempfile.TemporaryDirectory()
         with open(os.path.join(temp_dir.name, 'a.py'), 'w+') as f:
@@ -194,7 +190,7 @@ class TestInterface(unittest.TestCase):
         # all methods in interface follow this pattern
         template = '{}_{}_filters'
         # currently the only two filters supported are file and module
-        filters = ['file', 'module']
+        filters = ['file', 'module_plugin']
         # set up a function to get the actual method calls
         get_func = lambda attr: getattr(self.interface, attr)
         # list comprhensions, our function, and filters to get all the methods

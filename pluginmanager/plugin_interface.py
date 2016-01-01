@@ -106,17 +106,17 @@ class PluginInterface(object):
     def set_file_filters(self, file_filters):
         self.file_manager.set_file_filters(file_filters)
 
-    def add_module_filters(self, module_filters):
-        self.module_manager.add_module_filters(module_filters)
+    def add_module_plugin_filters(self, module_plugin_filters):
+        self.module_manager.add_module_plugin_filters(module_plugin_filters)
 
-    def get_module_filters(self, filter_function=None):
-        return self.module_manager.get_module_filters(filter_function)
+    def get_module_plugin_filters(self, filter_function=None):
+        return self.module_manager.get_module_plugin_filters(filter_function)
 
-    def remove_module_filters(self, module_filters):
-        self.module_manager.remove_module_filters(module_filters)
+    def remove_module_plugin_filters(self, module_plugin_filters):
+        self.module_manager.remove_module_plugin_filters(module_plugin_filters)
 
-    def set_module_filters(self, module_filters):
-        self.module_manager.set_module_filters(module_filters)
+    def set_module_plugin_filters(self, module_plugin_filters):
+        self.module_manager.set_module_plugin_filters(module_plugin_filters)
 
     def add_blacklisted_directories(self,
                                     directories,

@@ -10,18 +10,19 @@ class TestModuleManager(unittest.TestCase):
     def setUp(self):
         self.module_manager = ModuleManager()
 
-    def test_set_module_filters(self):
+    def test_set_module_plugin_filters(self):
         previous_module = object()
-        self.module_manager.add_module_filters(previous_module)
+        self.module_manager.add_module_plugin_filters(previous_module)
         test_obj = object()
-        self.module_manager.set_module_filters(test_obj)
-        self.assertIn(test_obj, self.module_manager.module_filters)
-        self.assertNotIn(previous_module, self.module_manager.module_filters)
+        self.module_manager.set_module_plugin_filters(test_obj)
+        self.assertIn(test_obj, self.module_manager.module_plugin_filters)
+        self.assertNotIn(previous_module,
+                         self.module_manager.module_plugin_filters)
 
     def test_add_module_filter(self):
         test_obj = object()
-        self.module_manager.add_module_filters(test_obj)
-        self.assertIn(test_obj, self.module_manager.module_filters)
+        self.module_manager.add_module_plugin_filters(test_obj)
+        self.assertIn(test_obj, self.module_manager.module_plugin_filters)
 
     def test_failing_module(self):
         """
@@ -43,7 +44,7 @@ class TestModuleManager(unittest.TestCase):
                 if not isinstance(plugin, float):
                     plugins.remove(plugin)
             return plugins
-        self.module_manager.set_module_filters(filter_)
+        self.module_manager.set_module_plugin_filters(filter_)
         instance = object()
         plugins = [5.0, instance]
         filtered = self.module_manager._filter_modules(plugins, [])
@@ -91,7 +92,7 @@ class TestModuleManager(unittest.TestCase):
         self.assertIn(module, loaded_modules)
 
     def test_collect_plugins(self):
-        self.module_manager.module_filters = []
+        self.module_manager.module_plugin_filters = []
         module, _ = self._load_modules()
         plugins = self.module_manager.collect_plugins(module)
         self.assertIn(5.0, plugins)
