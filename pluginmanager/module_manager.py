@@ -10,7 +10,7 @@ from pluginmanager import util as manager_util
 
 class ModuleManager(object):
     """
-    `ModuleManager` manages the module filter state and is responsible for
+    `ModuleManager` manages the module plugin filter state and is responsible for
     both loading the modules from source code and collecting the plugins
     from each of the modules.
 
