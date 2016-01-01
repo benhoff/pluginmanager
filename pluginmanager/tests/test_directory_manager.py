@@ -1,6 +1,5 @@
 import unittest
 from .compat import tempfile
-from os import path
 from pluginmanager.directory_manager import DirectoryManager
 
 
@@ -61,14 +60,17 @@ class TestDirectoryManager(unittest.TestCase):
         self.directory_manager.set_directories(self.temp_dir.name,
                                                except_blacklisted=False)
 
-        self.assertIn(self.temp_dir.name, self.directory_manager.plugin_directories)
+        self.assertIn(self.temp_dir.name,
+                      self.directory_manager.plugin_directories)
 
     def test_add_directories_except_blacklisted(self):
         """
         add `temp_dir` to the blacklisted dirs and then try
         to add it. Assert that `temp_dir` is not in the plugin directories.
 
-        Then, change `except_blacklisted` to false and add in the blacklisted dir.
+        Then, change `except_blacklisted` to false and add in the blacklisted
+        dir.
+
         Assert that it is in the plugin directories.
         """
         self.directory_manager.add_blacklisted_directories(self.temp_dir.name)
@@ -79,16 +81,21 @@ class TestDirectoryManager(unittest.TestCase):
         self.directory_manager.add_directories(self.temp_dir.name,
                                                except_blacklisted=False)
 
-        self.assertIn(self.temp_dir.name, self.directory_manager.plugin_directories)
+        self.assertIn(self.temp_dir.name,
+                      self.directory_manager.plugin_directories)
 
     def test_remove_directories(self):
         """
-        Add in and then remove a directory. Assert that the directory has been removed.
+        Add in and then remove a directory. Assert that the directory has
+        been removed.
         """
         self.directory_manager.add_directories(self.temp_dir.name)
-        self.assertIn(self.temp_dir.name, self.directory_manager.plugin_directories)
+        self.assertIn(self.temp_dir.name,
+                      self.directory_manager.plugin_directories)
+
         self.directory_manager.remove_directories(self.temp_dir.name)
-        self.assertNotIn(self.temp_dir.name, self.directory_manager.plugin_directories)
+        self.assertNotIn(self.temp_dir.name,
+                         self.directory_manager.plugin_directories)
 
     def test_collect_directories_with_recursion(self):
         """
@@ -124,8 +131,9 @@ class TestDirectoryManager(unittest.TestCase):
         Collect the directories with recursion on and make sure that
         the `nested_dir` is not collected.
         """
-        self.directory_manager.add_blacklisted_directories(self.nested_dir.name)
-        directories = self.directory_manager.collect_directories(self.temp_dir.name)
+        dir_manager = self.directory_manager
+        dir_manager.add_blacklisted_directories(self.nested_dir.name)
+        directories = dir_manager.collect_directories(self.temp_dir.name)
         self.assertNotIn(self.nested_dir.name, directories)
         self.assertIn(self.temp_dir.name, directories)
 
