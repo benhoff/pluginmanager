@@ -84,6 +84,10 @@ class TestDirectoryManager(unittest.TestCase):
         self.assertIn(self.temp_dir.name,
                       self.directory_manager.plugin_directories)
 
+    def test_add_site_packages(self):
+        self.directory_manager.add_site_packages_paths()
+        self.assertEqual(len(self.directory_manager.plugin_directories), 1)
+
     def test_remove_directories(self):
         """
         Add in and then remove a directory. Assert that the directory has
@@ -110,6 +114,51 @@ class TestDirectoryManager(unittest.TestCase):
         self.assertIn(self.nested_dir.name, directories)
         self.assertEqual(len(directories), 2)
         self.assertTrue(isinstance(directories, set))
+
+    def test_set_blacklisted_directories(self):
+        """
+        Need to check that the `remove_from_stored_directories` arg is working.
+        Add the temp dir to the plugin directories first before setting the
+        blacklisted dirs to be equal to `temp_dir`. Check to see if
+        `blacklisted_directories` contains `temp_dir` and then check to see
+        that temp_dir is not in `plugin_directories`.
+        """
+        self.directory_manager.add_directories(self.temp_dir.name)
+        self.directory_manager.set_blacklisted_directories(self.temp_dir.name)
+        self.assertIn(self.temp_dir.name,
+                      self.directory_manager.blacklisted_directories)
+
+        self.assertNotIn(self.temp_dir.name,
+                         self.directory_manager.plugin_directories)
+
+        self.directory_manager.blacklisted_directories = set()
+        self.directory_manager.add_directories(self.temp_dir.name)
+        self.directory_manager.set_blacklisted_directories(self.temp_dir.name,
+                                                           False)
+
+        self.assertIn(self.temp_dir.name,
+                      self.directory_manager.plugin_directories)
+
+    def test_add_blacklisted_directories(self):
+        """
+        Need to check that the `remove_from_stored_directories` arg is working.
+        Add the temp dir to the plugin directories first before adding the
+        `temp_dir` to blacklisted directories. Check to see if
+        `blacklisted_directories` contains `temp_dir` and then check to see
+        that temp_dir is not in `plugin_directories`.
+        """
+        self.directory_manager.add_directories(self.temp_dir.name)
+        self.directory_manager.add_blacklisted_directories(self.temp_dir.name)
+        self.assertIn(self.temp_dir.name,
+                      self.directory_manager.blacklisted_directories)
+
+        self.assertNotIn(self.temp_dir.name,
+                         self.directory_manager.plugin_directories)
+
+        self.directory_manager.blacklisted_directories = set()
+        self.directory_manager.add_directories(self.temp_dir.name)
+        self.directory_manager.add_blacklisted_directories(self.temp_dir.name,
+                                                           False)
 
     def test_collect_directories_not_recursive(self):
         """
