@@ -6,7 +6,42 @@ from pluginmanager.file_manager import FileManager
 
 class TestFileManager(unittest.TestCase):
     def setUp(self):
+        """
+        Create the file manager, a temporary directory, and
+        two empty files cleverly named `one.py` and `two.py`
+        """
         self.file_manager = FileManager()
+        self.temp_dir = tempfile.TemporaryDirectory()
+
+        file_path_template = os.path.join(self.temp_dir.name, '{}.py')
+        self.filepath_one = file_path_template.format('one')
+        self.filepath_two = file_path_template.format('two')
+        open(self.filepath_one, 'a+').close()
+        open(self.filepath_two, 'a+').close()
+
+    def tearDown(self):
+        self.temp_dir.cleanup()
+
+    def test_collect_filepaths(self):
+        """
+        pass in the temporary directory in to the `collect_filepaths` method
+        and then check to see if the filepaths created in the `setUp` function
+        are present in the collected filepaths
+        """
+        filepaths = self.file_manager.collect_filepaths(self.temp_dir.name)
+        self.assertIn(self.filepath_one, filepaths)
+        self.assertIn(self.filepath_two, filepaths)
+
+    def test_collect_filepaths_with_blacklisted_filepath(self):
+        """
+        add filepath_one to the blacklisted filepaths and then
+        collect the filepaths and verify that filepath_one is NOT
+        in the collected filepaths, but filepath_two is.
+        """
+        self.file_manager.add_blacklisted_filepaths(self.filepath_one)
+        filepaths = self.file_manager.collect_filepaths(self.temp_dir.name)
+        self.assertIn(self.filepath_two, filepaths)
+        self.assertNotIn(self.filepath_one, filepaths)
 
     def test_set_file_filters(self):
         current_file_filters = object()
@@ -35,18 +70,6 @@ class TestFileManager(unittest.TestCase):
         result = self.file_manager.get_file_filters(test_filter)
         self.assertIn(obj_1, result)
         self.assertNotIn(obj_2, result)
-
-    def test_collect_filepaths(self):
-        self.file_manager.file_filters = []
-        with tempfile.TemporaryDirectory() as temp_dir:
-            file_template = os.path.join(temp_dir, '{}.py')
-            file_one = file_template.format('one')
-            file_two = file_template.format('two')
-            open(file_one, 'a+').close()
-            open(file_two, 'a+').close()
-            filepaths = self.file_manager.collect_filepaths(temp_dir)
-
-        self.assertIn(file_one, filepaths)
 
     def test_filter_filepaths(self):
         self.file_manager.file_filters = []

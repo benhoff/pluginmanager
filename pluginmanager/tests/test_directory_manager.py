@@ -160,6 +160,14 @@ class TestDirectoryManager(unittest.TestCase):
         self.directory_manager.add_blacklisted_directories(self.temp_dir.name,
                                                            False)
 
+    def test_get_blacklisted_directories(self):
+        """
+        check to make sure that blacklisted dirs are a set
+        """
+        black_dirs = self.directory_manager.get_blacklisted_directories()
+        self.assertTrue(isinstance(black_dirs, set))
+        self.assertEqual(len(black_dirs), 0)
+
     def test_collect_directories_not_recursive(self):
         """
         collect directories from `temp_dir`, which has a nested
