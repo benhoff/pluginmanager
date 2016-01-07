@@ -20,6 +20,9 @@ class TestFileManager(unittest.TestCase):
         open(self.filepath_two, 'a+').close()
 
     def tearDown(self):
+        """
+        clean up the temporary directory
+        """
         self.temp_dir.cleanup()
 
     def test_collect_filepaths(self):
