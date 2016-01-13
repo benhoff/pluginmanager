@@ -159,6 +159,31 @@ class TestModuleManager(unittest.TestCase):
         self.assertEqual(len(gotten_filters), 1)
         self.assertIn(test_obj, gotten_filters)
 
+    def test_get_module_plugin_filters_with_filter(self):
+        """
+        want to test the ability to add filter functions to
+        the ascribed method so create two objects and add them
+        both to the module plugin filters. Create a function that
+        returns only one of the objects and pass the funciton in
+        to the method call. Assert that the expected object is
+        in the list, while the other is not.
+        """
+        test_obj_1 = object()
+        test_obj_2 = object()
+        objects = [test_obj_1, test_obj_2]
+        self.module_manager.add_module_plugin_filters(objects)
+
+        def get_obj_1_filter(filters):
+            for filter_ in filters:
+                if filter_ == test_obj_1:
+                    return [test_obj_1, ]
+
+        get_filters = self.module_manager.get_module_plugin_filters
+        filters = get_filters(get_obj_1_filter)
+        self.assertIn(test_obj_1, filters)
+        self.assertNotIn(test_obj_2, filters)
+        self.assertIn(test_obj_2, self.module_manager.module_plugin_filters)
+
     def test_remove_module_plugin_filters(self):
         """
         create an object, add it to the module plugin filters. Assert that the
