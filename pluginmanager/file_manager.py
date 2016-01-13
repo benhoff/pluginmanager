@@ -119,7 +119,7 @@ class FileManager(object):
 
     def get_plugin_filepaths(self):
         """
-        returns the plugin filepaths tracked internally
+        returns the plugin filepaths tracked internally as a `set` object.
         """
         return self.plugin_filepaths
 
