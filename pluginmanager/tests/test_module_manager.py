@@ -207,15 +207,6 @@ class TestModuleManager(unittest.TestCase):
         processed_ext = self.module_manager._clean_filepath(no_ext)
         self.assertEqual(processed_ext, expected_filepath)
 
-    def test_get_modules(self):
-        module, _ = self._load_modules()
-        name = module.__name__
-        name = [name]
-        got_modules = self.module_manager._get_modules(name)
-        self.assertIn(module, got_modules)
-        loaded_modules = self.module_manager.get_loaded_modules()
-        self.assertIn(module, loaded_modules)
-
     def test_update_loaded_modules(self):
         """
         Add the filepath created in setup to the processed filepath with the
