@@ -11,7 +11,7 @@
     plugin_directory_path = tempdirectory.name
     path = os.path.join(tempdirectory.name, 'test.py')
     with open(path, 'w+') as f:
-        f.write('from pluginmanager import IPlugin\nclass Test(IPlugin):\n    pass')
+        f.write('from pluginmanager import IPlugin\nclass Test(IPlugin):\n\tpass')
 
 pluginmanager
 =============

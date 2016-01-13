@@ -16,11 +16,7 @@ class TestModuleManager(unittest.TestCase):
         """
         self.module_manager = ModuleManager()
         self.temp_dir = tempfile.TemporaryDirectory()
-        code = 'PLUGINS = [5,4]\nfive = 5.0\ndef func():\n    pass'
         self.code_filepath = os.path.join(self.temp_dir.name, "mod_test.py")
-        f = open(self.code_filepath, 'w+')
-        f.write(code)
-        f.close()
 
     def tearDown(self):
         """
@@ -29,13 +25,21 @@ class TestModuleManager(unittest.TestCase):
         self.temp_dir.cleanup()
 
     def test_load_modules(self):
+        """
+        Create some test code. write it into the test code filepath.
+        Then load the test code. Assert that the test code has all
+        the desired attributes. Assert that the filepath is in the processed
+        filepaths and that the expected module name is in the processed
+        filepaths and the loaded modules.
+        """
+        code = 'PLUGINS = [5,4]\nfive = 5.0\ndef func():\n\tpass'
+        with open(self.code_filepath, 'w+') as f:
+            f.write(code)
+
         module = self.module_manager.load_modules(self.code_filepath).pop()
         self.assertTrue(hasattr(module, 'PLUGINS'))
         self.assertTrue(hasattr(module, 'func'))
         self.assertTrue(hasattr(module, 'five'))
-        self.assertIn(self.code_filepath,
-                      self.module_manager.processed_filepaths.values())
-
         self.assertEqual(module.PLUGINS, [5, 4])
         self.assertEqual(module.five, 5.0)
         del sys.modules[module.__name__]
@@ -75,6 +79,11 @@ class TestModuleManager(unittest.TestCase):
         del sys.modules[module_name]
 
     def test_set_module_plugin_filters(self):
+        """
+        create and add some state in the module filters. Then set the module
+        filters with a test object. assert that the test object is in the
+        module filters and that the previous state is not.
+        """
         previous_module = object()
         self.module_manager.add_module_plugin_filters(previous_module)
         test_obj = object()
@@ -83,12 +92,44 @@ class TestModuleManager(unittest.TestCase):
         self.assertNotIn(previous_module,
                          self.module_manager.module_plugin_filters)
 
-    def test_add_module_filter(self):
+    def test_add_module_plugin_filter(self):
+        """
+        add a test object to the module filters and assert that it is in there.
+        """
         test_obj = object()
         self.module_manager.add_module_plugin_filters(test_obj)
         self.assertIn(test_obj, self.module_manager.module_plugin_filters)
 
-    def test_failing_module(self):
+    def test_get_module_plugin_filters(self):
+        """
+        Assert that the module plugin filters are empty at first. Add an
+        object. Use the method to get all of the plugin filters out. Assert
+        that the object returned from the method is a set. That it only has
+        one object, and that the one object was the object added.
+        """
+        self.assertEqual(len(self.module_manager.get_module_plugin_filters()),
+                         0)
+
+        test_obj = object()
+        self.module_manager.add_module_plugin_filters(test_obj)
+        gotten_filters = self.module_manager.get_module_plugin_filters()
+        self.assertTrue(isinstance(gotten_filters, list))
+        self.assertEqual(len(gotten_filters), 1)
+        self.assertIn(test_obj, gotten_filters)
+
+    def test_remove_module_plugin_filters(self):
+        """
+        create an object, add it to the module plugin filters. Assert that the
+        object is there. call the method to remove the object. Assert that it
+        is not there.
+        """
+        test_obj = object()
+        self.module_manager.add_module_plugin_filters(test_obj)
+        self.assertIn(test_obj, self.module_manager.module_plugin_filters)
+        self.module_manager.remove_module_plugin_filters(test_obj)
+        self.assertNotIn(test_obj, self.module_manager.module_plugin_filters)
+
+    def test_load_failing_module(self):
         """
         This tests that a failing import does not stop the program
         Currently, logging is disabled to prevent noise in the logs.

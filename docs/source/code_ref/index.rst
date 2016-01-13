@@ -10,3 +10,4 @@ API Reference
     directory_manager
     module_manager
     plugin_manager
+    test_code/index.rst

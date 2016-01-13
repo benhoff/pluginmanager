@@ -20,6 +20,7 @@ from os import path
 root = path.realpath(path.join(path.dirname(__file__), '..', '..'))
 sys.path.insert(1, root)
 import pluginmanager
+import pluginmanager.tests
 
 doctest_path = [root]
 doctest_global_setup = "import pluginmanager"

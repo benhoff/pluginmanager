@@ -79,7 +79,8 @@ class PluginManager(object):
         removes instances from the internal state.
 
         Note that this method is syntatic sugar for the
-        `remove_plugins` method call and calls that function
+        `remove_plugins` acts as a passthrough for that
+        function.
         """
         self.remove_plugins(instances)
 
