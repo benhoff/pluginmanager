@@ -17,6 +17,9 @@ class TestModuleManager(unittest.TestCase):
         self.module_manager = ModuleManager()
         self.temp_dir = tempfile.TemporaryDirectory()
         self.code_filepath = os.path.join(self.temp_dir.name, "mod_test.py")
+        code = 'PLUGINS = [5,4]\nfive = 5.0\ndef func():\n\tpass'
+        with open(self.code_filepath, 'w+') as f:
+            f.write(code)
 
     def tearDown(self):
         """
@@ -32,10 +35,6 @@ class TestModuleManager(unittest.TestCase):
         filepaths and that the expected module name is in the processed
         filepaths and the loaded modules.
         """
-        code = 'PLUGINS = [5,4]\nfive = 5.0\ndef func():\n\tpass'
-        with open(self.code_filepath, 'w+') as f:
-            f.write(code)
-
         module = self.module_manager.load_modules(self.code_filepath).pop()
         self.assertTrue(hasattr(module, 'PLUGINS'))
         self.assertTrue(hasattr(module, 'func'))
@@ -51,6 +50,15 @@ class TestModuleManager(unittest.TestCase):
 
         self.assertIn(expected_module_name,
                       self.module_manager.processed_filepaths.keys())
+
+    def test_load_modules_with_processed_filepath(self):
+        """
+        add a filepath to the processed filepaths and then assert that
+        the loaded modules are empty.
+        """
+        self.module_manager.processed_filepaths['test'] = self.code_filepath
+        modules = self.module_manager.load_modules(self.code_filepath)
+        self.assertEqual(len(modules), 0)
 
     def test_collect_plugins(self):
         """
@@ -91,6 +99,40 @@ class TestModuleManager(unittest.TestCase):
         self.assertIn(test_obj, self.module_manager.module_plugin_filters)
         self.assertNotIn(previous_module,
                          self.module_manager.module_plugin_filters)
+
+    def test_add_to_loaded_modules(self):
+        """
+        assert that the module `types` is not being tracked. Then add the
+        actual module to the loaded modules and assert that the string name
+        is there.
+        Also want to test the string handeling, so pass in a test string and
+        assert that it is in tracked.
+        """
+        types_module_str = 'types'
+        self.assertNotIn(types_module_str, self.module_manager.loaded_modules)
+        self.module_manager.add_to_loaded_modules(types)
+        self.assertIn(types_module_str, self.module_manager.loaded_modules)
+
+        test_module_name = 'bogus'
+        self.assertNotIn(test_module_name, self.module_manager.loaded_modules)
+        self.module_manager.add_to_loaded_modules(test_module_name)
+        self.assertIn(test_module_name, self.module_manager.loaded_modules)
+
+    def test_get_loaded_modules(self):
+        """
+        get out the loaded modules. Assert that it is a list and is
+        empty. Assert that the module `types` is not present. Then add
+        the module `types` to tracked internally. get the loaded modules
+        again and assert that the module `types` is present.
+        """
+        default_modules = self.module_manager.get_loaded_modules()
+        self.assertTrue(isinstance(default_modules, list))
+        self.assertEqual(len(default_modules), 0)
+
+        self.assertNotIn(types, default_modules)
+        self.module_manager.add_to_loaded_modules(types)
+        gotten_modules = self.module_manager.get_loaded_modules()
+        self.assertIn(types, gotten_modules)
 
     def test_add_module_plugin_filter(self):
         """
