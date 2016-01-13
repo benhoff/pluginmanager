@@ -126,7 +126,7 @@ class DirectoryManager(object):
         self.plugin_directories = util.remove_from_set(self.plugin_directories,
                                                        directories)
 
-    def add_site_packages_paths(self, except_blacklisted=True):
+    def add_site_packages_paths(self):
         """
         A helper method to add all of the site packages tracked by python
         to the set of plugin directories.
@@ -137,9 +137,6 @@ class DirectoryManager(object):
         python. See: https://github.com/pypa/virtualenv/issues/355
         """
         site_packages = getsitepackages()
-        if except_blacklisted:
-            site_packages = self._remove_blacklisted(site_packages)
-
         self.add_directories(site_packages)
 
     def add_blacklisted_directories(self,
