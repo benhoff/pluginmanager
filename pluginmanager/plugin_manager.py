@@ -5,11 +5,8 @@ from .iplugin import IPlugin
 
 class PluginManager(object):
     """
-    PluginManager manages the plugin state. It can also optionally be used to
-    automatically instantiate classes. It can also be used to optionally
-    enforce uniqueness in plugins. Both of these options are set to `True` by
-    default. While this slightly violates the principle of least suprise, it's
-    easier to manage in the library context.
+    PluginManager manages the plugin state. It can automatically
+    instantiate classes and enforce uniqueness, which it does by default.
     """
     def __init__(self,
                  unique_instances=True,
@@ -17,10 +14,14 @@ class PluginManager(object):
                  plugins=None,
                  blacklisted_plugins=None):
         """
-        unique_instances enforces uniquness on plugins.
-        instatntiate_classes is a helper method to instatnatiate classes.
-        plugins can be a single obj or iterable
-        blacklisted plugins can be a single obj or iterable
+        `unique_instances` determines if all plugins have to be unique.
+        This will also ensure that no two instances of the same class are
+        tracked internally.
+
+        `instantiate_classes` tracks to see if the class should automatically
+        instantiate class objects that are passed in.
+        `plugins` can be a single obj or iterable
+        `blacklisted plugins` can be a single obj or iterable
         """
         self.unique_instances = unique_instances
         self.instantiate_classes = instantiate_classes
@@ -70,17 +71,20 @@ class PluginManager(object):
 
     def remove_plugins(self, plugins):
         """
-        removes plugins from the internal state
+        removes `plugins` from the internal state
+
+        `plugins` may be a single object or an iterable.
         """
         util.remove_from_list(self.plugins, plugins)
 
     def remove_instance(self, instances):
         """
-        removes instances from the internal state.
+        removes `instances` from the internal state.
 
         Note that this method is syntatic sugar for the
         `remove_plugins` acts as a passthrough for that
         function.
+        `instances` may be a single object or an iterable
         """
         self.remove_plugins(instances)
 
@@ -117,7 +121,8 @@ class PluginManager(object):
     def register_classes(self, classes):
         """
         Register classes as plugins that are not subclassed from
-        IPlugin
+        IPlugin.
+        `classes` may be a single object or an iterable.
         """
         classes = util.return_list(classes)
         for klass in classes:
@@ -172,6 +177,8 @@ class PluginManager(object):
     def activate_plugins(self):
         """
         helper method that attempts to activate plugins
+        checks to see if plugin has method call before
+        calling it.
         """
         for instance in self.get_instances():
             if hasattr(instance, 'activate'):
@@ -180,6 +187,8 @@ class PluginManager(object):
     def deactivate_plugins(self):
         """
         helper method that attempts to deactivate plugins.
+        checks to see if plugin has method call before
+        calling it.
         """
         for instance in self.get_instances():
             if hasattr(instance, 'deactivate'):
