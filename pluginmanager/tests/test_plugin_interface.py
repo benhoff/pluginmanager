@@ -139,7 +139,9 @@ class TestInterface(unittest.TestCase):
     def test_interface(self):
         template = '{}_blacklisted_{}'
         methods = ['filepaths', 'plugins']
-        get_func = lambda attr: getattr(self.interface, attr)
+
+        def get_func(attr):
+            return getattr(self.interface, attr)
 
         adders = [get_func(template.format('add',
                                            method)) for method in methods]
@@ -192,7 +194,7 @@ class TestInterface(unittest.TestCase):
         # currently the only two filters supported are file and module
         filters = ['file', 'module_plugin']
         # set up a function to get the actual method calls
-        get_func = lambda attr: getattr(self.interface, attr)
+        get_func = lambda attr: getattr(self.interface, attr) # flake8: noqa
         # list comprhensions, our function, and filters to get all the methods
         adders = [get_func(template.format('add',
                                            filter_)) for filter_ in filters]
