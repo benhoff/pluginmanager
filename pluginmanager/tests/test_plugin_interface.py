@@ -17,13 +17,33 @@ class TestInterface(unittest.TestCase):
         with open(os.path.join(temp_dir.name, 'a.py'), 'w+') as f:
             f.write('import pluginmanager\n')
             f.write('class T(pluginmanager.IPlugin):\n')
-            f.write("    name='red'\n")
-            f.write('    def __init__(self):\n')
-            f.write('       super(T, self).__init__()')
+            f.write("\tname='red'\n")
+            f.write('\tdef __init__(self):\n')
+            f.write('\t\tsuper(T, self).__init__()')
         self.interface.set_plugin_directories(temp_dir.name)
         plugin = self.interface.collect_plugins()[0]
-        temp_dir.cleanup()
         self.assertEqual(plugin.name, 'red')
+        stored_plugin = self.interface.get_instances()[0]
+        self.assertEqual(stored_plugin.name, 'red')
+        
+        temp_dir.cleanup()
+
+    def test_collect_plugins_no_state(self):
+        temp_dir = tempfile.TemporaryDirectory()
+        with open(os.path.join(temp_dir.name, 'a.py'), 'w+') as f:
+            f.write('import pluginmanager\n')
+            f.write('class T(pluginmanager.IPlugin):\n')
+            f.write("\tname='red'\n")
+            f.write('\tdef __init__(self):\n')
+            f.write('\t\tsuper(T, self).__init__()')
+        self.interface.set_plugin_directories(temp_dir.name)
+        plugin = self.interface.collect_plugins(None, False)[0]
+        self.assertEqual(plugin.name, 'red')
+        stored_plugins = self.interface.get_plugins()
+        self.assertEqual(len(stored_plugins), 0)
+        
+        temp_dir.cleanup()
+        
 
     def test_collect_plugin_directories(self):
         dir_names = []

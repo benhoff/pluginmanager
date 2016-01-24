@@ -6,11 +6,8 @@ from .iplugin import IPlugin
 
 
 class PluginInterface(object):
-    def __init__(self,
-                 auto_manage_state=True,
-                 **kwargs):
+    def __init__(self, **kwargs):
 
-        self.managing_state = auto_manage_state
         self.directory_manager = kwargs.get('directory_manager',
                                             DirectoryManager())
 
@@ -41,11 +38,14 @@ class PluginInterface(object):
         loaded_modules = self.module_manager.load_modules(filepaths)
         return loaded_modules
 
-    def collect_plugins(self, modules=None):
+    def collect_plugins(self,
+                        modules=None,
+                        store_collected_plugins=True):
+
         if modules is None:
             modules = self.load_modules()
         plugins = self.module_manager.collect_plugins(modules)
-        if self.managing_state:
+        if store_collected_plugins:
             self.add_plugins(plugins)
         return plugins
 
