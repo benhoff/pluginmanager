@@ -1,4 +1,5 @@
 import os
+import shutil
 from setuptools import find_packages, setup
 
 
@@ -6,11 +7,18 @@ directory = os.path.abspath(os.path.dirname(__file__))
 
 with open(os.path.join(directory, 'README.rst')) as f:
     long_description = f.read()
+
+egg_dir = os.path.join(directory, 'pluginmanager.egg-info')
+if os.path.isdir(egg_dir):
+    shutil.rmtree(egg_dir)
+
 setup(
     name="pluginmanager",
-    version='0.3.0',
+    version='0.3.1',
     description='Python Plugin Management, simplified',
     long_description=long_description,
+    author='Ben Hoff',
+    author_email='beohoff@gmail.com',
     url='https://github.com/benhoff/pluginmanager',
     license='GPL3',
     classifiers=[
@@ -27,10 +35,9 @@ setup(
         'Topic :: Software Development :: Libraries :: Python Modules',
         'Topic :: Utilities',
         'Operating System :: OS Independent'],
-    keywords='plugin manager',
-    author='Ben Hoff',
-    author_email='beohoff@gmail.com',
-    packages= find_packages(exclude=['docs', 'tests']),
+    keywords='plugin manager framework architecture',
+    packages= find_packages(exclude=['docs', 'tests', 'tests*']),
+
     extras_require={
         'dev': ['flake8', 'sphinx']
     },
