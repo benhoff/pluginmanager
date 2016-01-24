@@ -81,7 +81,7 @@ class DirectoryManager(object):
         `directories` may be either a single object or a iterable.
 
         `directories` can be relative paths, but will be converted into
-        absolute paths.
+        absolute paths based on the current working directory.
 
         if `except_blacklisted` is `True` all `directories` in
         `self.blacklisted_directories` will be removed
@@ -101,7 +101,8 @@ class DirectoryManager(object):
         `directories` may be either a single object or an iterable.
 
         `directories` can contain relative paths but will be
-        converted into absolute paths.
+        converted into absolute paths based on the current working
+        directory.
 
         if `except_blacklisted` is `True` all `directories` in
         `self.blacklisted_directories` will be removed
@@ -119,8 +120,8 @@ class DirectoryManager(object):
         `directories` may be a single object or an iterable.
 
         Recommend passing in all paths as absolute, but the method will
-        attemmpt to convert all paths to absolute if they are not already.
-
+        attemmpt to convert all paths to absolute if they are not already
+        based on the current working directory.
         """
         directories = util.to_absolute_paths(directories)
         self.plugin_directories = util.remove_from_set(self.plugin_directories,
@@ -150,7 +151,7 @@ class DirectoryManager(object):
 
         `directories` may be a single instance or an iterable. Recommend
         passing in absolute paths, but method will try to convert to absolute
-        paths.
+        paths based on the current working directory.
 
         If `remove_from_stored_directories` is true, all `directories`
         will be removed from `self.plugin_directories`
@@ -174,10 +175,11 @@ class DirectoryManager(object):
         paths.
 
         `directories` may be a single instance or an iterable. Recommend
-        passing in absolute paths. Method will try to convert to absolute path.
+        passing in absolute paths. Method will try to convert to absolute path
+        based on current working directory.
         """
         absolute_paths = util.to_absolute_paths(directories)
-        self.blacklisted_directories = util.return_set(absolute_paths)
+        self.blacklisted_directories = absolute_paths
         if remove_from_stored_directories:
             plug_dirs = self.plugin_directories
             plug_dirs = util.remove_from_set(plug_dirs,
@@ -197,7 +199,7 @@ class DirectoryManager(object):
 
         `directories` may be a single instance or an iterable. Recommend
         passing in absolute paths. Method will try to convert to an absolute
-        path if it is not already.
+        path if it is not already using the current working directory.
         """
         directories = util.to_absolute_paths(directories)
         black_dirs = self.blacklisted_directories

@@ -44,8 +44,11 @@ class FileManager(object):
             blacklisted_filepaths = set()
 
         self.file_filters = util.return_list(file_filters)
-        self.plugin_filepaths = util.return_set(plugin_filepaths)
-        self.blacklisted_filepaths = util.return_set(blacklisted_filepaths)
+        # pep8
+        to_abs_paths = util.to_absolute_paths
+
+        self.plugin_filepaths = to_abs_paths(plugin_filepaths)
+        self.blacklisted_filepaths = to_abs_paths(blacklisted_filepaths)
 
     def collect_filepaths(self, directories):
         """
@@ -59,7 +62,7 @@ class FileManager(object):
         absolute paths.
         """
         plugin_filepaths = set()
-        directories = util.return_set(directories)
+        directories = util.to_absolute_paths(directories)
         for directory in directories:
             filepaths = util.get_filepaths_from_dir(directory)
             filepaths = self._filter_filepaths(filepaths)
@@ -136,7 +139,6 @@ class FileManager(object):
         Adds `file_filters` to the internal file filters.
         `file_filters` can be single object or iterable.
         """
-
         file_filters = util.return_list(file_filters)
         self.file_filters.extend(file_filters)
 
@@ -164,8 +166,11 @@ class FileManager(object):
         Add `filepaths` to blacklisted filepaths.
         If `remove_from_stored` is `True`, any `filepaths` in
         `plugin_filepaths` will be automatically removed.
+
+        Recommend passing in absolute filepaths but method will attempt
+        to convert to absolute filepaths based on current working directory.
         """
-        filepaths = util.return_set(filepaths)
+        filepaths = util.to_absolute_paths(filepaths)
         self.blacklisted_filepaths.update(filepaths)
         if remove_from_stored:
             self.plugin_filepaths = util.remove_from_set(self.plugin_filepaths,
@@ -176,8 +181,11 @@ class FileManager(object):
         Sets internal blacklisted filepaths to filepaths.
         If `remove_from_stored` is `True`, any `filepaths` in
         `self.plugin_filepaths` will be automatically removed.
+
+        Recommend passing in absolute filepaths but method will attempt
+        to convert to absolute filepaths based on current working directory.
         """
-        filepaths = util.return_set(filepaths)
+        filepaths = util.to_absolute_paths(filepaths)
         self.blacklisted_filepaths = filepaths
         if remove_from_stored:
             self.plugin_filepaths = util.remove_from_set(self.plugin_filepaths,
@@ -186,13 +194,17 @@ class FileManager(object):
     def remove_blacklisted_filepaths(self, filepaths):
         """
         Removes `filepaths` from blacklisted filepaths
+
+        Recommend passing in absolute filepaths but method will attempt
+        to convert to absolute filepaths based on current working directory.
         """
+        filepaths = util.to_absolute_paths(filepaths)
         black_paths = self.blacklisted_filepaths
         black_paths = util.remove_from_set(black_paths, filepaths)
 
     def get_blacklisted_filepaths(self):
         """
-        Returns the blacklisted filepaths.
+        Returns the blacklisted filepaths as a set object.
         """
         return self.blacklisted_filepaths
 

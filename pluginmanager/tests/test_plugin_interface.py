@@ -158,7 +158,7 @@ class TestInterface(unittest.TestCase):
 
     def test_interface(self):
         template = '{}_blacklisted_{}'
-        methods = ['filepaths', 'plugins']
+        methods = ['plugins']
 
         def get_func(attr):
             return getattr(self.interface, attr)
@@ -203,7 +203,7 @@ class TestInterface(unittest.TestCase):
     """
 
     def test_set_blacklist_filepath(self):
-        filepath = 'test/dir'
+        filepath = '/test/dir'
         self.interface.set_blacklisted_filepaths(filepath)
         blacklisted = self.interface.get_blacklisted_filepaths()
         self.assertIn(filepath, blacklisted)
