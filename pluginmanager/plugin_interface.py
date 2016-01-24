@@ -221,9 +221,17 @@ class PluginInterface(object):
                                                except_blacklisted)
 
     def add_to_loaded_modules(self, modules):
+        """
+        Manually add in `modules` to be tracked by the module manager.
+
+        `modules` may be a single object or an iterable.
+        """
         self.module_manager.add_to_loaded_modules(modules)
 
     def get_loaded_modules(self):
+        """
+        Returns all modules loaded by this instance.
+        """
         return self.module_manager.get_loaded_modules()
 
     def get_instances(self, filter_function=IPlugin):
@@ -272,15 +280,43 @@ class PluginInterface(object):
         self.file_manager.set_file_filters(file_filters)
 
     def add_module_plugin_filters(self, module_plugin_filters):
+        """
+        Adds `module_plugin_filters` to the internal module filters.
+        May be a single object or an iterable.
+
+        Every module filters must be a callable and take in
+        a list of plugins and their associated names.
+        """
         self.module_manager.add_module_plugin_filters(module_plugin_filters)
 
     def get_module_plugin_filters(self, filter_function=None):
+        """
+        Gets the internal module filters. Returns a list object.
+
+        If supplied, the `filter_function` should take in a single
+        list argument and return back a list. `filter_function` is
+        designed to given the option for a custom filter on the module filters.
+        """
         return self.module_manager.get_module_plugin_filters(filter_function)
 
     def remove_module_plugin_filters(self, module_plugin_filters):
+        """
+        Removes `module_plugin_filters` from the internal module filters.
+        If the filters are not found in the internal representation,
+        the function passes on silently.
+
+        `module_plugin_filters` may be a single object or an iterable.
+        """
         self.module_manager.remove_module_plugin_filters(module_plugin_filters)
 
     def set_module_plugin_filters(self, module_plugin_filters):
+        """
+        Sets the internal module filters to `module_plugin_filters`
+        `module_plugin_filters` may be a single object or an iterable.
+
+        Every module filters must be a callable and take in
+        a list of plugins and their associated names.
+        """
         self.module_manager.set_module_plugin_filters(module_plugin_filters)
 
     def add_blacklisted_directories(self,
