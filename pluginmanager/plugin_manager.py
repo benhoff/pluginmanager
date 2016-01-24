@@ -36,7 +36,7 @@ class PluginManager(object):
 
     def get_plugins(self, filter_function=None):
         """
-        Gets out the plugins from the internal state.
+        Gets out the plugins from the internal state. Returns a list object.
         If the optional filter_function is supplied, applies the filter
         function to the arguments before returning them. Filters should
         be callable and take a list argument of plugins.
@@ -48,8 +48,10 @@ class PluginManager(object):
 
     def add_plugins(self, plugins):
         """
-        Adds plugins to the internal state.
-        If `instatntiate_classes` is True and the plugins
+        Adds plugins to the internal state. `plugins` may be a single object
+        or an iterable.
+
+        If `instantiate_classes` is True and the plugins
         have class instances in them, attempts to instatiate the classes.
 
         If `unique_instances` is True and duplicate instances are passed in,
@@ -59,7 +61,9 @@ class PluginManager(object):
 
     def set_plugins(self, plugins):
         """
-        sets plugins to the internal state.
+        sets plugins to the internal state. `plugins` may be a single object
+        or an iterable.
+
         If `instatntiate_classes` is True and the plugins
         have class instances in them, attempts to instatiate the classes.
 
