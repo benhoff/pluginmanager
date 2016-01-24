@@ -50,15 +50,72 @@ class PluginInterface(object):
         return plugins
 
     def set_plugins(self, plugins):
+        """
+        sets plugins to the internal state.
+        If the instance member `instantiate_classes` in the underlying
+        member `plugin_manager` is True and the plugins
+        have class instances in them, attempts to instatiate the classes.
+        The default is `True`
+
+        This can be checked/changed by:
+
+            `plugin_interface.plugin_manager.instantiate_classes`
+
+        If the instance member `unique_instances` in the underlying member
+        `plugin_manager` is True and duplicate instances are passed in,
+        this method will not track the new instances internally.
+        The default is `True`
+
+        This can be checked/changed by:
+
+            `plugin_interface.plugin_manager.unique_instances`
+
+        """
         self.plugin_manager.set_plugins(plugins)
 
     def add_plugins(self, plugins):
+        """
+        Adds plugins to the internal state. `plugins` may be a single
+        object or an iterable.
+
+        If the instance member `instantiate_classes` in the underlying
+        member `plugin_manager` is True and the plugins
+        have class instances in them, attempts to instatiate the classes.
+        Default is `True`
+
+        This can be checked/changed by:
+
+            `plugin_interface.plugin_manager.instantiate_classes`
+
+        If the instance member `unique_instances` in the underlying member
+        `plugin_manager` is True and duplicate instances are passed in,
+        this method will not track the new instances internally.
+        Default is `True`
+
+        This can be checked/changed by:
+
+            `plugin_interface.plugin_manager.unique_instances`
+
+        """
         self.plugin_manager.add_plugins(plugins)
 
     def remove_plugins(self, plugins):
+        """
+        removes `plugins` from the internal state
+
+        `plugins` may be a single object or an iterable.
+        """
         self.plugin_manager.remove_plugins(plugins)
 
     def get_plugins(self, filter_function=None):
+        """
+        Gets out the plugins from the internal state. Returns a list
+        object.
+
+        If the optional filter_function is supplied, applies the filter
+        function to the arguments before returning them. Filters should
+        be callable and take a list argument of plugins.
+        """
         return self.plugin_manager.get_plugins(filter_function)
 
     def add_plugin_directories(self, paths, except_blacklisted=True):
@@ -92,6 +149,19 @@ class PluginInterface(object):
         return self.module_manager.get_loaded_modules()
 
     def get_instances(self, filter_function=IPlugin):
+        """
+        Gets instances out of the internal state using
+        the default filter supplied in filter_function.
+        By default, it is the class IPlugin.
+
+        Can optionally pass in a list or tuple of classes
+        in for `filter_function` which will accomplish
+        the same goal.
+
+        lastly, a callable can be passed in, however
+        it is up to the user to determine if the
+        objects are instances or not.
+        """
         return self.plugin_manager.get_instances(filter_function)
 
     def add_file_filters(self, file_filters):
@@ -151,13 +221,29 @@ class PluginInterface(object):
         self.file_manager.remove_blacklisted_filepaths(filepaths)
 
     def add_blacklisted_plugins(self, plugins):
+        """
+        add blacklisted plugins.
+        `plugins` may be a single object or iterable.
+        """
         self.plugin_manager.add_blacklisted_plugins(plugins)
 
     def get_blacklisted_plugins(self):
+        """
+        gets blacklisted plugins tracked in the internal state
+        Returns a list object.
+        """
         return self.plugin_manager.get_blacklisted_plugins()
 
     def set_blacklisted_plugins(self, plugins):
+        """
+        sets blacklisted plugins.
+        `plugins` may be a single object or iterable.
+        """
         self.plugin_manager.set_blacklisted_plugins(plugins)
 
     def remove_blacklisted_plugins(self, plugins):
+        """
+        removes `plugins` from the blacklisted plugins.
+        `plugins` may be a single object or iterable.
+        """
         self.plugin_manager.remove_blacklisted_plugins(plugins)
