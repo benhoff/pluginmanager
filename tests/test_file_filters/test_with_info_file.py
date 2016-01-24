@@ -2,7 +2,7 @@ import os
 import unittest
 from pluginmanager import util
 from pluginmanager.file_filters import WithInfoFileFilter
-from pluginmanager.tests.compat import tempfile
+from tests.compat import tempfile
 from pluginmanager.compat import FILE_ERROR, ConfigParser
 
 
