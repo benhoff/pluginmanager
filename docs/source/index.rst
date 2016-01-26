@@ -230,11 +230,18 @@ Or make a function based filter
 
     good plugin
 
-.. toctree::
-   :maxdepth: 2
+Class Overview
+--------------
 
-   code_ref/index.rst
+.. currentmodule:: pluginmanager
+.. autosummary::
+     :toctree: stubs
 
+     DirectoryManager
+     FileManager
+     ModuleManager
+     PluginManager
+     PluginInterface
 
 
 Indices and tables
