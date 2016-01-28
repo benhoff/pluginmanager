@@ -1,7 +1,7 @@
 pluginmanager
 =============
 
-|Build Status| |Coverage Status| |Code Climate|
+|Build Status| |Version| |Coverage Status| |Code Climate|
 
 `Documentation <http://pluginmanager.readthedocs.org/en/latest/>`_
 
@@ -180,3 +180,5 @@ All filters are callable.
     :target: https://coveralls.io/github/benhoff/pluginmanager?branch=master
 .. |Code Climate| image:: https://codeclimate.com/github/benhoff/pluginmanager/badges/gpa.svg
     :target: https://codeclimate.com/github/benhoff/pluginmanager
+.. |Version| image:: https://badge.fury.io/py/pluginmanager.svg
+    :target: https://badge.fury.io/py/pluginmanager
