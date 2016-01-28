@@ -34,3 +34,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Removed
 - `except_blacklisted` method argument from `add_site_packages_paths` in `DirectoryManager`. If the site packages path is blacklisted, shouldn't use this method.
+
+## [0.2.2]
+### Added
+- Method documentaiton for `ModuleManager`
+
+### Changed
+- `ModuleManager` no longer has support for blacklisted filepaths. This was not used by the default implementation in `PluginInterface` as `FileManager` handles the blacklisting for the package. Initializer call no longer allows a `blacklisted_filepaths` option and the blacklist methods were removed.
