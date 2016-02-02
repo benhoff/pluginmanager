@@ -1,6 +1,5 @@
 import unittest
 import setuptools
-from .compat import tempfile
 from pluginmanager.entry_point_manager import EntryPointManager
 
 
