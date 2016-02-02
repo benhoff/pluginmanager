@@ -1,6 +1,7 @@
 from .directory_manager import DirectoryManager
 from .file_manager import FileManager
 from .module_manager import ModuleManager
+from .entry_point_manager import EntryPointManager
 from .plugin_manager import PluginManager
 from .iplugin import IPlugin
 
@@ -13,6 +14,9 @@ class PluginInterface(object):
 
         self.file_manager = kwargs.get('file_manager', FileManager())
         self.module_manager = kwargs.get('module_manager', ModuleManager())
+        self.entry_point_manager = kwargs.get('entry_point_manager',
+                                              EntryPointManager())
+
         self.plugin_manager = kwargs.get('plugin_manager', PluginManager())
 
     def track_site_package_paths(self):
@@ -54,6 +58,16 @@ class PluginInterface(object):
         if modules is None:
             modules = self.load_modules()
         plugins = self.module_manager.collect_plugins(modules)
+        if store_collected_plugins:
+            self.add_plugins(plugins)
+        return plugins
+
+    def collect_entry_point_plugins(self,
+                                    entry_point_names=None,
+                                    store_collected_plugins=True):
+
+        collect_plugins = self.entry_point_manager.collect_plugins
+        plugins = collect_plugins(entry_point_names)
         if store_collected_plugins:
             self.add_plugins(plugins)
         return plugins
@@ -175,6 +189,18 @@ class PluginInterface(object):
         blacklisted that are blacklisted will be removed
         """
         self.directory_manager.set_directories(paths, except_blacklisted)
+
+    def add_entry_points(self, names):
+        self.entry_point_manager.add_entry_points(names)
+
+    def remove_entry_points(self, names):
+        self.entry_point_manager.remove_entry_points(names)
+
+    def set_entry_points(self, names):
+        self.entry_point_manager.set_entry_points(names)
+
+    def get_entry_points(self, names):
+        return self.entry_point_manager.get_entry_points()
 
     def add_plugin_filepaths(self, filepaths, except_blacklisted=True):
         """
