@@ -202,7 +202,7 @@ class PluginInterface(object):
     def set_entry_points(self, names):
         self.entry_point_manager.set_entry_points(names)
 
-    def get_entry_points(self, names):
+    def get_entry_points(self):
         return self.entry_point_manager.get_entry_points()
 
     def add_plugin_filepaths(self, filepaths, except_blacklisted=True):

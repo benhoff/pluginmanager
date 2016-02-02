@@ -42,10 +42,13 @@ class TestEntryPointManager(unittest.TestCase):
         self.manager.remove_entry_points(removed)
         self.assertNotIn(removed, self.manager.entry_point_names)
 
-    def test_collect_plugins(self):
+    def test_collect_plugins(self, verify=False):
         entry_points = 'distutils.commands'
-        plugins = self.manager.collect_plugins(entry_points)
+        plugins = self.manager.collect_plugins(entry_points, verify)
         self.assertIn(setuptools.command.install.install, plugins)
+
+    def test_collect_plugins_verify_true(self):
+        self.test_collect_plugins(True)
 
 
 if __name__ == '__main__':
