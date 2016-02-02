@@ -64,10 +64,13 @@ class PluginInterface(object):
 
     def collect_entry_point_plugins(self,
                                     entry_point_names=None,
+                                    verify_requirements=False,
                                     store_collected_plugins=True):
 
         collect_plugins = self.entry_point_manager.collect_plugins
-        plugins = collect_plugins(entry_point_names)
+        plugins = collect_plugins(entry_point_names,
+                                  verify_requirements)
+
         if store_collected_plugins:
             self.add_plugins(plugins)
         return plugins
