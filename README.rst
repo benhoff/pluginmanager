@@ -1,9 +1,23 @@
+.. pluginmanager documentation master file, created by
+   sphinx-quickstart on Wed Dec  9 22:32:56 2015.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
+
+.. testsetup:: quickstart
+
+    import os
+    from pluginmanager.tests.compat import tempfile
+    tempdirectory = tempfile.TemporaryDirectory()
+    plugin_directory_path = tempdirectory.name
+    path = os.path.join(tempdirectory.name, 'test.py')
+    with open(path, 'w+') as f:
+        f.write('from pluginmanager import IPlugin\nclass Test(IPlugin):\n    pass')
+
 pluginmanager
 =============
+|Build Status| |Coverage Status| |Code Climate|
 
-|Build Status| |Version| |Coverage Status| |Code Climate|
-
-`Documentation <http://pluginmanager.readthedocs.org/en/latest/>`_
+python plugin management, simplified.
 
 `Source Code <https://github.com/benhoff/pluginmanager>`_
 
@@ -16,25 +30,30 @@ Installation
 
     pip install pluginmanager
 
--or-
-
-::
+-or- ::
 
     pip install git+https://github.com/benhoff/pluginmanager.git
- 
+
 Quickstart
 ----------
 
-::
+.. testcode:: quickstart
 
     from pluginmanager import PluginInterface
 
     plugin_interface = PluginInterface()
-    plugin_interface.set_plugin_directories('my/fancy/plugin/path')
-    plugin_interface.collect_plugins()
+    plugin_interface.set_plugin_directories(plugin_directory_path)
+    plugin_interface.collect_plugins() # doctest: +SKIP
 
     plugins = plugin_interface.get_instances()
-   
+    print(plugins)
+
+.. testoutput:: quickstart
+    :hide:
+    :options: +ELLIPSIS
+
+    [<pluginmanager_plugin_test_0.Test object at 0x...]
+
 Custom Plugins
 --------------
 
@@ -54,52 +73,70 @@ Or register your class as subclass of IPlugin.
 ::
 
     import pluginmanager
-    
+
     pluginmanager.IPlugin.register(YourClassHere)
 
 Add Plugins Manually
 --------------------
 Add classes.
 
-::
+.. testcode:: manual_plugins
 
     import pluginmanager
-    
+
+    class CustomClass(pluginmanager.IPlugin):
+        pass
+
     plugin_interface = pluginmanager.PluginInterface()
-    plugin_interface.add_plugins(YourCustomClassHere)
-    
+    plugin_interface.add_plugins(CustomClass)
+
     plugins = plugin_interface.get_instances()
+    print(plugins)
+
+.. testoutput:: manual_plugins
+    :hide:
+
+    [<CustomClass object at 0x...]
 
 Alternatively, add instances.
 
-::
+.. testcode:: manual_plugins
 
     import pluginmanager
-    
+
+    class CustomClass(pluginmanager.IPlugin):
+        pass
+
+    custom_class_instance = CustomClass()
+
     plugin_interface = pluginmanager.PluginInterface()
-    plugin_interface.add_plugins(your_instance_here)
-    
+    plugin_interface.add_plugins(custom_class_instance)
+
     plugins = plugin_interface.get_instances()
+    print(plugins)
 
-pluginmanager is defaulted to automatically instantiate unique instances. 
+.. testoutput:: manual_plugins
+    :hide:
 
-Disable automatic instantiation.
+    [<CustomClass object at 0x...]
+
+pluginmanager is defaulted to automatically instantiate unique instances. Disable automatic instantiation.
 
 ::
 
     import pluginmanager
-    
+
     plugin_interface = pluginmanager.PluginInterface()
     plugin_manager = plugin_interface.plugin_manager
 
     plugin_manager.instantiate_classes = False
 
-Disable uniquness (Only one instance of class per pluginmanager)
+Disable uniqueness (Only one instance of class per pluginmanager)
 
 ::
 
     import pluginmanager
-    
+
     plugin_interface = pluginmanager.PluginInterface()
     plugin_manager = plugin_interface.plugin_manager
 
@@ -110,30 +147,35 @@ Filter Instances
 
 Pass in a class to get back just the instances of a class
 
-::
+.. testcode:: filter_instances
 
     import pluginmanager
-    
+
+    class MyPluginClass(pluginmanager.IPlugin):
+        pass
+
     plugin_interface = pluginmanager.PluginInterface()
-    plugin_interface.set_plugin_directories('my/fancy/plugin/path')
-    plugin_interface.collect_plugins()
-    
+    plugin_interface.add_plugins(MyPluginClass)
+
     all_instances_of_class = plugin_interface.get_instances(MyPluginClass)
+    print(all_instances_of_class)
 
-Alternatively, create and pass in your own custom filters.
+.. testoutput:: filter_instances
+    :hide:
 
-::
+    [<MyPluginClass object at 0x...]
 
-    def custom_filter(plugins):
-        result = []
-        for plugin in plugins:
-            if plugin.name == 'interesting name':
-                result.append(plugin)
-        return result
-    
-    filtered_plugins = plugin_interface.get_instances(custom_filter)
+Alternatively, create and pass in your own custom filters. Either make a class based filter
 
-    class FilterWithState(object):
+.. testcode:: filter_instances
+
+    # create a custom plugin class
+    class Plugin(pluginmanager.IPlugin):
+        def __init__(self, name):
+            self.name = name
+
+    # create a custom filter
+    class NameFilter(object):
         def __init__(self, name):
             self.stored_name = name 
 
@@ -144,35 +186,70 @@ Alternatively, create and pass in your own custom filters.
                     result.append(plugin)
             return result
 
-Architecture
-------------
-pluginmanager was designed to be as extensible as possible while also being easy to use. There are three layers of access.
+    # create an instance of our custom filter
+    mypluginclass_name_filter = NameFilter('good plugin')
 
-:Interfaces: public facing
-:Managers: extended or replaced
-:Filters: implementation specific
+    plugin_interface = pluginmanager.PluginInterface()
+    plugin_interface.add_plugins([Plugin('good plugin'), 
+                                  Plugin('bad plugin')])
 
-Interface
-----------
-An interface was used to provide a simple programmer interface while maintaining the ability to separate out the concerns of the implementation. The main interface is the PluginInterface. PluginInterface is designed to be as stateless as possible, and have interjectable options where applicable.
- 
+    filtered_plugins = plugin_interface.get_instances(mypluginclass_name_filter)
+    print(filtered_plugins[0].name)
 
-Managers
---------
-There are four managers which make up the core of the library.
+.. testoutput:: filter_instances
+    :hide:
 
-:DirectoryManager: Maintains directory state. Responsbile for recursively searching through directories
-:FileManager: Can maintain filepath state. Does maintain file filter state. Responsible for applying file filters to filepaths passed gotten from directories
-:ModuleManager: Loads modules from source code. Keeps track of loaded modules. Maintains module filter state. Responsible for applying module filters to modules to get out plugins.
-:PluginManager: Instantiates plugins. Maintains plugin state.
+    good plugin
+
+Or make a function based filter
+
+.. testcode:: filter_instances
+
+    # create a custom plugin class
+    class Plugin(pluginmanager.IPlugin):
+        def __init__(self, name):
+            self.name = name
+
+    # create a function based filter
+    def custom_filter(plugins):
+        result = []
+        for plugin in plugins:
+            if plugin.name == 'good plugin':
+                result.append(plugin)
+        return result
+
+    plugin_interface = pluginmanager.PluginInterface()
+    plugin_interface.add_plugins([Plugin('good plugin'), 
+                                  Plugin('bad plugin')])
+
+    filtered_plugins = plugin_interface.get_instances(mypluginclass_name_filter)
+    print(filtered_plugins[0].name)
+
+.. testoutput:: filter_instances
+    :hide:
+
+    good plugin
+
+Class Overview
+--------------
+
+.. currentmodule:: pluginmanager
+.. autosummary::
+     :toctree: stubs
+
+     DirectoryManager
+     FileManager
+     ModuleManager
+     PluginManager
+     PluginInterface
 
 
-Filters
--------
-Filters are designed to offer implementation-level extensiblity.
-Want to only return only files start with "plugin"? Create a filter for it. Or use some of the provided filters to provide the desired implementation.
+Indices and tables
+==================
 
-All filters are callable.
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
 
 .. |Build Status| image:: https://travis-ci.org/benhoff/pluginmanager.svg?branch=master
     :target: https://travis-ci.org/benhoff/pluginmanager
@@ -180,5 +257,9 @@ All filters are callable.
     :target: https://coveralls.io/github/benhoff/pluginmanager?branch=master
 .. |Code Climate| image:: https://codeclimate.com/github/benhoff/pluginmanager/badges/gpa.svg
     :target: https://codeclimate.com/github/benhoff/pluginmanager
-.. |Version| image:: https://badge.fury.io/py/pluginmanager.svg
-    :target: https://badge.fury.io/py/pluginmanager
+
+    
+
+.. testcleanup::
+    tempdirectory.cleanup()
+
