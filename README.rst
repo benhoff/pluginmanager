@@ -19,6 +19,9 @@ pluginmanager
 
 python plugin management, simplified.
 
+
+`Documentation <http://pluginmanager.readthedocs.org/en/latest/>`_
+
 `Source Code <https://github.com/benhoff/pluginmanager>`_
 
 Library under development. Contains rough edges/unfinished functionality. API subject to changes.
@@ -37,22 +40,16 @@ Installation
 Quickstart
 ----------
 
-.. testcode:: quickstart
+::
 
     from pluginmanager import PluginInterface
 
     plugin_interface = PluginInterface()
     plugin_interface.set_plugin_directories(plugin_directory_path)
-    plugin_interface.collect_plugins() # doctest: +SKIP
+    plugin_interface.collect_plugins()
 
     plugins = plugin_interface.get_instances()
-    print(plugins)
 
-.. testoutput:: quickstart
-    :hide:
-    :options: +ELLIPSIS
-
-    [<pluginmanager_plugin_test_0.Test object at 0x...]
 
 Custom Plugins
 --------------
@@ -80,7 +77,7 @@ Add Plugins Manually
 --------------------
 Add classes.
 
-.. testcode:: manual_plugins
+::
 
     import pluginmanager
 
@@ -91,16 +88,11 @@ Add classes.
     plugin_interface.add_plugins(CustomClass)
 
     plugins = plugin_interface.get_instances()
-    print(plugins)
 
-.. testoutput:: manual_plugins
-    :hide:
-
-    [<CustomClass object at 0x...]
 
 Alternatively, add instances.
 
-.. testcode:: manual_plugins
+::
 
     import pluginmanager
 
@@ -113,12 +105,7 @@ Alternatively, add instances.
     plugin_interface.add_plugins(custom_class_instance)
 
     plugins = plugin_interface.get_instances()
-    print(plugins)
 
-.. testoutput:: manual_plugins
-    :hide:
-
-    [<CustomClass object at 0x...]
 
 pluginmanager is defaulted to automatically instantiate unique instances. Disable automatic instantiation.
 
@@ -147,7 +134,7 @@ Filter Instances
 
 Pass in a class to get back just the instances of a class
 
-.. testcode:: filter_instances
+::
 
     import pluginmanager
 
@@ -158,16 +145,11 @@ Pass in a class to get back just the instances of a class
     plugin_interface.add_plugins(MyPluginClass)
 
     all_instances_of_class = plugin_interface.get_instances(MyPluginClass)
-    print(all_instances_of_class)
 
-.. testoutput:: filter_instances
-    :hide:
-
-    [<MyPluginClass object at 0x...]
 
 Alternatively, create and pass in your own custom filters. Either make a class based filter
 
-.. testcode:: filter_instances
+::
 
     # create a custom plugin class
     class Plugin(pluginmanager.IPlugin):
@@ -194,16 +176,11 @@ Alternatively, create and pass in your own custom filters. Either make a class b
                                   Plugin('bad plugin')])
 
     filtered_plugins = plugin_interface.get_instances(mypluginclass_name_filter)
-    print(filtered_plugins[0].name)
 
-.. testoutput:: filter_instances
-    :hide:
-
-    good plugin
 
 Or make a function based filter
 
-.. testcode:: filter_instances
+::
 
     # create a custom plugin class
     class Plugin(pluginmanager.IPlugin):
@@ -223,12 +200,7 @@ Or make a function based filter
                                   Plugin('bad plugin')])
 
     filtered_plugins = plugin_interface.get_instances(mypluginclass_name_filter)
-    print(filtered_plugins[0].name)
 
-.. testoutput:: filter_instances
-    :hide:
-
-    good plugin
 
 Class Overview
 --------------
