@@ -55,12 +55,12 @@ class EntryPointManager(object):
                         verify_requirements=False):
 
         """
-        collects the plugins from the `entry_points`. If `entry_points` is not explicitly
-        defined, this method will pull from the internal state defined using the add/set entry points
-        methods.
+        collects the plugins from the `entry_points`. If `entry_points` is not
+        explicitly defined, this method will pull from the internal state
+        defined using the add/set entry points methods.
 
-        `entry_points` can be a single object or an iterable, but must be either a string or an
-        iterable of strings.
+        `entry_points` can be a single object or an iterable, but must be
+        either a string or an iterable of strings.
 
         returns a list of plugins or an empty list.
         """
