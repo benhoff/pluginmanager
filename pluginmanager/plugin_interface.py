@@ -72,7 +72,7 @@ class PluginInterface(object):
                                   verify_requirements)
 
         if store_collected_plugins:
-            self.add_plugins(plugins)
+            self.plugin_manager.plugins.extend(plugins)
         return plugins
 
     def set_plugins(self, plugins):
