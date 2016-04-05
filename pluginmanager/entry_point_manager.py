@@ -4,8 +4,10 @@ from pluginmanager import util
 
 class EntryPointManager(object):
     """
-    Manages the state associated with the entry points and is responsible for
-    collecting points using entry points.
+    Entry points are an advanced python packaging systems whereby installing
+    using pip automagically makes the package available to the program.
+    This class manages the state associated with the entry points and is
+    responsible for collecting plugins using entry points.
     """
     def __init__(self, entry_point_names=None):
         if entry_point_names is None:

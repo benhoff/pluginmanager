@@ -5,8 +5,13 @@ from setuptools import find_packages, setup
 
 directory = os.path.abspath(os.path.dirname(__file__))
 
-with open(os.path.join(directory, 'README.rst')) as f:
-    long_description = f.read()
+# FIXME: catch exact exception instead of base exception class
+# NOTE: this fixes error found when running `python setup.py develop` in other projects
+try:
+    with open(os.path.join(directory, 'README.rst')) as f:
+        long_description = f.read()
+except Exception:
+    long_description = ''
 
 egg_dir = os.path.join(directory, 'pluginmanager.egg-info')
 if os.path.isdir(egg_dir):
@@ -14,7 +19,7 @@ if os.path.isdir(egg_dir):
 
 setup(
     name="pluginmanager",
-    version='0.3.2',
+    version='0.3.4',
     description='Python Plugin Management, simplified',
     long_description=long_description,
     author='Ben Hoff',
