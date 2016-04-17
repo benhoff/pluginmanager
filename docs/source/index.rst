@@ -46,7 +46,7 @@ Quickstart
     plugin_interface.collect_plugins() # doctest: +SKIP
 
     plugins = plugin_interface.get_instances()
-    print(plugins) # doctest: +SKIP +HIDE
+    print(plugins)
 
 .. testoutput:: quickstart
     :hide:
@@ -91,7 +91,7 @@ Add classes.
     plugin_interface.add_plugins(CustomClass)
 
     plugins = plugin_interface.get_instances()
-    print(plugins) # doctest: +SKIP
+    print(plugins)
 
 .. testoutput:: manual_plugins
     :hide:
@@ -113,7 +113,7 @@ Alternatively, add instances.
     plugin_interface.add_plugins(custom_class_instance)
 
     plugins = plugin_interface.get_instances()
-    print(plugins) # doctest: +SKIP
+    print(plugins)
 
 .. testoutput:: manual_plugins
     :hide:
@@ -158,7 +158,7 @@ Pass in a class to get back just the instances of a class
     plugin_interface.add_plugins(MyPluginClass)
 
     all_instances_of_class = plugin_interface.get_instances(MyPluginClass)
-    print(all_instances_of_class) # doctest: +SKIP
+    print(all_instances_of_class)
 
 .. testoutput:: filter_instances
     :hide:
@@ -194,7 +194,7 @@ Alternatively, create and pass in your own custom filters. Either make a class b
                                   Plugin('bad plugin')])
 
     filtered_plugins = plugin_interface.get_instances(mypluginclass_name_filter)
-    print(filtered_plugins[0].name) # doctest: +SKIP
+    print(filtered_plugins[0].name)
 
 .. testoutput:: filter_instances
     :hide:

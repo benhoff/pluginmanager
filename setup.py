@@ -4,9 +4,14 @@ from setuptools import find_packages, setup
 
 
 directory = os.path.abspath(os.path.dirname(__file__))
+readme = os.path.join(directory, 'docs', 'source', 'index.rst')
 
-with open(os.path.join(directory, 'README.rst')) as f:
-    long_description = f.read()
+# readme doesn't come packed with source code in a install
+if os.path.isfile(readme):
+    with open(readme) as f:
+        long_description = f.read()
+else:
+    long_description = ''
 
 egg_dir = os.path.join(directory, 'pluginmanager.egg-info')
 if os.path.isdir(egg_dir):
@@ -14,7 +19,7 @@ if os.path.isdir(egg_dir):
 
 setup(
     name="pluginmanager",
-    version='0.3.2',
+    version='0.3.4',
     description='Python Plugin Management, simplified',
     long_description=long_description,
     author='Ben Hoff',
@@ -36,7 +41,7 @@ setup(
         'Topic :: Utilities',
         'Operating System :: OS Independent'],
     keywords='plugin manager framework architecture',
-    packages= find_packages(exclude=['docs', 'tests', 'tests*']),
+    packages= find_packages(exclude=['docs', '*tests', 'test*']),
 
     extras_require={
         'dev': ['flake8', 'sphinx']
