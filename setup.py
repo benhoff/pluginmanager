@@ -4,6 +4,7 @@ from setuptools import find_packages, setup
 
 
 directory = os.path.abspath(os.path.dirname(__file__))
+readme = os.path.join(directory, 'docs', 'source', 'index.rst')
 
 # FIXME: catch exact exception instead of base exception class
 # NOTE: this fixes error found when running `python setup.py develop` in other projects
@@ -41,7 +42,7 @@ setup(
         'Topic :: Utilities',
         'Operating System :: OS Independent'],
     keywords='plugin manager framework architecture',
-    packages= find_packages(exclude=['docs', 'tests', 'tests*']),
+    packages= find_packages(exclude=['docs', '*tests', 'test*']),
 
     extras_require={
         'dev': ['flake8', 'sphinx']
