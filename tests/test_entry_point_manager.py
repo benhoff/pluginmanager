@@ -44,7 +44,7 @@ class TestEntryPointManager(unittest.TestCase):
 
     def test_collect_plugins(self, verify=False):
         entry_points = 'distutils.commands'
-        plugins = self.manager.collect_plugins(entry_points, verify)
+        plugins, _ = self.manager.collect_plugins(entry_points, verify)
         self.assertIn(setuptools.command.install.install, plugins)
 
     def test_collect_plugins_verify_true(self):

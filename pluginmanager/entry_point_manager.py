@@ -73,6 +73,7 @@ class EntryPointManager(object):
             entry_points = util.return_set(entry_points)
 
         plugins = []
+        plugin_names = []
         for name in entry_points:
             for entry_point in pkg_resources.iter_entry_points(name):
                 if (hasattr(entry_point, 'resolve') and
@@ -86,5 +87,6 @@ class EntryPointManager(object):
                     plugin = entry_point.load()
 
                 plugins.append(plugin)
+                plugin_names.append(entry_point.name)
 
-        return plugins
+        return plugins, plugin_names

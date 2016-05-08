@@ -25,7 +25,7 @@ class TestInterface(unittest.TestCase):
         self.assertEqual(plugin.name, 'red')
         stored_plugin = self.interface.get_instances()[0]
         self.assertEqual(stored_plugin.name, 'red')
-        
+
         temp_dir.cleanup()
 
     def test_collect_plugins_no_state(self):
@@ -41,9 +41,9 @@ class TestInterface(unittest.TestCase):
         self.assertEqual(plugin.name, 'red')
         stored_plugins = self.interface.get_plugins()
         self.assertEqual(len(stored_plugins), 0)
-        
+
         temp_dir.cleanup()
-        
+
 
     def test_collect_plugin_directories(self):
         dir_names = []

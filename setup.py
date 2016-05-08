@@ -20,7 +20,7 @@ if os.path.isdir(egg_dir):
 
 setup(
     name="pluginmanager",
-    version='0.3.4',
+    version='0.4.0',
     description='Python Plugin Management, simplified',
     long_description=long_description,
     author='Ben Hoff',
