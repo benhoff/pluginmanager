@@ -65,14 +65,20 @@ class PluginInterface(object):
     def collect_entry_point_plugins(self,
                                     entry_point_names=None,
                                     verify_requirements=False,
-                                    store_collected_plugins=True):
+                                    store_collected_plugins=True,
+                                    return_dict=False):
 
         collect_plugins = self.entry_point_manager.collect_plugins
         plugins = collect_plugins(entry_point_names,
-                                  verify_requirements)
+                                  verify_requirements,
+                                  return_dict)
 
         if store_collected_plugins:
-            self.plugin_manager.plugins.extend(plugins)
+            if return_dict:
+                self.plugin_manager.plugins.extend(plugins.values())
+            else:
+                self.plugin_manager.plugins.extend(plugins)
+
         return plugins
 
     def set_plugins(self, plugins):

@@ -54,7 +54,8 @@ class EntryPointManager(object):
 
     def collect_plugins(self,
                         entry_points=None,
-                        verify_requirements=False):
+                        verify_requirements=False,
+                        return_dict=False):
 
         """
         collects the plugins from the `entry_points`. If `entry_points` is not
@@ -88,5 +89,8 @@ class EntryPointManager(object):
 
                 plugins.append(plugin)
                 plugin_names.append(entry_point.name)
+
+        if return_dict:
+            return {n: v for n, v in zip(plugin_names, plugins)}
 
         return plugins, plugin_names
