@@ -40,5 +40,6 @@ class TestIPlugin(unittest.TestCase):
     def test_name(self):
         self.assertEqual(self.plugin.name, 'IPlugin')
 
+
 if __name__ == '__main__':
     unittest.main()
